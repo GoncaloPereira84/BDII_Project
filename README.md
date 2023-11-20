@@ -5,6 +5,9 @@ pip install django
 ```bash
 pip install psycopg2
 ```
+```bash
+pip install django-bootstrap-v5
+```
 # Setup Project
 
 1. Dar clone do repositório
@@ -25,4 +28,7 @@ python manage.py makemigrations
 ```
 ```bash
 python manage.py migrate
+```
+```bash
+python manage.py runserver
 ```

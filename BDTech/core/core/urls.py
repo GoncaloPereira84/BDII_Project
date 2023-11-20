@@ -1,5 +1,5 @@
 """
-URL configuration for BDTech project.
+URL configuration for core project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -20,3 +20,17 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+
+# Exemplo fichas
+# from django.contrib import admin
+# from django.urls import path
+# from polls.views import index, listar_objetos, criar_objetos, criar_dados_mongodb
+
+# urlpatterns = [
+#   path('admin', admin.site.urls),
+#     path("", index, name="index"),
+#     path('listar', listar_objetos, name='listar_objetos'),
+#     path('criar', criar_objetos, name= 'criar_objetos'),
+#     path('criarb', criar_dados_mongodb, name= 'criar_dados_mongodb'),
+# ]
