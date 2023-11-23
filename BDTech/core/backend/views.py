@@ -5,10 +5,10 @@ def members(request):
   template = loader.get_template('index.html')
   return HttpResponse(template.render())
 
-def details(request):
-  template = loader.get_template('details.html')
+def dashboard(request):
+  template = loader.get_template('dashboard.html')
   return HttpResponse(template.render())
 
-def navbar(request):
-  template = loader.get_template('navbar.html')
+def masterPage(request):
+  template = loader.get_template('masterPage.html')
   return HttpResponse(template.render())

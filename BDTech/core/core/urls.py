@@ -16,13 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from backend.views import members, details, navbar
+from backend.views import members, dashboard, masterPage
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('members/',members),
-    path('details/',details),
-    path('navbar/',navbar),
+    # path('admin/', admin.site.urls),
+    path('dashboard/',dashboard),
+    path('',masterPage),
 ]
 
 
