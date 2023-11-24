@@ -75,11 +75,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'bdII_Project',
-       'USER': 'postgres',
-       'PASSWORD': 'admin',
-       'HOST': 'localhost',
-       'PORT': '5432',
+       'NAME': 'BDTech',
+       'USER': 'sysadmin',
+       'PASSWORD': 'Acesso123$',
+       'HOST': '144.91.103.133',
+       'PORT': '6432',
    }
 }
 
