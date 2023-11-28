@@ -16,24 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from backend.views import members, dashboard, masterPage
+from backend.views import utilizador_list, fornecedor_list, dashboard
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    path('dashboard/',dashboard),
-    path('',masterPage),
+    path('', dashboard),
+    path('list/', utilizador_list, name='utilizador_list'),
+    path('fornecedor/', fornecedor_list, name='fornecedor_list'),
+
 ]
 
-
-# Exemplo fichas
-# from django.contrib import admin
-# from django.urls import path
-# from polls.views import index, listar_objetos, criar_objetos, criar_dados_mongodb
-
-# urlpatterns = [
-#   path('admin', admin.site.urls),
-#     path("", index, name="index"),
-#     path('listar', listar_objetos, name='listar_objetos'),
-#     path('criar', criar_objetos, name= 'criar_objetos'),
-#     path('criarb', criar_dados_mongodb, name= 'criar_dados_mongodb'),
-# ]
