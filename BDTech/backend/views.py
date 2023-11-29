@@ -14,17 +14,17 @@ def dashboard(request):
 def utilizador_list(request):
     from django.db import connection
     c = connection.cursor()
-    c.execute('select * from utilizador')
+    c.execute('select * from utilizador_get(1,0)')
     row = c.fetchall()
 
-    context = {'list_utilizador': row,'context': Utilizador.objects.filter(id_estado = 1)}
+    context = {'list_utilizador': row,'context': Utilizador.objects.all}
     return render(request,"list.html",context)
 
 def fornecedor_list(request):
     from django.db import connection
     c = connection.cursor()
-    c.execute('select * from fornecedor')
+    c.execute('select * from fornecedor_get(1,0)')
     row = c.fetchall()
 
-    context = {'list_fornecedor': row,'context': Fornecedor.objects.filter(id_estado = 1)}
+    context = {'list_fornecedor': row,'context': Fornecedor.objects.all}
     return render(request,"list.html",context)
