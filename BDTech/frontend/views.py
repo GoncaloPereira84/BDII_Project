@@ -5,10 +5,14 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 
-def masterPagee(request):
-    template = loader.get_template("masterPagee.html")
+def masterPageFront(request):
+    template = loader.get_template("masterPageFront.html")
     return HttpResponse(template.render())
 
 def index(request):
     template = loader.get_template("index.html")
+    return HttpResponse(template.render())
+
+def kanban(request):
+    template = loader.get_template("kanban.html")
     return HttpResponse(template.render())
