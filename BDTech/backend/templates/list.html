@@ -17,18 +17,18 @@ Listar
         <thead>
           <tr>
             <th class="text-center" style="width: 50px;">#</th>
-            <th>Name</th>
+            {% for column in columns %}
+              <th>{{ column }}</th>
+            {% endfor %}
             <th class="text-center" style="width: 100px;">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {% for cont in context %}
+          {% for row in table_data %}
           <tr>
-            <th class="text-center" scope="row">{{ forloop.counter }}</th>
-            <td class="fw-semibold">
-              <a href="">{{ cont.nome }}</a>
-            </td>
-            
+            {% for value in row %}
+              <td>{{ value }}</td>
+            {% endfor %}
             <td class="text-center">
               <div class="btn-group">
                 <!-- Add your edit and delete buttons here -->
