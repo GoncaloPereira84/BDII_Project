@@ -14,34 +14,30 @@
 
   <!-- Icons -->
   <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-  <link rel="shortcut icon" href="{% static '/assets/media/favicons/favicon.png'%}">
-  <link rel="icon" type="image/png" sizes="192x192" href="{% static '/assets/media/favicons/favicon-192x192.png'%}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{% static '/assets/media/favicons/apple-touch-icon-180x180.png'%}">
+  <link rel="shortcut icon" href="{% static 'assets/media/favicons/favicon.png'%}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'assets/media/favicons/favicon-192x192.png'%}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/media/favicons/apple-touch-icon-180x180.png'%}">
   <!-- END Icons -->
 
   <!-- Stylesheets -->
   <!-- Fonts and Dashmix framework -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-  <link rel="stylesheet" id="css-main" href="{% static '/assets/css/dashmix.min.css'%}">
-
-  <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
-  <!-- <link rel="stylesheet" id="css-theme" href="{% static '/assets/css/themes/xwork.min.css"> -->
-  <!-- END Stylesheets -->
+  <link rel="stylesheet" id="css-main" href="{% static 'assets/css/dashmix.min.css'%}">
+  {% block links %}{% endblock %}
 </head>
 
 <body>
-  <div id="page-container"
-    class="sidebar-o sidebar-dark enable-page-overlay side-scroll page-header-fixed main-content-narrow">
+  <div id="page-container" class="sidebar-o sidebar-dark enable-page-overlay side-scroll page-header-fixed main-content-narrow">
     <!-- Side Overlay-->
     <aside id="side-overlay">
       <!-- Side Header -->
       <div class="bg-image"
-        style="background-image: url('{% static '/assets/media/various/bg_side_overlay_header.jpg' %}');">
+        style="background-image: url('{% static 'assets/media/various/bg_side_overlay_header.jpg' %}');">
         <div class="bg-primary-op">
           <div class="content-header">
             <!-- User Avatar -->
             <a class="img-link me-1" href="be_pages_generic_profile.html">
-              <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar10.jpg'%}" alt="">
+              <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar10.jpg'%}" alt="">
             </a>
             <!-- END User Avatar -->
 
@@ -190,7 +186,7 @@
                       <li>
                         <a class="d-flex py-2" href="be_pages_generic_profile.html">
                           <div class="flex-shrink-0 mx-3 overlay-container">
-                            <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar4.jpg'%}"
+                            <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar4.jpg'%}"
                               alt="">
                             <span
                               class="overlay-item item item-tiny item-circle border border-2 border-white bg-success"></span>
@@ -204,7 +200,7 @@
                       <li>
                         <a class="d-flex py-2" href="be_pages_generic_profile.html">
                           <div class="flex-shrink-0 mx-3 overlay-container">
-                            <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar11.jpg'%}"
+                            <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar11.jpg'%}"
                               alt="">
                             <span
                               class="overlay-item item item-tiny item-circle border border-2 border-white bg-success"></span>
@@ -218,7 +214,7 @@
                       <li>
                         <a class="d-flex py-2" href="be_pages_generic_profile.html">
                           <div class="flex-shrink-0 mx-3 overlay-container">
-                            <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar5.jpg'%}"
+                            <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar5.jpg'%}"
                               alt="">
                             <span
                               class="overlay-item item item-tiny item-circle border border-2 border-white bg-success"></span>
@@ -242,7 +238,7 @@
                       <li>
                         <a class="d-flex py-2" href="be_pages_generic_profile.html">
                           <div class="flex-shrink-0 mx-3 overlay-container">
-                            <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar7.jpg'%}"
+                            <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar7.jpg'%}"
                               alt="">
                             <span
                               class="overlay-item item item-tiny item-circle border border-2 border-white bg-danger"></span>
@@ -266,7 +262,7 @@
                       <li>
                         <a class="d-flex py-2" href="be_pages_generic_profile.html">
                           <div class="flex-shrink-0 mx-3 overlay-container">
-                            <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar14.jpg'%}"
+                            <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar14.jpg'%}"
                               alt="">
                             <span
                               class="overlay-item item item-tiny item-circle border border-2 border-white bg-warning"></span>
@@ -280,7 +276,7 @@
                       <li>
                         <a class="d-flex py-2" href="be_pages_generic_profile.html">
                           <div class="flex-shrink-0 mx-3 overlay-container">
-                            <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar7.jpg'%}"
+                            <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar7.jpg'%}"
                               alt="">
                             <span
                               class="overlay-item item item-tiny item-circle border border-2 border-white bg-warning"></span>
@@ -304,7 +300,7 @@
                       <li>
                         <a class="d-flex py-2" href="be_pages_generic_profile.html">
                           <div class="flex-shrink-0 mx-3 overlay-container">
-                            <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar14.jpg'%}"
+                            <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar14.jpg'%}"
                               alt="">
                             <span
                               class="overlay-item item item-tiny item-circle border border-2 border-white bg-muted"></span>
@@ -318,7 +314,7 @@
                       <li>
                         <a class="d-flex py-2" href="be_pages_generic_profile.html">
                           <div class="flex-shrink-0 mx-3 overlay-container">
-                            <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar3.jpg'%}"
+                            <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar3.jpg'%}"
                               alt="">
                             <span
                               class="overlay-item item item-tiny item-circle border border-2 border-white bg-muted"></span>
@@ -332,7 +328,7 @@
                       <li>
                         <a class="d-flex py-2" href="be_pages_generic_profile.html">
                           <div class="flex-shrink-0 mx-3 overlay-container">
-                            <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar5.jpg'%}"
+                            <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar5.jpg'%}"
                               alt="">
                             <span
                               class="overlay-item item item-tiny item-circle border border-2 border-white bg-muted"></span>
@@ -346,7 +342,7 @@
                       <li>
                         <a class="d-flex py-2" href="be_pages_generic_profile.html">
                           <div class="flex-shrink-0 mx-3 overlay-container">
-                            <img class="img-avatar img-avatar48" src="{% static '/assets/media/avatars/avatar15.jpg'%}"
+                            <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar15.jpg'%}"
                               alt="">
                             <span
                               class="overlay-item item item-tiny item-circle border border-2 border-white bg-muted"></span>
@@ -903,31 +899,17 @@
       </div>
     </nav>
 
-    <!-- Header -->
     <header id="page-header">
-      <!-- Header Content -->
       <div class="content-header">
-        <!-- Left Section -->
         <div class="space-x-1">
-          <!-- Toggle Sidebar -->
-          <!-- Layout API, functionality initialized in Template._uiApiLayout()-->
           <button type="button" class="btn btn-alt-secondary" data-toggle="layout" data-action="sidebar_toggle">
             <i class="fa fa-fw fa-bars"></i>
           </button>
-          <!-- END Toggle Sidebar -->
-
-          <!-- Open Search Section -->
-          <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
           <button type="button" class="btn btn-alt-secondary" data-toggle="layout" data-action="header_search_on">
             <i class="fa fa-fw opacity-50 fa-search"></i> <span class="ms-1 d-none d-sm-inline-block">Search</span>
           </button>
-          <!-- END Open Search Section -->
         </div>
-        <!-- END Left Section -->
-
-        <!-- Right Section -->
         <div class="space-x-1">
-          <!-- User Dropdown -->
           <div class="dropdown d-inline-block">
             <button type="button" class="btn btn-alt-secondary" id="page-header-user-dropdown" data-bs-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
@@ -953,13 +935,10 @@
                 </a>
                 <div role="separator" class="dropdown-divider"></div>
 
-                <!-- Toggle Side Overlay -->
-                <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
                 <a class="dropdown-item" href="javascript:void(0)" data-toggle="layout"
                   data-action="side_overlay_toggle">
                   <i class="far fa-fw fa-building me-1"></i> Settings
                 </a>
-                <!-- END Side Overlay -->
 
                 <div role="separator" class="dropdown-divider"></div>
                 <a class="dropdown-item" href="op_auth_signin.html">
@@ -968,9 +947,6 @@
               </div>
             </div>
           </div>
-          <!-- END User Dropdown -->
-
-          <!-- Notifications Dropdown -->
           <div class="dropdown d-inline-block">
             <button type="button" class="btn btn-alt-secondary" id="page-header-notifications-dropdown"
               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -1045,26 +1021,16 @@
               </div>
             </div>
           </div>
-          <!-- END Notifications Dropdown -->
-
-          <!-- Toggle Side Overlay -->
-          <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
           <button type="button" class="btn btn-alt-secondary" data-toggle="layout" data-action="side_overlay_toggle">
             <i class="far fa-fw fa-list-alt"></i>
           </button>
-          <!-- END Toggle Side Overlay -->
         </div>
-        <!-- END Right Section -->
       </div>
-      <!-- END Header Content -->
-
-      <!-- Header Search -->
       <div id="page-header-search" class="overlay-header bg-header-dark">
         <div class="bg-white-10">
           <div class="content-header">
             <form class="w-100" action="be_pages_generic_search.html" method="POST">
               <div class="input-group">
-                <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
                 <button type="button" class="btn btn-alt-primary" data-toggle="layout" data-action="header_search_off">
                   <i class="fa fa-fw fa-times-circle"></i>
                 </button>
@@ -1075,10 +1041,6 @@
           </div>
         </div>
       </div>
-      <!-- END Header Search -->
-
-      <!-- Header Loader -->
-      <!-- Please check out the Loaders page under Components category to see examples of showing/hiding it -->
       <div id="page-header-loader" class="overlay-header bg-header-dark">
         <div class="bg-white-10">
           <div class="content-header">
@@ -1088,14 +1050,8 @@
           </div>
         </div>
       </div>
-      <!-- END Header Loader -->
     </header>
-    <!-- END Header -->
-
-    <!-- Main Container -->
     <main id="main-container">
-
-      <!-- Page Content -->
       <div class="content">
 
         {% block content %}
@@ -1104,11 +1060,7 @@
 
 
       </div>
-      <!-- END Page Content -->
     </main>
-    <!-- END Main Container -->
-
-    <!-- Footer -->
     <footer id="page-footer" class="bg-body-light">
       <div class="content py-0">
         <div class="row fs-sm">
@@ -1118,23 +1070,12 @@
         </div>
       </div>
     </footer>
-    <!-- END Footer -->
   </div>
-  <!-- END Page Container -->
-
-  <!--
-      Dashmix JS
-
-      Core libraries and functionality
-      webpack is putting everything together at /assets/_js/main/app.js
-    -->
-  <script src="{% static '/assets/js/dashmix.app.min.js'%}"></script>
-
-  <!-- Page JS Plugins -->
-  <script src="{% static '/assets/js/plugins/chart.js/chart.min.js'%}"></script>
-
-  <!-- Page JS Code -->
-  <script src="{% static '/assets/js/pages/be_pages_dashboard.min.js'%}"></script>
+  <script src="{% static 'assets/js/dashmix.app.min.js'%}"></script>
+  <script src="{% static 'assets/js/plugins/chart.js/chart.min.js'%}"></script>
+  <script src="{% static 'assets/js/pages/be_pages_dashboard.min.js'%}"></script>
+  {% block scripts %}
+  {% endblock %}
 </body>
 
 </html>
