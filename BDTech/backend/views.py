@@ -60,7 +60,3 @@ def delete_record(request, table_name, record_id):
         raise Http404(str(e))
 
     return render(request, 'delete_record.html', {'table_name': table_name, 'record_id': record_id})
-
-def login(request):
-    template = loader.get_template("login.html")
-    return HttpResponse(template.render())
