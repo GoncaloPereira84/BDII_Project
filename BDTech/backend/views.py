@@ -27,7 +27,7 @@ def function_exists(table_name):
 def generic_list(request, table_name):
     function_table_name = f"{table_name}_get_list(1,0)"
     if not function_exists(function_table_name):
-        raise Http404("Function not found")
+        return redirect('/404') 
 
     with connection.cursor() as c:
         query = f"SELECT * FROM {function_table_name}"
@@ -60,3 +60,7 @@ def delete_record(request, table_name, record_id):
         raise Http404(str(e))
 
     return render(request, 'delete_record.html', {'table_name': table_name, 'record_id': record_id})
+
+def login(request):
+    template = loader.get_template("login.html")
+    return HttpResponse(template.render())
