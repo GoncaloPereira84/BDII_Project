@@ -4,17 +4,14 @@ from django.template import loader
 from django.shortcuts import render, redirect
 
 def masterPage(request):
-    template = loader.get_template("masterPage.html")
-    return HttpResponse(template.render())
+    return render(request, "masterPage.html")
 
 
 def dashboard(request):
-    template = loader.get_template("dashboard.html")
-    return HttpResponse(template.render())
+    return render(request, "dashboard.html")
 
 def error404(request):
-    template = loader.get_template("404.html")
-    return HttpResponse(template.render())
+    return render(request, "404.html")
 
 def function_exists(table_name):
     try:
@@ -58,5 +55,6 @@ def delete_record(request, table_name, record_id):
 
     except Exception as e:
         raise Http404(str(e))
+    
 
-    return render(request, 'delete_record.html', {'table_name': table_name, 'record_id': record_id})
+    

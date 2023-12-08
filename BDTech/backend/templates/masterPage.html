@@ -530,6 +530,12 @@
               </a>
             </li>
             <li class="nav-main-item">
+              <a class="nav-main-link" href="/venda/list">
+                <i class="nav-main-link-icon fa fa-euro-sign"></i>
+                <span class="nav-main-link-name">Vendas</span>
+              </a>
+            </li>
+            <li class="nav-main-item">
               <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
                 aria-expanded="false" href="#">
                 <i class="nav-main-link-icon fa fa-clone"></i>
@@ -912,23 +918,53 @@
         </div>
         <div class="space-x-1">
           <div class="dropdown d-inline-block">
-            {% if user.is_authenticated %}
+            {% if request.session.id_utilizador %}
             <!-- Display user's name if authenticated -->
             <button type="button" class="btn btn-alt-secondary" id="page-header-user-dropdown" data-bs-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
               <i class="fa fa-fw fa-user d-sm-none"></i>
-              <span class="d-none d-sm-inline-block">{{ user.username }}</span>
+              <span class="d-none d-sm-inline-block">{{ request.session.nome }}</span>
               <i class="fa fa-fw fa-angle-down opacity-50 ms-1 d-none d-sm-inline-block"></i>
             </button>
+            <div class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="page-header-user-dropdown">
+              <div class="bg-primary-dark rounded-top fw-semibold text-white text-center p-3">
+                User Options
+              </div>
+              <div class="p-2">
+                <a class="dropdown-item" href="be_pages_generic_profile.html">
+                  <i class="far fa-fw fa-user me-1"></i> Profile
+                </a>
+                <a class="dropdown-item d-flex align-items-center justify-content-between"
+                  href="be_pages_generic_inbox.html">
+                  <span><i class="far fa-fw fa-envelope me-1"></i> Inbox</span>
+                  <span class="badge bg-primary rounded-pill">3</span>
+                </a>
+                <a class="dropdown-item" href="be_pages_generic_invoice.html">
+                  <i class="far fa-fw fa-file-alt me-1"></i> Invoices
+                </a>
+                <div role="separator" class="dropdown-divider"></div>
+
+                <!-- Toggle Side Overlay -->
+                <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+                <a class="dropdown-item" href="javascript:void(0)" data-toggle="layout"
+                  data-action="side_overlay_toggle">
+                  <i class="far fa-fw fa-building me-1"></i> Settings
+                </a>
+                <!-- END Side Overlay -->
+
+                <div role="separator" class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/logout">
+                  <i class="far fa-fw fa-arrow-alt-circle-left me-1"></i> Sign Out
+                </a>
+              </div>
+            </div>
             {% else %}
-            <!-- Display "Iniciar Sessão" button if not authenticated -->
             <button type="button" class="btn btn-alt-secondary" id="page-header-user-dropdown" data-bs-toggle="modal"
               data-bs-target="#loginModal">
               <i class="fa fa-fw fa-user d-sm-none"></i>
               <span class="d-none d-sm-inline-block">Iniciar Sessão</span>
             </button>
             {% endif %}
-            <!-- ... (your existing dropdown menu) ... -->
           </div>
           <div class="dropdown d-inline-block">
             <button type="button" class="btn btn-alt-secondary" id="page-header-notifications-dropdown"
@@ -1036,7 +1072,7 @@
     </header>
     <!-- END Header -->
     <!--start login-->
-    
+
     <main id="main-container">
       <div class="content">
 
