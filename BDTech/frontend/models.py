@@ -1,5 +1,3 @@
-# models.py
-
 from django.db import models
 
 class User(models.Model):
@@ -8,17 +6,16 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
-# models.py
 
 class Equipamento(models.Model):
     id_equipamento = models.AutoField(primary_key=True)
+    nome = models.CharField()
     descricao = models.TextField()
     imagem = models.ImageField()
     preco = models.TextField()
-    nome = models.TextField()
 
     def __str__(self):
-        return self.nome  # Certifique-se de que existe um campo 'nome' no seu modelo Equipamento
+        return self.nome
 
     class Meta:
         db_table = 'equipamento'
