@@ -1,5 +1,4 @@
 from django.db import models
-from djmoney.models.fields import MoneyField
 
 class Utilizador(models.Model):
     id_utilizador = models.AutoField(primary_key=True)
