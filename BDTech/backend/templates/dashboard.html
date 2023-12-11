@@ -15,15 +15,11 @@ Dashboard
             <div class="item rounded-3 bg-body mx-auto my-3">
               <i class="fa fa-users fa-lg text-primary"></i>
             </div>
-            <div class="fs-1 fw-bold">2,388</div>
-            <div class="text-muted mb-3">Registered Users</div>
-            <div class="d-inline-block px-3 py-1 rounded-pill fs-sm fw-semibold text-success bg-success-light">
-              <i class="fa fa-caret-up me-1"></i>
-              19.2%
-            </div>
+            <div class="fs-1 fw-bold">{{ total_users }}</div>
+            <div class="text-muted mb-3">Utilizadores</div>
           </div>
           <div class="block-content block-content-full block-content-sm bg-body-light fs-sm">
-            <a class="fw-medium" href="javascript:void(0)">
+            <a class="fw-medium" href="/utilizador/list">
               View all users
               <i class="fa fa-arrow-right ms-1 opacity-25"></i>
             </a>
@@ -36,12 +32,8 @@ Dashboard
             <div class="item rounded-3 bg-body mx-auto my-3">
               <i class="fa fa-level-up-alt fa-lg text-primary"></i>
             </div>
-            <div class="fs-1 fw-bold">14.6%</div>
-            <div class="text-muted mb-3">Bounce Rate</div>
-            <div class="d-inline-block px-3 py-1 rounded-pill fs-sm fw-semibold text-danger bg-danger-light">
-              <i class="fa fa-caret-down me-1"></i>
-              2.3%
-            </div>
+            <div class="fs-1 fw-bold">{{ client_users_count }}</div>
+            <div class="text-muted mb-3">Clientes</div>
           </div>
           <div class="block-content block-content-full block-content-sm bg-body-light fs-sm">
             <a class="fw-medium" href="javascript:void(0)">
@@ -57,12 +49,8 @@ Dashboard
             <div class="item rounded-3 bg-body mx-auto my-3">
               <i class="fa fa-chart-line fa-lg text-primary"></i>
             </div>
-            <div class="fs-1 fw-bold">386</div>
-            <div class="text-muted mb-3">Confirmed Sales</div>
-            <div class="d-inline-block px-3 py-1 rounded-pill fs-sm fw-semibold text-success bg-success-light">
-              <i class="fa fa-caret-up me-1"></i>
-              7.9%
-            </div>
+            <div class="fs-1 fw-bold">{{ total_sales }}</div>
+            <div class="text-muted mb-3">Vendas</div>
           </div>
           <div class="block-content block-content-full block-content-sm bg-body-light fs-sm">
             <a class="fw-medium" href="javascript:void(0)">
@@ -79,11 +67,7 @@ Dashboard
               <i class="fa fa-wallet fa-lg text-primary"></i>
             </div>
             <div class="fs-1 fw-bold">$4,920</div>
-            <div class="text-muted mb-3">Total Earnings</div>
-            <div class="d-inline-block px-3 py-1 rounded-pill fs-sm fw-semibold text-danger bg-danger-light">
-              <i class="fa fa-caret-down me-1"></i>
-              0.3%
-            </div>
+            <div class="text-muted mb-3">Produtos</div>
           </div>
           <div class="block-content block-content-full block-content-sm bg-body-light fs-sm">
             <a class="fw-medium" href="javascript:void(0)">

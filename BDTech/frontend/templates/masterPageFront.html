@@ -42,16 +42,52 @@
         <div class="bg-primary">
           <div class="content-header">
             <!-- User Avatar -->
-            <a class="img-link me-1" href="javascript:void(0)">
-              <img class="img-avatar img-avatar32 img-avatar-thumb" src="{% static 'assets/media/avatars/avatar4.jpg'%}"
-                alt="">
-            </a>
-            <!-- END User Avatar -->
+            {% if request.session.id_utilizador %}
+            <button type="button" class="btn btn-alt-secondary" id="page-header-user-dropdown" data-bs-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-fw fa-user d-sm-none"></i>
+              <span class="d-none d-sm-inline-block">{{ request.session.nome }}</span>
+              <i class="fa fa-fw fa-angle-down opacity-50 ms-1 d-none d-sm-inline-block"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="page-header-user-dropdown">
+              <div class="bg-primary-dark rounded-top fw-semibold text-white text-center p-3">
+                User Options
+              </div>
+              <div class="p-2">
+                <a class="dropdown-item" href="be_pages_generic_profile.html">
+                  <i class="far fa-fw fa-user me-1"></i> Profile
+                </a>
+                <a class="dropdown-item d-flex align-items-center justify-content-between"
+                  href="be_pages_generic_inbox.html">
+                  <span><i class="far fa-fw fa-envelope me-1"></i> Inbox</span>
+                  <span class="badge bg-primary rounded-pill">3</span>
+                </a>
+                <a class="dropdown-item" href="be_pages_generic_invoice.html">
+                  <i class="far fa-fw fa-file-alt me-1"></i> Invoices
+                </a>
+                <div role="separator" class="dropdown-divider"></div>
 
-            <!-- User Info -->
-            <div class="ms-2">
-              <a class="text-white fw-semibold" href="javascript:void(0)">Amber Harvey</a>
+                <!-- Toggle Side Overlay -->
+                <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+                <a class="dropdown-item" href="javascript:void(0)" data-toggle="layout"
+                  data-action="side_overlay_toggle">
+                  <i class="far fa-fw fa-building me-1"></i> Settings
+                </a>
+                <!-- END Side Overlay -->
+
+                <div role="separator" class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/logout">
+                  <i class="far fa-fw fa-arrow-alt-circle-left me-1"></i> Sign Out
+                </a>
+              </div>
             </div>
+            {% else %}
+            <button type="button" class="btn btn-alt-secondary" id="page-header-user-dropdown" data-bs-toggle="modal"
+              data-bs-target="#loginModal">
+              <i class="fa fa-fw fa-user d-sm-none"></i>
+              <span class="d-none d-sm-inline-block">Iniciar Sessão</span>
+            </button>
+            {% endif %}
             <!-- END User Info -->
 
             <!-- Close Side Overlay -->
@@ -69,7 +105,7 @@
         <div class="content-side content-side-full">
           <ul class="nav-main">
             <li class="nav-main-item">
-              <a class="nav-main-link active" href="db_minimal.html">
+              <a class="nav-main-link active" href="/dashboard/">
                 <i class="nav-main-link-icon fa fa-coffee"></i>
                 <span class="nav-main-link-name">Dashboard</span>
               </a>
@@ -170,6 +206,45 @@
           </div>
         </div>
       </header>
+      <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered h-100">
+          <div class="modal-content border-0 bg-transparent h-100">
+            <div class="hero-static d-flex align-items-center p-2 px-sm-0 h-100">
+              <div class="block block-rounded block-transparent w-100 overflow-hidden bg-image"
+                style="background-image: url('{% static '/assets/media/photos/photo20@2x.jpg' %}');">
+                <div class="order-md-1 bg-body-extra-light">
+                  <div class="block-content block-content-full px-lg-5 py-md-5 py-lg-6">
+                    <div class="mb-2 text-center">
+                      <a class="link-fx fw-bold fs-1" href="index.html">
+                        <span class="text-dark">BD</span><span class="text-primary">Tech</span>
+                      </a>
+                      <p class="text-uppercase fw-bold fs-sm text-muted">Sign In</p>
+                    </div>
+                    <form action="/login/" method="POST" id="loginForm">
+                      {% csrf_token %}
+                      <div class="mb-3">
+                        <input type="text" class="form-control form-control-alt" id="login-username"
+                          name="login-username" placeholder="Username" required>
+                      </div>
+                      <div class="mb-4">
+                        <input type="password" class="form-control form-control-alt" id="login-password"
+                          name="login-password" placeholder="Password" required>
+                      </div>
+                      <div class="mb-4">
+                        <button type="submit" class="btn w-100 btn-hero btn-primary">
+                          <i class="fa fa-fw fa-sign-in-alt opacity-50 me-1"></i> Sign In
+                        </button>
+                        <div class="alert alert-danger text-center" role="alert" id="email-error-message" style="display: none;">
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
 
       <div class="content">
@@ -206,6 +281,35 @@
 
   <!-- Page JS Helpers (jQuery Sparkline Plugin) -->
   <script>Dashmix.helpersOnLoad('jq-sparkline');</script>
+
+  <script>
+    $(document).ready(function () {
+      $('#loginForm').submit(function (e) {
+        e.preventDefault();
+  
+        $.ajax({
+          type: 'POST',
+          url: '/login/',
+          data: $('#loginForm').serialize(),
+          success: function (data) {
+            if (data.success) {
+              // Credenciais corretas, redirecionar para a página desejada
+              window.location.href = data.redirect;
+            } else {
+              var errorMessage = '<strong>' + data.message + '</strong>';
+              $('#email-error-message').html(data.message);
+              $('#email-error-message').fadeIn().css('opacity', 1);
+            }
+          },
+          error: function () {
+            // Lidar com erros de requisição
+            alert('Error processing the request.');
+          }
+        });
+      });
+    });
+  </script>
+  
 
   <!--load scripts-->
   {% block scripts %}
