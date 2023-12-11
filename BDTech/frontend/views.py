@@ -81,7 +81,7 @@ def login_utilizador(request):
 
             # print(f"Session Data: {request.session.items()}")
 
-            return JsonResponse({'success': True, 'redirect': '/index'})
+            return JsonResponse({'success': True, 'redirect': '/'})
 
         else:
             # print("Invalid credentials. Please try again.")
@@ -96,7 +96,7 @@ def logout_utilizador(request):
                 del request.session["id_utilizador"]
                 del request.session["nome"]
                 del request.session["email"]
-                return redirect("/index")
+                return redirect("/")
             except KeyError:
                 pass
             return HttpResponse("You're logged out.")

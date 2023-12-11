@@ -6,21 +6,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <meta name="robots" content="noindex, nofollow">
-
-  <!-- Open Graph Meta -->
+  
   <title>{% block title %}{% endblock %}</title>
-
-
-
-  <!-- Icons -->
-  <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
   <link rel="shortcut icon" href="{% static 'assets/media/favicons/favicon.png'%}">
   <link rel="icon" type="image/png" sizes="192x192" href="{% static 'assets/media/favicons/favicon-192x192.png'%}">
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/media/favicons/apple-touch-icon-180x180.png'%}">
-  <!-- END Icons -->
 
-  <!-- Stylesheets -->
-  <!-- Fonts and Dashmix framework -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
   <link rel="stylesheet" id="css-main" href="{% static 'assets/css/dashmix.min.css'%}">
   {% block links %}{% endblock %}
@@ -40,17 +31,10 @@
             <a class="img-link me-1" href="be_pages_generic_profile.html">
               <img class="img-avatar img-avatar48" src="{% static 'assets/media/avatars/avatar10.jpg'%}" alt="">
             </a>
-            <!-- END User Avatar -->
-
-            <!-- User Info -->
             <div class="ms-2">
               <a class="text-white fw-semibold" href="be_pages_generic_profile.html">George Taylor</a>
               <div class="text-white-75 fs-sm">Full Stack Developer</div>
             </div>
-            <!-- END User Info -->
-
-            <!-- Close Side Overlay -->
-            <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
             <a class="ms-auto text-white" href="javascript:void(0)" data-toggle="layout"
               data-action="side_overlay_close">
               <i class="fa fa-times-circle"></i>
@@ -474,7 +458,7 @@
       <div class="bg-header-dark">
         <div class="content-header bg-white-5">
           <!-- Logo -->
-          <a class="fw-semibold text-white tracking-wide" href="index.html">
+          <a class="fw-semibold text-white tracking-wide" href="/index">
             <span class="smini-visible">
               B<span class="opacity-75">D</span>
             </span>

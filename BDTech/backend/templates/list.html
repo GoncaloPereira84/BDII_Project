@@ -29,21 +29,43 @@ Listar
         <tbody>
           {% for row in table_data %}
           <tr>
-            {% for value in row %}
-            <td>{{ value }}</td>
+            {% if imagem_column_present and row.0 != 0 %}
+            <td><img src="{{ row.0 }}" alt="Image" style="max-width: 47px; max-height: 47px;"></td>
+            {% endif %}
+            {% for i in row %}
+            {% if forloop.first and imagem_column_present %}
+            {% comment %} Skip the first iteration because image exits {% endcomment %}
+            {% else %}
+            <td>{{ i }}</td>
+            {% endif %}
             {% endfor %}
-            <td class="text-center">
-              <button type="button" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
-                <i class="fa fa-pencil-alt"></i>
+            <td class="text-center d-flex align-items-center justify-content-center">
+              {% if imagem_column_present %}
+              <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.1 %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
+                  <i class="fa fa-pencil-alt"></i>
+                </button>
+              </form>
+              <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Delete"
+                onclick="confirmDelete('{{ table_name }}', '{{ row.1 }}')">
+                <i class="fa fa-times"></i>
               </button>
-              <button type="button" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Delete"
+              {% else %}
+              <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
+                  <i class="fa fa-pencil-alt"></i>
+                </button>
+              </form>
+              <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Delete"
                 onclick="confirmDelete('{{ table_name }}', '{{ row.0 }}')">
                 <i class="fa fa-times"></i>
               </button>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}
-
         </tbody>
       </table>
     </div>
