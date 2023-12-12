@@ -17,7 +17,7 @@ Nova encomenda
         {% csrf_token %}
         <div class="block block-rounded">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Nova encomenda</h3>
+                <h3 class="block-title">Nova produção</h3>
                 <div class="block-options">
                     <input type="hidden" id="id_fornecedor" name="id_fornecedor" value="">
                     <button type="button" class="btn btn-sm btn-success" onclick="saveEncomenda()">
@@ -25,23 +25,31 @@ Nova encomenda
                     </button>
                 </div>
             </div>
+        </div>
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Tipo equipamento</h3>
+            </div>
             <div class="block-content block-content-full">
                 <div class="row items-push">
                     <div class="col-lg-4">
                         <p class="text-muted">
-                            Escolhe o fornecedor ao qual queres comprar os componentes
+                            Escolhe o tipo de equipamento
                         </p>
                     </div>
-                    <div class="col-lg-8 col-xl-5">
-                        <div class="mb-4">
-                            <label class="form-label" for="val-select2">Fornecedor<span
+                    <div class="row">
+                        <div class="col-lg-6 col-xl-5 mb-2">
+                            <label class="form-label" for="val-select2">Tipo de mão de obra<span
                                     class="text-danger">*</span></label>
-                            <select class="js-select2 form-select" id="val-select2" name="val-select2"
-                                style="width: 100%;" data-placeholder="Escolha um fornecedor...">
-                                {% for fornecedor in fornecedores %}
-                                <option value="{{ fornecedor.id_fornecedor }}">{{ fornecedor.nome }}</option>
-                                {% endfor %}
-                            </select>
+                            <div class="input-group">
+                                <select class="js-select2 form-select" id="val-select2" name="val-select2"
+                                    style="width: 100%;" data-placeholder="Escolha um tipo de mão de obra...">
+                                    {% for tipoequipamento in tiposequipamentos %}
+                                    <option value="{{ tipoequipamento.id_tipoequipamento }}">{{ tipoequipamento.nome }}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -104,6 +112,69 @@ Nova encomenda
                     <tbody>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Mão de obra</h3>
+                <div class="block-options">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-warning dropdown-toggle" id="dropdown-content-hero-primary"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-fw fa-plus"></i>Mão de obra
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdown-content-hero-primary">
+                            <form class="p-2" action="be_ui_dropdowns.html" method="POST" onsubmit="return false;">
+                                <div class="mb-4">
+                                    <label class="form-label" for="dropdown-content-form-tipomaoobra">Nome mão de
+                                        obra<span
+                                        class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="dropdown-content-form-tipomaoobra"
+                                        name="dropdown-content-form-tipomaoobra" placeholder="ex: Robótica">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label" for="val-select2">Custo Hora<span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" name="num_maoobra" class="form-control form-control-sm"
+                                        value="1" min="1">
+                                </div>
+                                <button type="submit" class="btn btn-primary">criar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="block-content block-content-full">
+                <div class="row items-push">
+                    <div class="col-lg-4">
+                        <p class="text-muted">
+                            Escolhe o tipo de mão de obra
+                        </p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-xl-5 mb-2">
+                            <label class="form-label" for="val-select2">Tipo de mão de obra<span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <select class="js-select2 form-select" id="val-select2" name="val-select2"
+                                    style="width: 100%;" data-placeholder="Escolha um tipo de mão de obra...">
+                                    {% for tipomaoobra in tiposmaoobra %}
+                                    <option value="{{ tipomaoobra.id_tipomaoobra }}">{{ tipomaoobra.nome }}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xl-5 mb-2">
+                            <label class="form-label" for="val-select2">Horas gastas<span
+                                    class="text-danger">*</span></label>
+                            <input type="number" name="num_maoobra" class="form-control form-control-sm" value="1"
+                                min="1">
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </form>

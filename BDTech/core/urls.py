@@ -1,10 +1,11 @@
 from django.urls import path
-from backend.views import  dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order
+from backend.views import  dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod
 from frontend.views import  index, kanban, login_utilizador, logout_utilizador
 
 urlpatterns = [
     path("dashboard/", dashboard),
-    path("new_order/", new_order),
+    path("order/create/", new_order),
+    path("equipamento/create/", new_prod),
     path("404/", error404),
     path("<str:table_name>/list/", generic_list, name='generic_list'),
     path("<str:table_name>/editar/<int:record_id>/", edit_record, name='edit_record'),
@@ -14,4 +15,5 @@ urlpatterns = [
     path('login/', login_utilizador, name='login'),
     path('logout/', logout_utilizador, name='logout'),
     path('componente/edit/<int:record_id>/', edit_componente, name='edit_componente'),
+    path('save_encomenda/', save_encomenda, name='save_encomenda'),
 ]

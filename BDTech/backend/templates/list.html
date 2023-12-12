@@ -14,7 +14,12 @@ Listar
 <div class="content">
   <div class="block block-rounded">
     {% if table_name == "compra" %}
-    <a href="" class="btn btn-success mb-3 m-3 float-end">Nova encomenda</a>
+    <a href="/order/create/" class="btn btn-success mb-3 m-3 float-end"><i class="fa fa-fw fa-plus"></i>Nova
+      encomenda</a>
+    {% endif %}
+    {% if table_name == "equipamento" %}
+    <a href="/equipamento/create/" class="btn btn-success mb-3 m-3 float-end"><i class="fa fa-fw fa-plus"></i>Novo
+      equipamento</a>
     {% endif %}
     <div class="block-header block-header-default">
       <h3 class="block-title">{{ table_name }}</small></h3>
@@ -33,7 +38,7 @@ Listar
           {% for row in table_data %}
           <tr>
             {% if imagem_column_present and row.0 != 0 %}
-            <td><img src="{{ row.0 }}" alt="Image" style="max-width: 47px; max-height: 47px;"></td>
+            <td><img src="{{ row.0 }}" alt="Image" style="max-width: 40px; max-height: 40px;"></td>
             {% endif %}
             {% for i in row %}
             {% if forloop.first and imagem_column_present %}
