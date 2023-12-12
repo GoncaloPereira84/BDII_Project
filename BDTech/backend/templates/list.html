@@ -13,6 +13,9 @@ Listar
 {% block content %}
 <div class="content">
   <div class="block block-rounded">
+    {% if table_name == "compra" %}
+    <a href="" class="btn btn-success mb-3 m-3 float-end">Nova encomenda</a>
+    {% endif %}
     <div class="block-header block-header-default">
       <h3 class="block-title">{{ table_name }}</small></h3>
     </div>

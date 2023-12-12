@@ -1,9 +1,10 @@
 from django.urls import path
-from backend.views import  dashboard, generic_list, error404, delete_record, edit_record, edit_componente
+from backend.views import  dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order
 from frontend.views import  index, kanban, login_utilizador, logout_utilizador
 
 urlpatterns = [
     path("dashboard/", dashboard),
+    path("new_order/", new_order),
     path("404/", error404),
     path("<str:table_name>/list/", generic_list, name='generic_list'),
     path("<str:table_name>/editar/<int:record_id>/", edit_record, name='edit_record'),

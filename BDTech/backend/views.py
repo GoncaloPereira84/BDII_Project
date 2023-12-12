@@ -2,11 +2,17 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.db import connection, ProgrammingError
 from django.template import loader
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Componente
+from .models import Componente, Fornecedor
 
 
 def masterPage(request):
     return render(request, "masterPage.html")
+
+def new_order(request):
+    fornecedores = Fornecedor.objects.all()
+    componentes = Componente.objects.all()
+    return render(request, "new_order.html", {"fornecedores": fornecedores, "componentes": componentes})
+
 
 def dashboard(request):
     # Chama a função SQL usando o cursor do Django

@@ -1,0 +1,212 @@
+{% extends "masterPage.html" %}
+
+{% block title %}
+Nova encomenda
+{% endblock %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css'%}">
+
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <!-- Elements -->
+    <form class="js-validation" action="be_forms_validation.html" method="POST">
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Nova encomenda</h3>
+                <div class="block-options">
+                    <button type="submit" class="btn btn-sm btn-alt-secondary">
+                        <i class="fa fa-fw fa-check"></i> Guardar
+                    </button>
+                </div>
+            </div>
+            <div class="block-content block-content-full">
+
+                <h2 class="content-heading">Third Party Plugins</h2>
+                <div class="row items-push">
+                    <div class="col-lg-4">
+                        <p class="text-muted">
+                            Check out how easy it is to enable the validation on third party plugins such as Select2
+                        </p>
+                    </div>
+                    <div class="col-lg-8 col-xl-5">
+                        <div class="mb-4">
+                            <label class="form-label" for="val-select2">Fornecedor<span
+                                    class="text-danger">*</span></label>
+                            <select class="js-select2 form-select" id="val-select2" name="val-select2"
+                                style="width: 100%;" data-placeholder="Escolha um fornecedor...">
+                                {% for fornecedor in fornecedores %}
+                                <option value="{{ fornecedor.id_fornecedor }}">{{ fornecedor.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Componentes</small></h3>
+            </div>
+            <div class="block-content block-content-full">
+                <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
+                    <thead>
+                        <tr>
+                            <th class="d-none d-sm-table-cell">ID</th>
+                            <th class="d-none d-sm-table-cell">Imagem</th>
+                            <th class="d-none d-sm-table-cell">Descrição</th>
+                            <th class="d-none d-sm-table-cell">Preçoo</th>
+                            <th class="d-none d-sm-table-cell">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for componente in componentes %}
+                        <tr>
+                            <td>{{ componente.id_componente }}</td>
+                            <td><img src="{{ componente.imagem }}" alt="Image"
+                                    style="max-width: 47px; max-height: 47px;"></td>
+                            <td>{{ componente.descricao }}</td>
+                            <td>{{ componente.preco }}</td>
+                            <td class="text-center">
+                                <div class="input-group">
+                                    <input type="number" name="quantidade" class="form-control form-control-sm"
+                                        value="1" min="1">
+                                    <button type="button" class="btn btn-success ms-2"
+                                        onclick="addQuantity()">Add</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="block-header block-header-default mt-3">
+                <h3 class="block-title">Cesto</small></h3>
+            </div>
+            <div class="block-content block-content-full">
+                <table id="cestoTable" class="table table-sm table-vcenter">
+                    <thead>
+                        <tr>
+                            <th class="d-none d-sm-table-cell">ID</th>
+                            <th class="d-none d-sm-table-cell">Descrição</th>
+                            <th class="d-none d-sm-table-cell">Quantidade</th>
+                            <th class="d-none d-sm-table-cell">Preço</th>
+                            <th class="d-none d-sm-table-cell">Total</th>
+                            <th class="d-none d-sm-table-cell">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block scripts %}
+
+<script>
+    function addQuantity() {
+        var row = $(event.target).closest('tr');
+
+        var id_componente = row.find('td:first').text();
+        var descricao = row.find('td:nth-child(3)').text();
+        var quantidade = row.find('input[name="quantidade"]').val();
+        var precoStr = row.find('td:nth-child(4)').text();
+        var preco = parseFloat(precoStr.replace(/[^\d.]/g, ''));
+        console.log(descricao)
+
+        if (isNaN(preco)) {
+            preco = parseFloat(row.find('input[name="quantidade"]').data('preco').replace(/[^\d.]/g, ''));
+        }
+
+        if (!isNaN(preco)) {
+            var total = parseFloat(quantidade) * preco;
+
+            var existingRow = $('#cestoTable tbody').find('tr[data-id="' + id_componente + '"]');
+
+            if (existingRow.length > 0) {
+                existingRow.find('td:nth-child(3)').text(parseFloat(existingRow.find('td:nth-child(3)').text()) + parseFloat(quantidade));
+                existingRow.find('td:nth-child(4)').text(preco);
+                existingRow.find('td:nth-child(5)').text(parseFloat(existingRow.find('td:nth-child(5)').text()) + total);
+            } else {
+                var newRow = '<tr data-id="' + id_componente + '">' +
+                    '<td>' + id_componente + '</td>' +
+                    '<td>' + descricao + '</td>' +
+                    '<td>' + quantidade + '</td>' +
+                    '<td>' + preco + '</td>' +
+                    '<td>' + total.toFixed(2) + '</td>' +
+                    '<td><input type="number" name="quantidadeRemover" class="form-control form-control-sm" value="1" min="1">' +
+                    '<button type="button" class="btn btn-danger btn-sm" onclick="removeQuantity(this)">Remover</button></td>' +
+                    '</tr>';
+
+                $('#cestoTable tbody').append(newRow);
+            }
+        } else {
+            console.error('Preço não é um número:', preco);
+        }
+    }
+
+    function removeQuantity(button) {
+        var row = $(button).closest('tr');
+
+        var id_componente = row.find('td:first').text();
+        var quantidadeRemover = parseFloat(row.find('input[name="quantidadeRemover"]').val());
+        var precoStr = row.find('td:nth-child(4)').text();
+        var preco = parseFloat(precoStr.replace(/[^\d.]/g, ''));
+        var total = parseFloat(row.find('td:nth-child(5)').text());
+
+        if (isNaN(preco)) {
+            preco = parseFloat(row.find('input[name="quantidade"]').data('preco').replace(/[^\d.]/g, ''));
+        }
+
+        if (!isNaN(preco)) {
+            var totalRemover = quantidadeRemover * preco;
+
+            row.find('td:nth-child(3)').text(parseFloat(row.find('td:nth-child(3)').text()) - quantidadeRemover);
+            row.find('td:nth-child(5)').text(parseFloat(row.find('td:nth-child(5)').text()) - totalRemover);
+
+            if (parseFloat(row.find('td:nth-child(3)').text()) <= 0) {
+                row.remove();
+            }
+        } else {
+            console.error('Preço não é um número:', preco);
+        }
+    }
+
+
+
+    $(document).on('click', '.btn-success', function () {
+        addQuantity();
+    });
+</script>
+<script>
+    function confirmDelete(tableName, recordId) {
+        if (confirm('Tem certeza de que deseja excluir este registro?')) {
+            window.location.href = `/delete_record/${tableName}/${recordId}/`;
+        }
+    }
+</script>
+
+<!-- jQuery (required for DataTables plugin) -->
+<script src="{% static 'assets/js/lib/jquery.min.js'%}"></script>
+
+<!-- Page JS Plugins -->
+<script src="{% static 'assets/js/plugins/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/dataTables.buttons.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-jszip/jszip.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/pdfmake.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/vfs_fonts.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.print.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.html5.min.js'%}"></script>
+
+<script src="{% static 'assets/js/pages/be_tables_datatables.min.js'%}"></script>
+
+
+{% endblock %}
