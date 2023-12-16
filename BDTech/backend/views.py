@@ -1,12 +1,20 @@
-from django.http import HttpResponse, HttpResponseNotFound, Http404
+from django.http import HttpResponse, Http404
 from django.db import connection, ProgrammingError
-from django.template import loader
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Componente, Fornecedor, Compra, Compra_Componente, TipoMaoObra, TipoEquipamento
+from .models import (
+    Componente,
+    Fornecedor,
+    TipoMaoObra,
+    TipoEquipamento,
+)
 from django.utils import timezone
-from django.db.models import Max, F
 import json
-
+from .utils import (
+    fn_compra_inserir,
+    fn_compra_componente_inserir,
+    fn_update_stock_componente,
+    fn_get_max_ndoc_by_tpdoc,
+)
 
 
 def masterPage(request):
@@ -22,6 +30,7 @@ def new_order(request):
         {"fornecedores": fornecedores, "componentes": componentes},
     )
 
+
 def new_prod(request):
     componentes = Componente.objects.all()
     tiposmaoobra = TipoMaoObra.objects.all()
@@ -29,7 +38,11 @@ def new_prod(request):
     return render(
         request,
         "prod_equip.html",
-        {"componentes": componentes, "tiposmaoobra": tiposmaoobra, "tiposequipamentos":tiposequipamentos},
+        {
+            "componentes": componentes,
+            "tiposmaoobra": tiposmaoobra,
+            "tiposequipamentos": tiposequipamentos,
+        },
     )
 
 
@@ -142,41 +155,45 @@ def save_encomenda(request):
 
         componentes = json.loads(componentes_json)
 
-        fornecedor = Fornecedor.objects.get(id_fornecedor=id_fornecedor)
-
-        next_ndoc = (
-            Compra.objects.filter(tpdoc="ENF").aggregate(Max("ndoc"))["ndoc__max"] or 0
-        )
+        next_ndoc = fn_get_max_ndoc_by_tpdoc(request.session["id_utilizador"], "ENF")
         next_ndoc += 1
 
-        compra = Compra.objects.create(
-            id_fornecedor=fornecedor,
-            data=timezone.now(),
-            id_estado=1,
-            tpdoc="ENF",
-            ndoc=next_ndoc,
-            valortotal=total_encomenda,
-            ligaid=0,
-        )
+        compra_json = {
+            "id_fornecedor": id_fornecedor,
+            "data": timezone.now(),
+            "id_estado": 1,
+            "tpdoc": "ENF",
+            "ndoc": next_ndoc,
+            "valortotal": total_encomenda,
+            "ligaid": 0,
+        }
 
-        id_compra = compra.id_compra
+        resultado_compra = fn_compra_inserir(
+            request.session["id_utilizador"], compra_json
+        )
+        if "id_novo" in resultado_compra:
+            id_compra = resultado_compra["id_novo"]
+        else:
+            print("Erro a obter o id_compra")
 
         for componente in componentes:
             id_componente = componente["id_componente"]
             quantidade = componente["quantidade"]
             preco_unit = componente["preco_unit"]
-            preco_total = componente["preco_total"]
 
-            compra_componente = Compra_Componente.objects.create(
-                id_compra=id_compra,
-                id_componente=id_componente,
-                quantidade=quantidade,
-                preco_unitario=preco_unit,
+            compra_componente_json = {
+                "id_compra": id_compra,
+                "id_componente": id_componente,
+                "quantidade": quantidade,
+                "preco_unitario": preco_unit,
+            }
+
+            fn_compra_componente_inserir(
+                request.session["id_utilizador"], compra_componente_json
             )
 
-            Componente.objects.filter(id_componente=id_componente).update(
-                quantidade_stock=F("quantidade_stock") + quantidade,
-                pcusto_medio=preco_unit,
+            fn_update_stock_componente(
+                request.session["id_utilizador"], id_componente, quantidade
             )
 
         return HttpResponse("Encomenda criada com sucesso!")
