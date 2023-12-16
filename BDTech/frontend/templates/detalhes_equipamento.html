@@ -1,0 +1,30 @@
+{% extends "masterPageFront.html" %}
+
+{% block title %}
+Página Inicial
+{% endblock %}
+
+
+{% block content %}
+{% load static %}
+<div class="container mt-5">
+    <div class="row">
+        <h1>{{ equipamento.nome }}</h1>
+        <div class="col-md-6">
+            
+            <img src="{{ equipamento.imagem }}" class="img-fluid" alt="{{ equipamento.nome }}">
+        </div>
+        <div class="col-md-6">
+           <br></br><br></br>
+            <p class="lead">Preço: R$ {{ equipamento.preco }}</p>
+            <p>{{ equipamento.descricao }}</p>
+            <form method="post" action="">
+                {% csrf_token %}
+                <!-- Adicione outros campos do formulário conforme necessário -->
+                <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -14,22 +14,14 @@ Página Inicial
 
 {% block content %}
 
-<div class="row g-0 flex-md-grow-1 mt-5">
-    <div class="col-lg-5 col-xl-3 h100-scroll">
+<div class="row g-0 flex-md-grow-1 mt-7">
+    <div class="col-lg-3 col-xl-3 h100-scroll">
         <div class="content">
-            <!-- Logo -->
-            <div class="text-center d-lg-none push">
-                <a class="link-fx fs-lg text-dark fw-semibold" href="index.html">
-                    <span class="text-muted">x</span>Travel
-                </a>
-            </div>
-            <!-- END Logo -->
-
             <!-- Toggle Side Content -->
             <div class="row g-sm d-lg-none push">
                 <div class="col-6">
-                    <!-- Toggle Sidebar -->
-                    <!-- Layout API, functionality initialized in Template._uiApiLayout()-->
+                    <!-- Toggle Sidebar 
+                   Layout API, functionality initialized in Template._uiApiLayout() -->
                     <button type="button" class="btn w-100 btn-primary" data-toggle="layout"
                         data-action="sidebar_toggle">
                         <i class="fa fa-bars opacity-50 me-1"></i> Menu
@@ -43,38 +35,25 @@ Página Inicial
                     </button>
                 </div>
             </div>
-            <!-- END Toggle Side Content -->
+            <!-- END Toggle Side Content 
 
-            <!-- Search Travel -->
-            <form class="push" action="db_travel.html" method="POST" onsubmit="return false;">
+            Search Travel -->
+            <form class="push" id="search-form" method="POST">
                 <div class="mb-2">
                     <input type="text" class="form-control form-control-lg py-3 fs-base text-center"
-                        id="db-travel-location" name="db-travel-location" placeholder="Where are you going?">
-                </div>
-                <div class="mb-4">
-                    <div class="input-daterange input-group input-group-lg" data-date-format="mm/dd/yyyy"
-                        data-week-start="1" data-autoclose="true" data-today-highlight="true">
-                        <input type="text" class="form-control border-end-0 py-3 fs-base" id="db-travel-from"
-                            name="db-travel-from" placeholder="Arriving.." data-week-start="1" data-autoclose="true"
-                            data-today-highlight="true">
-                        <span class="input-group-text bg-body-extra-light border-start-0 border-end-0 fw-semibold">
-                            <i class="fa fa-fw fa-angle-double-right fs-base text-muted"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0 py-3 fs-base" id="db-travel-to"
-                            name="db-travel-to" placeholder="Leaving.." data-week-start="1" data-autoclose="true"
-                            data-today-highlight="true">
-                    </div>
+                        id="db-travel-location" name="db-travel-location" placeholder="Pesquisa">
                 </div>
             </form>
-            <!-- END Search Travel -->
 
-            <!-- Side Content -->
+            <!-- END Search Travel
+
+             Side Content -->
             <div id="side-content" class="d-none d-lg-block push">
                 <!-- House Type -->
                 <div class="block block-rounded">
                     <div class="block-header block-header-default">
                         <h3 class="block-title">
-                            <i class="fa fa-fw fa-home opacity-25 me-1"></i> House Type
+                            <i class="fa fa-fw fa-home opacity-25 me-1"></i> Nome
                         </h3>
                         <div class="block-options">
                             <button type="button" class="btn-block-option" data-toggle="block-option"
@@ -121,9 +100,9 @@ Página Inicial
                         </div>
                     </div>
                 </div>
-                <!-- END House Type -->
+                <!-- END House Type 
 
-                <!-- Trip -->
+                 Trip -->
                 <div class="block block-rounded block-mode-hidden">
                     <div class="block-header block-header-default">
                         <h3 class="block-title">
@@ -161,9 +140,9 @@ Página Inicial
                         </div>
                     </div>
                 </div>
-                <!-- END Trip -->
+                <!-- END Trip 
 
-                <!-- Price Range -->
+                 Price Range -->
                 <div class="block block-rounded">
                     <div class="block-header block-header-default">
                         <h3 class="block-title">
@@ -182,9 +161,9 @@ Página Inicial
                         </div>
                     </div>
                 </div>
-                <!-- END Price Range -->
+                <!-- END Price Range 
 
-                <!-- Amenities -->
+                Amenities -->
                 <div class="block block-rounded">
                     <div class="block-header block-header-default">
                         <h3 class="block-title">
@@ -264,297 +243,36 @@ Página Inicial
             <!-- END Side Content -->
         </div>
     </div>
-    <div class="col-lg-7 col-xl-9 h100-scroll bg-body-dark">
+    <div class="col-lg-9 col-xl-8 mx-auto"> <!-- Ajuste a classe col-xl-8 conforme necessário -->
         <!-- Main Content -->
-        <div class="content">
-            <div class="row">
-                <div class="col-md-6 col-xl-4">
-                    <!-- House -->
-                    <div class="block block-rounded">
-                        <div class="block-content p-0 overflow-hidden">
-                            <a class="img-link img-fluid-100" data-toggle="layout" data-action="side_overlay_open"
-                                href="javascript:void(0)">
-                                <img class="img-fluid rounded-top" src="{% static 'assets/media/photos/photo27.jpg'%}" alt="">
-                            </a>
-                        </div>
-                        <div class="block-content">
-                            <h4 class="h6 mb-2">Luxury House</h4>
-                            <h5 class="h2 fw-light push">
-                                $380 <span class="fs-3 text-muted">per night</span>
-                            </h5>
-                        </div>
-                        <div class="block-content p-0">
-                            <div class="row text-center m-0 border-top border-bottom bg-body-light">
-                                <div class="col-6 border-end">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bed text-muted me-1"></i> <strong>4</strong> Bedrooms
-                                    </p>
-                                </div>
-                                <div class="col-6">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bath text-muted me-1"></i> <strong>2</strong> Bathrooms
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="block-content block-content-full">
-                            <div class="row">
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-primary w-100" href="javascript:void(0)">
-                                        Rent
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-alt-primary w-100" data-toggle="layout"
-                                        data-action="side_overlay_open" href="javascript:void(0)">
-                                        View
-                                    </a>
-                                </div>
+        <div class="bg-body-extra-light mt-4 mb-4 p-4">
+            <div class="container">
+                <div class="row">
+                    <h1 class="mt-4 mb-4">Portáteis</h1>
+                    {% for equipamento in equipamentos %}
+                    <!-- Adicione isso à seção onde você lista os equipamentos em kanban.html -->
+                    <div class="col-md-3 mb-4">
+                        <div class="card">
+                            <img src="{{ equipamento.imagem }}" class="card-img-top" alt="{{ equipamento.nome }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ equipamento.nome }}</h5>
+                                <p class="card-text">Preço: € {{ equipamento.preco }}</p>
+                                <a href="{% url 'detalhes_equipamento' equipamento.id_equipamento %}"
+                                    class="btn btn-primary">Ver Detalhes</a>
                             </div>
                         </div>
                     </div>
-                    <!-- END House -->
-                </div>
-                <div class="col-md-6 col-xl-4">
-                    <!-- House -->
-                    <div class="block block-rounded">
-                        <div class="block-content p-0 overflow-hidden">
-                            <a class="img-link img-fluid-100" data-toggle="layout" data-action="side_overlay_open"
-                                href="javascript:void(0)">
-                                <img class="img-fluid rounded-top" src="{% static 'assets/media/photos/photo28.jpg'%}" alt="">
-                            </a>
-                        </div>
-                        <div class="block-content">
-                            <h4 class="h6 mb-2">Renovated Apartment</h4>
-                            <h5 class="h2 fw-light push">
-                                $75 <span class="fs-3 text-muted">per night</span>
-                            </h5>
-                        </div>
-                        <div class="block-content p-0">
-                            <div class="row text-center m-0 border-top border-bottom bg-body-light">
-                                <div class="col-6 border-end">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bed text-muted me-1"></i> <strong>2</strong> Bedrooms
-                                    </p>
-                                </div>
-                                <div class="col-6">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bath text-muted me-1"></i> <strong>1</strong> Bathroom
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="block-content block-content-full">
-                            <div class="row">
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-primary w-100" href="javascript:void(0)">
-                                        Rent
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-alt-primary w-100" data-toggle="layout"
-                                        data-action="side_overlay_open" href="javascript:void(0)">
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END House -->
-                </div>
-                <div class="col-md-6 col-xl-4">
-                    <!-- House -->
-                    <div class="block block-rounded">
-                        <div class="block-content p-0 overflow-hidden">
-                            <a class="img-link img-fluid-100" data-toggle="layout" data-action="side_overlay_open"
-                                href="javascript:void(0)">
-                                <img class="img-fluid rounded-top" src="{% static 'assets/media/photos/photo29.jpg'%}" alt="">
-                            </a>
-                        </div>
-                        <div class="block-content">
-                            <h4 class="h6 mb-2">Best Tiny Apartment</h4>
-                            <h5 class="h2 fw-light push">
-                                $90 <span class="fs-3 text-muted">per night</span>
-                            </h5>
-                        </div>
-                        <div class="block-content p-0">
-                            <div class="row text-center m-0 border-top border-bottom bg-body-light">
-                                <div class="col-6 border-end">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bed text-muted me-1"></i> <strong>1</strong> Bedroom
-                                    </p>
-                                </div>
-                                <div class="col-6">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bath text-muted me-1"></i> <strong>1</strong> Bathroom
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="block-content block-content-full">
-                            <div class="row">
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-primary w-100" href="javascript:void(0)">
-                                        Rent
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-alt-primary w-100" data-toggle="layout"
-                                        data-action="side_overlay_open" href="javascript:void(0)">
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END House -->
-                </div>
-                <div class="col-md-6 col-xl-4">
-                    <!-- House -->
-                    <div class="block block-rounded">
-                        <div class="block-content p-0 overflow-hidden">
-                            <a class="img-link img-fluid-100" data-toggle="layout" data-action="side_overlay_open"
-                                href="javascript:void(0)">
-                                <img class="img-fluid rounded-top" src="{% static 'assets/media/photos/photo30.jpg'%}" alt="">
-                            </a>
-                        </div>
-                        <div class="block-content">
-                            <h4 class="h6 mb-2">Cottage</h4>
-                            <h5 class="h2 fw-light push">
-                                $120 <span class="fs-3 text-muted">per night</span>
-                            </h5>
-                        </div>
-                        <div class="block-content p-0">
-                            <div class="row text-center m-0 border-top border-bottom bg-body-light">
-                                <div class="col-6 border-end">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bed text-muted me-1"></i> <strong>5</strong> Bedrooms
-                                    </p>
-                                </div>
-                                <div class="col-6">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bath text-muted me-1"></i> <strong>3</strong> Bathrooms
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="block-content block-content-full">
-                            <div class="row">
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-primary w-100" href="javascript:void(0)">
-                                        Rent
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-alt-primary w-100" data-toggle="layout"
-                                        data-action="side_overlay_open" href="javascript:void(0)">
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END House -->
-                </div>
-                <div class="col-md-6 col-xl-4">
-                    <!-- House -->
-                    <div class="block block-rounded">
-                        <div class="block-content p-0 overflow-hidden">
-                            <a class="img-link img-fluid-100" data-toggle="layout" data-action="side_overlay_open"
-                                href="javascript:void(0)">
-                                <img class="img-fluid rounded-top" src="{% static 'assets/media/photos/photo13.jpg'%}" alt="">
-                            </a>
-                        </div>
-                        <div class="block-content">
-                            <h4 class="h6 mb-2">Downtown Apartment</h4>
-                            <h5 class="h2 fw-light push">
-                                $35 <span class="fs-3 text-muted">per night</span>
-                            </h5>
-                        </div>
-                        <div class="block-content p-0">
-                            <div class="row text-center m-0 border-top border-bottom bg-body-light">
-                                <div class="col-6 border-end">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bed text-muted me-1"></i> <strong>2</strong> Bedrooms
-                                    </p>
-                                </div>
-                                <div class="col-6">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bath text-muted me-1"></i> <strong>1</strong> Bathroom
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="block-content block-content-full">
-                            <div class="row">
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-primary w-100" href="javascript:void(0)">
-                                        Rent
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-alt-primary w-100" data-toggle="layout"
-                                        data-action="side_overlay_open" href="javascript:void(0)">
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END House -->
-                </div>
-                <div class="col-md-6 col-xl-4">
-                    <!-- House -->
-                    <div class="block block-rounded">
-                        <div class="block-content p-0 overflow-hidden">
-                            <a class="img-link img-fluid-100" data-toggle="layout" data-action="side_overlay_open"
-                                href="javascript:void(0)">
-                                <img class="img-fluid rounded-top" src="{% static 'assets/media/photos/photo26.jpg'%}" alt="">
-                            </a>
-                        </div>
-                        <div class="block-content">
-                            <h4 class="h6 mb-2">Downtown Apartment</h4>
-                            <h5 class="h2 fw-light push">
-                                $150 <span class="fs-3 text-muted">per night</span>
-                            </h5>
-                        </div>
-                        <div class="block-content p-0">
-                            <div class="row text-center m-0 border-top border-bottom bg-body-light">
-                                <div class="col-6 border-end">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bed text-muted me-1"></i> <strong>2</strong> Bedrooms
-                                    </p>
-                                </div>
-                                <div class="col-6">
-                                    <p class="py-3 mb-0">
-                                        <i class="fa fa-fw fa-bath text-muted me-1"></i> <strong>1</strong> Bathroom
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="block-content block-content-full">
-                            <div class="row">
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-primary w-100" href="javascript:void(0)">
-                                        Rent
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a class="btn btn-sm btn-alt-primary w-100" data-toggle="layout"
-                                        data-action="side_overlay_open" href="javascript:void(0)">
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END House -->
+
+                    {% endfor %}
                 </div>
             </div>
         </div>
         <!-- END Main Content -->
+
     </div>
+
 </div>
+
 
 {% endblock %}
 

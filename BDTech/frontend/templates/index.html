@@ -11,14 +11,16 @@ Página Inicial
     <div class="content py-3">
         <ul class="nav nav-pills justify-content-center justify-content-md-start">
             <li class="nav-item me-3">
-                <a class="nav-link" href="../kanban">
+                <a class="nav-link" href="/teste/1">
                     <i class="fa fa-laptop"></i> <span class="d-none d-md-inline ms-1">Portáteis</span>
                 </a>
+                
             </li>
             <li class="nav-item me-3">
-                <a class="nav-link" href="../kanban">
+                <a class="nav-link" href="/teste/2">
                     <i class="fa fa-desktop"></i> <span class="d-none d-md-inline ms-1">Desktops</span>
                 </a>
+                
             </li>
 
             <li class="nav-item ms-md-auto">
@@ -69,7 +71,7 @@ Página Inicial
         <div class="row">
             <h1 class="mt-4 mb-4">Destaques</h1>
             {% for equipamento in equipamentos %}
-                <div class="col-md-4 mb-4">
+                <div class="col-md-3 mb-4">
                     <div class="card">
                         <img src="{{ equipamento.imagem }}" class="card-img-top" alt="{{ equipamento.nome }}">
                         <div class="card-body" style="background-color: grey; color: white; text-align: center;">
@@ -81,6 +83,8 @@ Página Inicial
                             <h3 class="h5 fw-bold text-white mb-2" style="font-family: 'Arial', sans-serif;">
                                 {{ equipamento.nome }}<br>
                                 {{ equipamento.preco }}
+                                <a href="{% url 'detalhes_equipamento' equipamento.id_equipamento %}"
+                                    class="btn btn-primary">Ver Detalhes</a>
                             </h3>
                         </div>
                     </div>
