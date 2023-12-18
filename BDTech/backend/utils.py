@@ -1,8 +1,63 @@
 import json
 from django.db import connection
 import datetime
+from django.db import connection, ProgrammingError
+
+#################
+##    lists    ##
+#################
+def get_all_fornecedores(id_utilizador, id_fornecedor):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM fornecedor_get_list(%s, %s);
+            """,
+            [id_utilizador, id_fornecedor],
+        )
+        result = cursor.fetchall()
+
+    return result
 
 
+def get_all_componente(id_utilizador, id_componente):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM componente_get_list(%s, %s);
+            """,
+            [id_utilizador, id_componente],
+        )
+        result = cursor.fetchall()
+
+    return result
+
+def get_all_tipomaoobra(id_utilizador, id_tipomaoobra):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM tipo_maoobra_get_list(%s, %s);
+            """,
+            [id_utilizador, id_tipomaoobra],
+        )
+        result = cursor.fetchall()
+
+    return result
+
+def get_all_tipoequipamento(id_utilizador, id_tipoequipamento):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM tipo_equipamento_get_list(%s, %s);
+            """,
+            [id_utilizador, id_tipoequipamento],
+        )
+        result = cursor.fetchall()
+
+    return result
+
+#################
+##   inserts   ##
+#################
 def datetime_serializer(obj):
     if isinstance(obj, datetime.datetime):
         return obj.isoformat()
@@ -30,7 +85,6 @@ def fn_compra_inserir(id_utilizador, compra_json):
 
         return resultado(result)
 
-
 def fn_compra_componente_inserir(id_utilizador, compra_componente_json):
     compra_json_str = json.dumps(compra_componente_json)
 
@@ -45,6 +99,23 @@ def fn_compra_componente_inserir(id_utilizador, compra_componente_json):
 
     return resultado(result)
 
+def fn_tipomaoobra_inserir(id_utilizador, tipomaoobra_json):
+    tipomaoobra_json_str = json.dumps(tipomaoobra_json)
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM fn_tipomaoobra_inserir(%s, %s);
+            """,
+            [id_utilizador, tipomaoobra_json_str],
+        )
+        result = cursor.fetchone()
+
+        return resultado(result)
+
+#################
+##   updates   ##
+#################
 def fn_update_stock_componente(id_utilizador, id_componente, quantidade_stock):
     with connection.cursor() as cursor:
         cursor.execute(
@@ -57,6 +128,9 @@ def fn_update_stock_componente(id_utilizador, id_componente, quantidade_stock):
 
     return resultado(result)
 
+#################
+## single gets ##
+#################
 def fn_get_max_ndoc_by_tpdoc(id_utilizador, tpdoc):
     with connection.cursor() as cursor:
         cursor.execute(

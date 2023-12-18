@@ -1,5 +1,5 @@
 from django.urls import path
-from backend.views import  dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod
+from backend.views import  dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod, criar_mao_obra
 from frontend.views import  index, kanban, login_utilizador, logout_utilizador
 
 urlpatterns = [
@@ -16,4 +16,6 @@ urlpatterns = [
     path('logout/', logout_utilizador, name='logout'),
     path('componente/edit/<int:record_id>/', edit_componente, name='edit_componente'),
     path('save_encomenda/', save_encomenda, name='save_encomenda'),
+    path('criar_mao_obra/', criar_mao_obra, name='criar_mao_obra'),
+
 ]

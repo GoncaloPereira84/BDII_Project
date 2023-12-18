@@ -39,13 +39,13 @@ Nova encomenda
                     </div>
                     <div class="row">
                         <div class="col-lg-6 col-xl-5 mb-2">
-                            <label class="form-label" for="val-select2">Tipo de mão de obra<span
+                            <label class="form-label" for="val-select2">Tipo de equipamento<span
                                     class="text-danger">*</span></label>
                             <div class="input-group">
                                 <select class="js-select2 form-select" id="val-select2" name="val-select2"
                                     style="width: 100%;" data-placeholder="Escolha um tipo de mão de obra...">
                                     {% for tipoequipamento in tiposequipamentos %}
-                                    <option value="{{ tipoequipamento.id_tipoequipamento }}">{{ tipoequipamento.nome }}</option>
+                                    <option value="{{ tipoequipamento.0 }}">{{ tipoequipamento.1 }}</option>
                                     {% endfor %}
                                 </select>
 
@@ -73,11 +73,11 @@ Nova encomenda
                     <tbody>
                         {% for componente in componentes %}
                         <tr>
-                            <td>{{ componente.id_componente }}</td>
-                            <td><img src="{{ componente.imagem }}" alt="Image"
-                                    style="max-width: 47px; max-height: 47px;"></td>
-                            <td>{{ componente.descricao }}</td>
-                            <td>{{ componente.preco }}</td>
+                            <td>{{ componente.1 }}</td>
+                            <td><img src="{{ componente.0 }}" alt="Image" style="max-width: 47px; max-height: 47px;">
+                            </td>
+                            <td>{{ componente.2 }}</td>
+                            <td>{{ componente.4 }}</td>
                             <td class="text-center">
                                 <div class="input-group">
                                     <input type="number" name="quantidade" class="form-control form-control-sm"
@@ -124,21 +124,22 @@ Nova encomenda
                             <i class="fa fa-fw fa-plus"></i>Mão de obra
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdown-content-hero-primary">
-                            <form class="p-2" action="be_ui_dropdowns.html" method="POST" onsubmit="return false;">
+                            <form class="p-2" id="formCriarMaoObra">
+                                {% csrf_token %}
                                 <div class="mb-4">
                                     <label class="form-label" for="dropdown-content-form-tipomaoobra">Nome mão de
-                                        obra<span
-                                        class="text-danger">*</span></label>
+                                        obra<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="dropdown-content-form-tipomaoobra"
                                         name="dropdown-content-form-tipomaoobra" placeholder="ex: Robótica">
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label" for="val-select2">Custo Hora<span
                                             class="text-danger">*</span></label>
-                                    <input type="number" name="num_maoobra" class="form-control form-control-sm"
-                                        value="1" min="1">
+                                    <input type="number" name="num_maoobra" id="num_maoobra"
+                                        class="form-control form-control-sm" value="1" min="1">
                                 </div>
-                                <button type="submit" class="btn btn-primary">criar</button>
+                                <button type="submit" class="btn btn-primary" id="btnCriarMaoObra"
+                                    onclick="criar_mao_obra(event)">Criar</button>
                             </form>
                         </div>
                     </div>
@@ -152,7 +153,7 @@ Nova encomenda
                         </p>
                     </div>
 
-                    <div class="row">
+                    <div class="row" id="maoObraSection">
                         <div class="col-lg-6 col-xl-5 mb-2">
                             <label class="form-label" for="val-select2">Tipo de mão de obra<span
                                     class="text-danger">*</span></label>
@@ -160,7 +161,7 @@ Nova encomenda
                                 <select class="js-select2 form-select" id="val-select2" name="val-select2"
                                     style="width: 100%;" data-placeholder="Escolha um tipo de mão de obra...">
                                     {% for tipomaoobra in tiposmaoobra %}
-                                    <option value="{{ tipomaoobra.id_tipomaoobra }}">{{ tipomaoobra.nome }}</option>
+                                    <option value="{{ tipomaoobra.0 }}">{{ tipomaoobra.1 }}</option>
                                     {% endfor %}
                                 </select>
 
@@ -332,6 +333,46 @@ Nova encomenda
             window.location.href = `/delete_record/${tableName}/${recordId}/`;
         }
     }
+
+    function criar_mao_obra(event) {
+        event.preventDefault(); // Impede o envio automático do formulário
+        var nometipomaoobra = $('#dropdown-content-form-tipomaoobra').val();
+        var custo_hora = $('#num_maoobra').val();
+        $('#nome_tipomaoobra').val(nometipomaoobra);
+        var valorCampo = document.getElementById('dropdown-content-form-tipomaoobra').value;
+
+        if (valorCampo.trim() !== '') {
+            // Exibir um prompt de confirmação antes de enviar o AJAX
+            var confirmacao = confirm('Ao clicar em OK, a pagina irá atualizar e vai perder o que já foi preenchido!');
+            
+            if (confirmacao) {
+                var requestData = {
+                    'nome': nometipomaoobra,
+                    'custo_hora': custo_hora,
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "criar_mao_obra" %}',
+                    data: requestData,
+                    success: function (response) {
+                        console.log(response);
+                        location.reload();
+                    },
+                    error: function (error) {
+                        console.error(error);
+                    }
+                });
+            } else {
+                console.log('A criação da Mão de Obra foi cancelada.');
+            }
+        } else {
+            alert('Preencha os dois campos!');
+        }
+    }
+</script>
+
 </script>
 
 <!-- jQuery (required for DataTables plugin) -->

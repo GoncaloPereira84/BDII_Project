@@ -1,5 +1,6 @@
 from django.http import HttpResponse, Http404
 from django.db import connection, ProgrammingError
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import (
     Componente,
@@ -14,6 +15,11 @@ from .utils import (
     fn_compra_componente_inserir,
     fn_update_stock_componente,
     fn_get_max_ndoc_by_tpdoc,
+    get_all_fornecedores,
+    get_all_componente,
+    get_all_tipomaoobra,
+    get_all_tipoequipamento,
+    fn_tipomaoobra_inserir,
 )
 
 
@@ -22,19 +28,19 @@ def masterPage(request):
 
 
 def new_order(request):
-    fornecedores = Fornecedor.objects.all()
-    componentes = Componente.objects.all()
+    fornecedores = get_all_fornecedores(request.session["id_utilizador"], 0)
+    componentes = get_all_componente(request.session["id_utilizador"], 0)
     return render(
         request,
         "new_order.html",
         {"fornecedores": fornecedores, "componentes": componentes},
     )
-
+ 
 
 def new_prod(request):
-    componentes = Componente.objects.all()
-    tiposmaoobra = TipoMaoObra.objects.all()
-    tiposequipamentos = TipoEquipamento.objects.all()
+    componentes = get_all_componente(request.session["id_utilizador"], 0)
+    tiposmaoobra = get_all_tipomaoobra(request.session["id_utilizador"], 0)
+    tiposequipamentos = get_all_tipoequipamento(request.session["id_utilizador"], 0)
     return render(
         request,
         "prod_equip.html",
@@ -47,15 +53,12 @@ def new_prod(request):
 
 
 def dashboard(request):
-    # Chama a função SQL usando o cursor do Django
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM get_user_and_sales_counts();")
         result = cursor.fetchone()
 
-    # Obtém os resultados da função
     total_users, client_users_count, total_sales = result
 
-    # Passa os resultados para o template
     context = {
         "total_users": total_users,
         "client_users_count": client_users_count,
@@ -70,6 +73,7 @@ def error404(request):
 
 
 def function_exists(table_name):
+    print(table_name)
     try:
         with connection.cursor() as cursor:
             cursor.execute(f"SELECT 1 FROM {table_name} LIMIT 1")
@@ -79,6 +83,7 @@ def function_exists(table_name):
 
 
 def generic_list(request, table_name):
+    print(table_name)
     function_table_name = f"{table_name}_get_list(1,0)"
     if not function_exists(function_table_name):
         return redirect("/404")
@@ -110,6 +115,7 @@ def generic_list(request, table_name):
 
 
 def delete_record(request, table_name, record_id):
+    print(record_id)
     try:
         with connection.cursor() as cursor:
             cursor.callproc("delete_record", [table_name, record_id])
@@ -199,3 +205,27 @@ def save_encomenda(request):
         return HttpResponse("Encomenda criada com sucesso!")
     else:
         return HttpResponse("Método não permitido.")
+    
+
+def criar_mao_obra(request):
+    if request.method == "POST":
+        nome = request.POST.get("nome")
+        custo_hora = float(request.POST.get("custo_hora"))
+
+        compra_json = {
+            "nome": nome,
+            "custo_hora": custo_hora,
+        }
+
+        resultado = fn_tipomaoobra_inserir(
+            request.session["id_utilizador"], compra_json
+        )
+        if "id_novo" in resultado:
+            id_tipomaoobra = resultado["id_novo"]
+        else:
+            print("Erro a obter o id_compra")
+
+        return HttpResponse("Tipo de mão de obra criada com sucesso!")
+    else:
+        return HttpResponse("Método não permitido.")
+    

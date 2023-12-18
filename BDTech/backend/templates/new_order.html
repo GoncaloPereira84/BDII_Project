@@ -39,7 +39,7 @@ Nova encomenda
                             <select class="js-select2 form-select" id="val-select2" name="val-select2"
                                 style="width: 100%;" data-placeholder="Escolha um fornecedor...">
                                 {% for fornecedor in fornecedores %}
-                                <option value="{{ fornecedor.id_fornecedor }}">{{ fornecedor.nome }}</option>
+                                <option value="{{ fornecedor.0 }}">{{ fornecedor.1 }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -65,11 +65,11 @@ Nova encomenda
                     <tbody>
                         {% for componente in componentes %}
                         <tr>
-                            <td>{{ componente.id_componente }}</td>
-                            <td><img src="{{ componente.imagem }}" alt="Image"
+                            <td>{{ componente.1 }}</td>
+                            <td><img src="{{ componente.0 }}" alt="Image"
                                     style="max-width: 47px; max-height: 47px;"></td>
-                            <td>{{ componente.descricao }}</td>
-                            <td>{{ componente.preco }}</td>
+                            <td>{{ componente.2 }}</td>
+                            <td>{{ componente.4 }}</td>
                             <td class="text-center">
                                 <div class="input-group">
                                     <input type="number" name="quantidade" class="form-control form-control-sm"
