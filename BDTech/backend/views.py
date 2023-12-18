@@ -57,12 +57,13 @@ def dashboard(request):
         cursor.execute("SELECT * FROM get_user_and_sales_counts();")
         result = cursor.fetchone()
 
-    total_users, client_users_count, total_sales = result
+    total_users, client_users_count, total_sales, total_orders = result
 
     context = {
         "total_users": total_users,
         "client_users_count": client_users_count,
         "total_sales": total_sales,
+        "total_orders": total_orders,
     }
 
     return render(request, "dashboard.html", context)
