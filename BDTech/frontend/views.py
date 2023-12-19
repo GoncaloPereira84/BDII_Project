@@ -1,10 +1,10 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.db import connection, ProgrammingError
 from django.template import loader
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from .models import Equipamento
+from .models import Equipamento, TipoEquipamento
 
 
 def masterPageFront(request):
@@ -67,3 +67,22 @@ def logout_utilizador(request):
                 pass
             return HttpResponse("You're logged out.")
 
+
+
+
+def equipamento_type(request, tipo):
+   
+    print(tipo)
+
+    if tipo:
+        # Filtrar os equipamentos com base no TipoEquipamento
+        equipamentos = Equipamento.objects.filter(id_tipoequipamento=tipo)
+    # Adicione o filtro_condition ao contexto para usá-lo no template
+    return render(request, 'kanban.html', {'equipamentos': equipamentos})
+   
+
+def detalhes_equipamento(request, equipamento_id):
+    equipamento = get_object_or_404(Equipamento, id_equipamento=equipamento_id)
+    return render(request, 'detalhes_equipamento.html', {'equipamento': equipamento})
+    
+   
