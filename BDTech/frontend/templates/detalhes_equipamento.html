@@ -16,8 +16,8 @@ Página Inicial
         </div>
         <div class="col-md-6">
            <br></br><br></br>
-            <p class="lead">Preço: R$ {{ equipamento.preco }}</p>
-            <p>{{ equipamento.descricao }}</p>
+            <p class="lead">Preço: {{ equipamento.preco }}</p>
+            <!-- <p>{{ equipamento.descricao }}</p> -->
             <form method="post" action="">
                 {% csrf_token %}
                 <!-- Adicione outros campos do formulário conforme necessário -->

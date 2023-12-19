@@ -10,7 +10,7 @@ from .models import (
 )
 from django.utils import timezone
 import json
-from .utils import (
+from core.utils import (
     fn_compra_inserir,
     fn_compra_componente_inserir,
     fn_update_stock_componente,

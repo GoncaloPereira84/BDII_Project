@@ -11,7 +11,7 @@ urlpatterns = [
     path("<str:table_name>/editar/<int:record_id>/", edit_record, name='edit_record'),
     path("", index),
     path('kanban/', kanban, name='kanban'),
-    path ('teste/<int:tipo>',equipamento_type, name='equipamento_type' ),
+    path ('tipo/<int:tipo>',equipamento_type, name='equipamento_type' ),
     path('delete_record/<str:table_name>/<int:record_id>/', delete_record, name='delete_record'),
     path('login/', login_utilizador, name='login'),
     path('logout/', logout_utilizador, name='logout'),

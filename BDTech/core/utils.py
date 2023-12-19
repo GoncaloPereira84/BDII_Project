@@ -18,6 +18,68 @@ def get_all_fornecedores(id_utilizador, id_fornecedor):
 
     return result
 
+def get_all_equipamentos(id_utilizador, id_equipamento):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM equipamento_get_list(%s, %s);
+            """,
+            [id_utilizador, id_equipamento],
+        )
+        result = cursor.fetchall()
+
+    return result
+
+def get_detalhes_equipamento(id_equipamento):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM detalhes_equipamento_get(%s);
+            """,
+            [id_equipamento],
+        )
+        result = cursor.fetchall()
+
+    if result:
+        json_result = json.loads(result[0][0])
+
+        return json_result
+    else:
+        return None
+    
+def get_top_x_equipamento(top):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM get_top_x_equipamento(%s);
+            """,
+            [top],
+        )
+        result = cursor.fetchall()
+
+    if result:
+        json_result = json.loads(result[0][0])
+
+        return json_result
+    else:
+        return None
+    
+def get_equipamento_by_type(id_tipoequipamento):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM get_equipamento_by_type(%s);
+            """,
+            [id_tipoequipamento],
+        )
+        result = cursor.fetchall()
+
+    if result:
+        json_result = json.loads(result[0][0])
+
+        return json_result
+    else:
+        return None
 
 def get_all_componente(id_utilizador, id_componente):
     with connection.cursor() as cursor:

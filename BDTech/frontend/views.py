@@ -1,17 +1,19 @@
-from django.http import HttpResponse, HttpResponseNotFound
-from django.db import connection, ProgrammingError
-from django.template import loader
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.db import connection
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from .models import Equipamento, TipoEquipamento
-
+from core.utils import (
+    get_detalhes_equipamento,
+    get_equipamento_by_type,
+    get_top_x_equipamento
+)
 
 def masterPageFront(request):
     return render(request, "masterPageFront.html")
 
 def index(request):
-    ultimos_equipamentos = Equipamento.objects.order_by('id_equipamento')[:6]
+    ultimos_equipamentos = get_top_x_equipamento(6)
     marcas = [
         {'nome': 'Apple', 'logo_url': 'https://th.bing.com/th/id/R.24e62b73004a5fb7a7a5d9c26963ed07?rik=nzIAxmu0duWlgA&riu=http%3a%2f%2fwww.zdnet.de%2fwp-content%2fuploads%2f2013%2f05%2fapple-logo-schwarz.jpg&ehk=q59%2b69Oq6FABvF0DbfJTGBD7m4IqvKMyNFPSzy8pRRg%3d&risl=&pid=ImgRaw&r=0'},
         {'nome': 'Lenovo', 'logo_url': 'https://th.bing.com/th/id/OIP.IRDIAwBmlFyff6g1EuFjXwHaEZ?rs=1&pid=ImgDetMain'},
@@ -21,7 +23,7 @@ def index(request):
     return render(request, 'index.html', {'equipamentos': ultimos_equipamentos, 'marcas': marcas})
 
 def kanban(request):
-    return render(request, "kanban.html")  
+    return render(request, "filtro.html")  
 
 @csrf_exempt
 def login_utilizador(request):
@@ -71,18 +73,13 @@ def logout_utilizador(request):
 
 
 def equipamento_type(request, tipo):
-   
-    print(tipo)
-
     if tipo:
-        # Filtrar os equipamentos com base no TipoEquipamento
-        equipamentos = Equipamento.objects.filter(id_tipoequipamento=tipo)
-    # Adicione o filtro_condition ao contexto para usá-lo no template
-    return render(request, 'kanban.html', {'equipamentos': equipamentos})
+        equipamentos = get_equipamento_by_type(tipo)
+    return render(request, 'filtro.html', {'equipamentos': equipamentos})
    
 
 def detalhes_equipamento(request, equipamento_id):
-    equipamento = get_object_or_404(Equipamento, id_equipamento=equipamento_id)
-    return render(request, 'detalhes_equipamento.html', {'equipamento': equipamento})
+    equipamento = get_detalhes_equipamento(equipamento_id)
+    return render(request, 'detalhes_equipamento.html', {'equipamento': equipamento[0]})
     
    
