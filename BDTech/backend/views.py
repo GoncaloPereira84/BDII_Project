@@ -223,10 +223,10 @@ def criar_mao_obra(request):
         )
         if "id_novo" in resultado:
             id_tipomaoobra = resultado["id_novo"]
+            return JsonResponse({"message": "Tipo de mão de obra criada com sucesso!", "id_tipomaoobra": id_tipomaoobra, "nome": nome})
         else:
-            print("Erro a obter o id_compra")
+            return JsonResponse({"error": "Erro a obter o id_compra"})
 
-        return HttpResponse("Tipo de mão de obra criada com sucesso!")
     else:
-        return HttpResponse("Método não permitido.")
+        return JsonResponse({"error": "Método não permitido."})
     

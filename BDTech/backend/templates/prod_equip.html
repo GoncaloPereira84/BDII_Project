@@ -114,11 +114,15 @@ Nova encomenda
                 </table>
             </div>
         </div>
-        <div class="block block-rounded">
+        <div class="block block-rounded block-mode-loading-refresh">
             <div class="block-header block-header-default">
                 <h3 class="block-title">Mão de obra</h3>
                 <div class="block-options">
                     <div class="dropdown">
+                        <button type="button" class="btn-block-option" data-toggle="block-option"
+                            data-action="state_toggle" data-action-mode="demo">
+                            <i class="si si-refresh"></i>
+                        </button>
                         <button type="button" class="btn btn-warning dropdown-toggle" id="dropdown-content-hero-primary"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-fw fa-plus"></i>Mão de obra
@@ -158,7 +162,7 @@ Nova encomenda
                             <label class="form-label" for="val-select2">Tipo de mão de obra<span
                                     class="text-danger">*</span></label>
                             <div class="input-group">
-                                <select class="js-select2 form-select" id="val-select2" name="val-select2"
+                                <select class="js-select2 form-select" id="inputmaoobra" name="inputmaoobra"
                                     style="width: 100%;" data-placeholder="Escolha um tipo de mão de obra...">
                                     {% for tipomaoobra in tiposmaoobra %}
                                     <option value="{{ tipomaoobra.0 }}">{{ tipomaoobra.1 }}</option>
@@ -342,31 +346,34 @@ Nova encomenda
         var valorCampo = document.getElementById('dropdown-content-form-tipomaoobra').value;
 
         if (valorCampo.trim() !== '') {
-            // Exibir um prompt de confirmação antes de enviar o AJAX
-            var confirmacao = confirm('Ao clicar em OK, a pagina irá atualizar e vai perder o que já foi preenchido!');
-            
-            if (confirmacao) {
-                var requestData = {
-                    'nome': nometipomaoobra,
-                    'custo_hora': custo_hora,
-                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-                };
+            var requestData = {
+                'nome': nometipomaoobra,
+                'custo_hora': custo_hora,
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+            };
 
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "criar_mao_obra" %}',
-                    data: requestData,
-                    success: function (response) {
-                        console.log(response);
-                        location.reload();
-                    },
-                    error: function (error) {
-                        console.error(error);
+            $.ajax({
+                type: 'POST',
+                url: '{% url "criar_mao_obra" %}',
+                data: requestData,
+                success: function (response) {
+                    console.log(response);
+                    if (response.hasOwnProperty('id_tipomaoobra')) {
+                        var id_tipomaoobra = response.id_tipomaoobra;
+                        var nome = response.nome;
+                        var data = {
+                            id: id_tipomaoobra,
+                            text: nome
+                        };
+                        var newOption = new Option(data.text, data.id, false, false);
+                        $('#inputmaoobra').append(newOption).trigger('change');
                     }
-                });
-            } else {
-                console.log('A criação da Mão de Obra foi cancelada.');
-            }
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+
         } else {
             alert('Preencha os dois campos!');
         }
