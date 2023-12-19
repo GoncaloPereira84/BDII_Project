@@ -59,9 +59,9 @@ class Componente(models.Model):
 class Venda(models.Model):
     id_venda = models.AutoField(primary_key=True)
     data = models.DateField()
-    tpdoc = models.CharField()
+    tpdoc = models.CharField(max_length=255)
     ndoc = models.IntegerField()
-    id_moeda = models.CharField()
+    id_moeda = models.CharField(max_length=255)
 
     def __str__(self):
         return self.nome
@@ -74,7 +74,7 @@ class Venda(models.Model):
 class Compra(models.Model):
     id_compra = models.AutoField(primary_key=True)
     data = models.DateField()
-    tpdoc = models.CharField()
+    tpdoc = models.CharField(max_length = 30)
     ndoc = models.IntegerField()
     id_fornecedor = models.ForeignKey(Fornecedor, null=True, on_delete=models.CASCADE, db_column='id_fornecedor')
     id_estado = models.IntegerField()
@@ -89,7 +89,7 @@ class Compra_Componente(models.Model):
     id_compra = models.IntegerField(primary_key=True)
     id_componente = models.IntegerField()
     quantidade = models.IntegerField()
-    preco_unitario = models.CharField()
+    preco_unitario = models.CharField(max_length=255)
 
     class Meta:
         managed = False
@@ -97,8 +97,8 @@ class Compra_Componente(models.Model):
 
 class TipoMaoObra(models.Model):
     id_tipomaoobra = models.IntegerField(primary_key=True)
-    nome = models.CharField()
-    custo_hora = models.CharField()
+    nome = models.CharField(max_length=255)
+    custo_hora = models.CharField(max_length=255)
 
     class Meta:
         managed = False

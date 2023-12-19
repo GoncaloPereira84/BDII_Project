@@ -1,5 +1,5 @@
 from django.urls import path
-from backend.views import  dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod, criar_mao_obra
+from backend.views import  dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod, criar_mao_obra, mango
 from frontend.views import  index, kanban, login_utilizador, logout_utilizador, equipamento_type, detalhes_equipamento
 
 urlpatterns = [
@@ -19,4 +19,5 @@ urlpatterns = [
     path('save_encomenda/', save_encomenda, name='save_encomenda'),
     path('criar_mao_obra/', criar_mao_obra, name='criar_mao_obra'),
     path('equipamento/<int:equipamento_id>/', detalhes_equipamento, name='detalhes_equipamento'),
+    path('mango/', mango),
 ]

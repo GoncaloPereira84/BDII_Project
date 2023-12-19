@@ -4,9 +4,6 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import (
     Componente,
-    Fornecedor,
-    TipoMaoObra,
-    TipoEquipamento,
 )
 from django.utils import timezone
 import json
@@ -20,6 +17,9 @@ from core.utils import (
     get_all_tipomaoobra,
     get_all_tipoequipamento,
     fn_tipomaoobra_inserir,
+)
+from core.utilsMongo import (
+    get_all_atributos,
 )
 
 
@@ -203,7 +203,7 @@ def save_encomenda(request):
                 request.session["id_utilizador"], id_componente, quantidade
             )
 
-        return HttpResponse("Encomenda criada com sucesso!")
+        
     else:
         return HttpResponse("Método não permitido.")
     
@@ -230,3 +230,10 @@ def criar_mao_obra(request):
     else:
         return JsonResponse({"error": "Método não permitido."})
     
+import pymongo
+
+def mango(request):
+    x = get_all_atributos(request)
+    
+    return HttpResponse(x)
+        

@@ -14,7 +14,7 @@ class TipoEquipamento(models.Model):
 
 class Equipamento(models.Model):
     id_equipamento = models.AutoField(primary_key=True)
-    nome = models.CharField()
+    nome = models.CharField(max_length=255)
     descricao = models.TextField()
     imagem = models.ImageField()
     preco = models.TextField()

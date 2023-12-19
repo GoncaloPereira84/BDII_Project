@@ -1,7 +1,7 @@
 import json
 from django.db import connection
 import datetime
-from django.db import connection, ProgrammingError
+from django.db import connection
 
 #################
 ##    lists    ##
