@@ -16,7 +16,7 @@ def get_all_atributos(request):
         "id_equipamento": 1
     }  ## caso se queira ir buscar o que tem id_equipamento = 1
     mycol = connection(request, "equipamento_comp_atrib")
-    mydoc = mycol.find()
+    mydoc = mycol.find()#mycol.find(myquery)
 
     for x in mydoc:
         print("\nmongooos", x)
