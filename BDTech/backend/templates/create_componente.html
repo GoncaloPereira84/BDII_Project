@@ -1,0 +1,217 @@
+{% extends "masterPage.html" %}
+
+{% block title %}
+Nova encomenda
+{% endblock %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css'%}">
+
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <form id="encomendaForm" class="js-validation" method="POST" action="{% url 'create_componente' %}">
+        {% csrf_token %}
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Novo Componente</h3>
+                <div class="block-options">
+                    <input type="hidden" id="id_fornecedor" name="id_fornecedor" value="">
+                    <button type="button" class="btn btn-sm btn-success" onclick="createComponente()">
+                        <i class="fa fa-fw fa-check"></i> Guardar
+                    </button>
+                </div>
+            </div>
+            <div class="block-content block-content-full">
+                <div class="row items-push">
+                    <div class="col-lg-6 col-xl-5 mx-auto mb-4">
+                        <label class="form-label" for="tpcomponente">Tipo Componente<span
+                                class="text-danger">*</span></label>
+                        <select class="js-select2 form-select" id="tpcomponente" name="tpcomponente"
+                            style="width: 100%;">
+                            <option value=""></option>
+                            <option value="RAM">Memória RAM</option>
+                            <option value="CPU">CPU</option>
+                            <option value="Disco">Disco Rigido</option>
+                            <option value="Grafica">Placa gráfica</option>
+                            <option value="motherboard">Motherboard</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-xl-5 mx-auto mb-4">
+                        <label class="form-label" for="marca">Marca<span class="text-danger">*</span></label>
+                        <select class="js-select2 form-select" id="marca" name="marca" style="width: 100%;">
+                            <option value=""></option>
+                            {% for chave, valor in marca_valorlista.items %}
+                            <option value="{{ valor }}">{{ valor }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row items-push">
+                    <div class="col-lg-6 col-xl-5 mx-auto mb-4">
+                        <label class="form-label" for="atributo1">Atributo 1<span class="text-danger">*</span></label>
+                        <select class="js-select2 form-select" id="atributo1" name="atributo1" style="width: 100%;">
+                            <option value=""></option>
+
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-xl-5 mx-auto mb-4">
+                        <label class="form-label" for="atributo2">Atributo 2<span class="text-danger">*</span></label>
+                        <select class="js-select2 form-select" id="atributo2" name="atributo2" style="width: 100%;">
+                            <option value=""></option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Nome Componente</h3>
+            </div>
+            <button type="button" id="alterarDescricaoBtn" class="btn btn-primary ms-3 mt-3">Gerar Nome</button>
+
+            <div class="block-content">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-5">
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" id="descricao" name="descricao" value=""
+                                placeholder="Descricao Componente" disabled>
+                            <label class="form-label" for="descricao">Nome Componente</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-lg-2">
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" id="checkboxDescricao"
+                                onchange="toggleDescricao()">
+                            <label class="form-check-label" for="checkboxDescricao">Quero escrever eu o nome!</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 col-lg-5">
+                        <div class="form-floating mb-4">
+                            <input type="number" class="form-control" id="preco" name="preco" value="1" min="1">
+                            <label class="form-label" for="preco">Preço</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    function toggleDescricao() {
+        var descricaoInput = document.getElementById("descricao");
+        var checkbox = document.getElementById("checkboxDescricao");
+
+        descricaoInput.disabled = !checkbox.checked;
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#alterarDescricaoBtn").click(function () {
+            var tpcomponenteValue = $("#tpcomponente").val();
+            var marcaValue = $("#marca").val();
+            var atributo1Value = $("#atributo1").val();
+            var atributo2Value = $("#atributo2").val();
+            var descricaoInput = $("#descricao");
+
+            if (tpcomponenteValue && marcaValue && atributo1Value && atributo2Value) {
+                var descricaoValue = tpcomponenteValue + " " + marcaValue + " " + atributo1Value + " " + atributo2Value;
+
+                descricaoInput.val(descricaoValue);
+            } else {
+                alert("Por favor, selecione todos os valores necessários antes de alterar a descrição.");
+            }
+        });
+    });
+</script>
+
+<script>
+    var encomendaResponse;
+
+    $("#tpcomponente").change(function () {
+        var tpcomponenteValue = $(this).val();
+        $.ajax({
+            url: "{% url 'get_atributo_options' %}",
+            type: "GET",
+            data: { tpcomponente: tpcomponenteValue },
+            success: function (response) {
+                $("#atributo1").empty();
+                $("#atributo2").empty();
+
+                $.each(response.tipo_valorlista_options, function (index, option) {
+                    $("#atributo1").append($("<option></option>").attr("value", option.text).text(option.text));
+                });
+
+                $.each(response.tamanho_valorlista_options, function (index, option) {
+                    $("#atributo2").append($("<option></option>").attr("value", option.text).text(option.text));
+                });
+                encomendaResponse = response;
+            },
+            error: function (error) {
+                console.error("Erro na solicitação AJAX:", error);
+            }
+        });
+    });
+
+    function createComponente() {
+        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+        var tpcomponenteValue = $("#tpcomponente").val();
+        var marcaValue = $("#marca").val();
+        var atributo1Value = $("#atributo1").val();
+        var atributo2Value = $("#atributo2").val();
+        var descricaoValue = $("#descricao").val();
+        var preco = $("#preco").val();
+
+        var data = {
+            "id_atributo_tipo": encomendaResponse.id_atributo_tipo,
+            "tipo_valorlista_options": atributo1Value,
+            "id_atributo_tamanho": encomendaResponse.id_atributo_tamanho,
+            "tamanho_valorlista_options": atributo2Value,
+            "descricao": descricaoValue,
+            "id_atributo_marca": parseInt("{{ id_atributo_marca }}"),
+            "marca_valorlista": marcaValue,
+            "preco": preco,
+            'csrfmiddlewaretoken': csrfToken
+        };
+
+        $.ajax({
+            url: '{% url "create_componente" %}',
+            type: "POST",
+            data: data,
+            success: function (response) {
+                console.log("Resposta do servidor:", response);
+            },
+            error: function (error) {
+                console.error("Erro na solicitação AJAX:", error);
+            }
+        });
+        console.log("Resposta da Encomenda:", data);
+    }
+</script>
+
+<script src="{% static 'assets/js/lib/jquery.min.js'%}"></script>
+
+<!-- Page JS Plugins -->
+<script src="{% static 'assets/js/plugins/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/dataTables.buttons.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-jszip/jszip.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/pdfmake.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/vfs_fonts.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.print.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.html5.min.js'%}"></script>
+
+<script src="{% static 'assets/js/pages/be_tables_datatables.min.js'%}"></script>
+
+
+{% endblock %}

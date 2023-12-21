@@ -117,6 +117,33 @@ def get_all_tipoequipamento(id_utilizador, id_tipoequipamento):
 
     return result
 
+def getAtributoLista(var):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM getAtributoLista(%s);
+            """,
+            [var],
+        )
+        result = cursor.fetchall()
+
+    return result
+
+def getAtributoMarcaLista():
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM getAtributoMarcaLista();
+            """
+        )
+        result = cursor.fetchone()
+
+        if result:
+            id_atributo, marca_valorlista = result
+            return id_atributo, marca_valorlista
+        else:
+            return None, None
+        
 #################
 ##   inserts   ##
 #################
@@ -170,6 +197,33 @@ def fn_tipomaoobra_inserir(id_utilizador, tipomaoobra_json):
             SELECT * FROM fn_tipomaoobra_inserir(%s, %s);
             """,
             [id_utilizador, tipomaoobra_json_str],
+        )
+        result = cursor.fetchone()
+
+        return resultado(result)
+    
+def fn_componente_inserir(id_utilizador, componente_json):
+    componente_json_str = json.dumps(componente_json)
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM fn_componente_inserir(%s, %s);
+            """,
+            [id_utilizador, componente_json_str],
+        )
+        result = cursor.fetchone()
+
+        return resultado(result)
+    
+def fn_inserir_componente_atributos(id_utilizador, id_componente, componente_json):
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM inserir_componente_atributos(%s, %s, %s);
+            """,
+            [id_utilizador, id_componente, componente_json],
         )
         result = cursor.fetchone()
 

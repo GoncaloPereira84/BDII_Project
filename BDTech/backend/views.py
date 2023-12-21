@@ -1,6 +1,7 @@
 from django.http import HttpResponse, Http404
 from django.db import connection, ProgrammingError
 from django.http import JsonResponse
+from psycopg2.extras import Json
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import (
     Componente,
@@ -17,6 +18,10 @@ from core.utils import (
     get_all_tipomaoobra,
     get_all_tipoequipamento,
     fn_tipomaoobra_inserir,
+    getAtributoLista,
+    getAtributoMarcaLista,
+    fn_componente_inserir,
+    fn_inserir_componente_atributos,
 )
 from core.utilsMongo import (
     get_all_atributos,
@@ -74,7 +79,6 @@ def error404(request):
 
 
 def function_exists(table_name):
-    print(table_name)
     try:
         with connection.cursor() as cursor:
             cursor.execute(f"SELECT 1 FROM {table_name} LIMIT 1")
@@ -84,7 +88,6 @@ def function_exists(table_name):
 
 
 def generic_list(request, table_name):
-    print(table_name)
     function_table_name = f"{table_name}_get_list(1,0)"
     if not function_exists(function_table_name):
         return redirect("/404")
@@ -101,7 +104,6 @@ def generic_list(request, table_name):
         row["id_field"] = row[f"n_{table_name}"]
 
     imagem_column_present = "imagem" in columns
-    print("imagem:", imagem_column_present)
     row_id = 0 if not imagem_column_present else 1
 
     context = {
@@ -116,7 +118,6 @@ def generic_list(request, table_name):
 
 
 def delete_record(request, table_name, record_id):
-    print(record_id)
     try:
         with connection.cursor() as cursor:
             cursor.callproc("delete_record", [table_name, record_id])
@@ -230,10 +231,84 @@ def criar_mao_obra(request):
     else:
         return JsonResponse({"error": "Método não permitido."})
     
-import pymongo
-
 def mango(request):
     x = get_all_atributos(request)
-    
     return HttpResponse(x)
         
+def form_create_componente(request):
+    id_atributo, marca_valorlista = getAtributoMarcaLista()
+
+    context = {
+        'id_atributo_marca': id_atributo,
+        'marca_valorlista': marca_valorlista
+    }
+    return render(request, "create_componente.html", context)
+
+
+from django.http import JsonResponse
+
+def get_atributo_options(request):
+    tpcomponente_value = request.GET.get('tpcomponente', None)
+    result = getAtributoLista(tpcomponente_value)
+
+    if result:
+        id_atributo_tipo, tipo_valorlista, id_atributo_tamanho, tamanho_valorlista = result[0]
+
+        tipo_valorlista_options = [{'value': chave, 'text': valor} for chave, valor in tipo_valorlista.items()]
+        tamanho_valorlista_options = [{'value': chave, 'text': valor} for chave, valor in tamanho_valorlista.items()]
+
+        return JsonResponse({
+            'id_atributo_tipo': id_atributo_tipo,
+            'tipo_valorlista_options': tipo_valorlista_options,
+            'id_atributo_tamanho': id_atributo_tamanho,
+            'tamanho_valorlista_options': tamanho_valorlista_options,
+        })
+    else:
+        return JsonResponse({
+            'id_atributo_tipo': None,
+            'tipo_valorlista_options': [],
+            'id_atributo_tamanho': None,
+            'tamanho_valorlista_options': [],
+        })
+
+
+def create_componente(request):
+    if request.method == "POST":
+        id_atributo_tipo= request.POST.get("id_atributo_tipo")
+        tipo_valorlista_options= request.POST.get("tipo_valorlista_options")
+        id_atributo_tamanho= request.POST.get("id_atributo_tamanho")
+        tamanho_valorlista_options= request.POST.get("tamanho_valorlista_options")
+        descricao = request.POST.get("descricao")
+        preco = request.POST.get("preco")
+        id_atributo_marca=  request.POST.get("id_atributo_marca")
+        marca_valorlista =request.POST.get("marca_valorlista")
+
+        componente_json = {
+            "id_estado": 1,
+            "descricao": descricao,
+            "preco": preco,
+            "quantidade_stock": 0,
+            "imagem": "",
+            "pcusto_medio": preco
+        }
+
+        resultado = fn_componente_inserir(
+            request.session["id_utilizador"], componente_json
+        )
+        if "id_novo" in resultado:
+            id_componente = resultado["id_novo"]
+            json_atributo_data = [
+                {"id_atributo": id_atributo_tipo[0], "valoratrib": tipo_valorlista_options},
+                {"id_atributo": id_atributo_tamanho[0], "valoratrib": tamanho_valorlista_options},
+                {"id_atributo": id_atributo_marca[0], "valoratrib": marca_valorlista},
+            ]
+            json_array = Json(json_atributo_data)
+
+            resultado2 = fn_inserir_componente_atributos(
+                request.session["id_utilizador"], id_componente, json_array
+            )
+            return redirect("/componente/list")
+        else:
+            return JsonResponse({"error": "Erro a obter o id_componente"})
+    else:
+        return HttpResponse("Método não permitido.")
