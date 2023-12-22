@@ -11,7 +11,6 @@ import json
 from core.utils import (
     fn_compra_inserir,
     fn_compra_componente_inserir,
-    fn_update_stock_componente,
     fn_get_max_ndoc_by_tpdoc,
     get_all_fornecedores,
     get_all_componente,
@@ -22,6 +21,7 @@ from core.utils import (
     getAtributoMarcaLista,
     fn_componente_inserir,
     fn_inserir_componente_atributos,
+    fn_equipamento_inserir,
 )
 from core.utilsMongo import (
     get_all_atributos,
@@ -199,12 +199,7 @@ def save_encomenda(request):
             fn_compra_componente_inserir(
                 request.session["id_utilizador"], compra_componente_json
             )
-
-            fn_update_stock_componente(
-                request.session["id_utilizador"], id_componente, quantidade
-            )
-
-        
+        return HttpResponse("Compra efetuada com sucesso!")
     else:
         return HttpResponse("Método não permitido.")
     
@@ -307,8 +302,44 @@ def create_componente(request):
             resultado2 = fn_inserir_componente_atributos(
                 request.session["id_utilizador"], id_componente, json_array
             )
-            return redirect("/componente/list")
+            return HttpResponse("Componente criado")
         else:
             return JsonResponse({"error": "Erro a obter o id_componente"})
     else:
         return HttpResponse("Método não permitido.")
+    
+
+def create_equipamento(request):
+    if request.method == "POST":
+        total_encomenda = float(request.POST.get("total_encomenda"))
+        componentes_json = request.POST.get("componentes", "[]")
+
+        componentes = json.loads(componentes_json)
+
+        equipamento_json = {
+            "id_tipoequipamento": request.POST.get("id_tipoequipamento"),
+            "id_estado": 1,
+            "id_moeda": 1,
+            "descricao": request.POST.get("descricao"),
+            "quantidade_stock": 1,
+            "preco": request.POST.get("preco"),
+            "imagem": request.POST.get("imagem"),
+            "nome": request.POST.get("nome"),
+        }
+
+        print(equipamento_json)
+
+        resultado_equipamento = fn_equipamento_inserir(
+            request.session["id_utilizador"], equipamento_json, Json(componentes) 
+        )
+        if "id_novo" in resultado_equipamento:
+            id_compra = resultado_equipamento["id_novo"]
+        else:
+            print("Erro a obter o id_compra")
+
+        
+
+        return HttpResponse("Equipamento criado")
+    else:
+        return HttpResponse("Método não permitido.")
+    

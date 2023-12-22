@@ -229,6 +229,20 @@ def fn_inserir_componente_atributos(id_utilizador, id_componente, componente_jso
 
         return resultado(result)
 
+def fn_equipamento_inserir(id_utilizador, equipamento_json, componente_json):
+    equipamento_json_str = json.dumps(equipamento_json)
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM fn_equipamento_inserir(%s, %s, %s);
+            """,
+            [id_utilizador, equipamento_json_str, componente_json],
+        )
+        result = cursor.fetchone()
+
+        return resultado(result)
+
+
 #################
 ##   updates   ##
 #################

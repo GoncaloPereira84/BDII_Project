@@ -189,6 +189,7 @@ Nova encomenda
             data: data,
             success: function (response) {
                 console.log("Resposta do servidor:", response);
+                window.location.href = "/componente/list";
             },
             error: function (error) {
                 console.error("Erro na solicitação AJAX:", error);

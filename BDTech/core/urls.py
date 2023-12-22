@@ -1,5 +1,5 @@
 from django.urls import path
-from backend.views import dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod, criar_mao_obra, mango, form_create_componente, get_atributo_options, create_componente
+from backend.views import dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod, criar_mao_obra, mango, form_create_componente, get_atributo_options, create_componente, create_equipamento
 from frontend.views import index, kanban, login_utilizador, logout_utilizador, equipamento_type, detalhes_equipamento
 
 urlpatterns = [
@@ -23,4 +23,5 @@ urlpatterns = [
     path("componente/create", form_create_componente),
     path("get_atributo_options/", get_atributo_options, name='get_atributo_options'),
     path('create_componente/', create_componente, name='create_componente'),
+    path('create_equipamento/', create_equipamento, name='create_equipamento'),
 ]

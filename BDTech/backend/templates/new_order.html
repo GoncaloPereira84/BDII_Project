@@ -120,7 +120,6 @@ Nova encomenda
         var quantidade = row.find('input[name="quantidade"]').val();
         var precoStr = row.find('td:nth-child(4)').text();
         var preco = parseFloat(precoStr.replace(/[^\d.]/g, ''));
-        console.log(descricao)
 
         if (isNaN(preco)) {
             preco = parseFloat(row.find('input[name="quantidade"]').data('preco').replace(/[^\d.]/g, ''));
@@ -198,10 +197,6 @@ Nova encomenda
         $('.block-header-default span.mb-3.m-3.float-end').text('Total Encomenda: ' + orderTotal.toFixed(2));
     }
 
-    $(document).on('click', '.btn-success', function () {
-        addQuantity();
-    });
-
     function saveEncomenda() {
         var idFornecedor = $('#val-select2').val();
         $('#id_fornecedor').val(idFornecedor);
@@ -245,6 +240,7 @@ Nova encomenda
                 data: requestData,
                 success: function (response) {
                     console.log(response);
+                    window.location.href = "/compra/list";
                 },
                 error: function (error) {
                     console.error(error);

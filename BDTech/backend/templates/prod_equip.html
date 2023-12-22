@@ -13,14 +13,13 @@ Nova encomenda
 {% block content %}
 <div class="content">
     <!-- Elements -->
-    <form id="encomendaForm" class="js-validation" method="POST" action="{% url 'save_encomenda' %}">
+    <form id="encomendaForm" class="js-validation" method="POST" action="{% url 'create_equipamento' %}">
         {% csrf_token %}
         <div class="block block-rounded">
             <div class="block-header block-header-default">
                 <h3 class="block-title">Nova produção</h3>
                 <div class="block-options">
-                    <input type="hidden" id="id_fornecedor" name="id_fornecedor" value="">
-                    <button type="button" class="btn btn-sm btn-success" onclick="saveEncomenda()">
+                    <button type="button" class="btn btn-sm btn-success" onclick="saveEquipamento()">
                         <i class="fa fa-fw fa-check"></i> Guardar
                     </button>
                 </div>
@@ -28,22 +27,37 @@ Nova encomenda
         </div>
         <div class="block block-rounded">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Tipo equipamento</h3>
+                <h3 class="block-title">Equipamento</h3>
             </div>
             <div class="block-content block-content-full">
                 <div class="row items-push">
-                    <div class="col-lg-4">
-                        <p class="text-muted">
-                            Escolhe o tipo de equipamento
-                        </p>
+                    <div class="row">
+                        <div class="col-lg-6 col-xl-5 mb-2">
+                            <label class="form-label" for="nomeEquip">Nome equipamento<span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="nomeEquip" name="nomeEquip" value=""
+                                placeholder="Nome Componente">
+                            </input>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xl-5 mb-2">
+                            <label class="form-label" for="descrEquip">Descrição equipamento<span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="descrEquip" name="descrEquip" value=""
+                                placeholder="Descrição Componente">
+                            </input>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-6 col-xl-5 mb-2">
-                            <label class="form-label" for="val-select2">Tipo de equipamento<span
+                            <label class="form-label" for="tpequipamento">Tipo de equipamento<span
                                     class="text-danger">*</span></label>
                             <div class="input-group">
-                                <select class="js-select2 form-select" id="val-select2" name="val-select2"
-                                    style="width: 100%;" data-placeholder="Escolha um tipo de mão de obra...">
+                                <select class="js-select2 form-select" id="tpequipamento" name="tpequipamento"
+                                    style="width: 100%;" data-placeholder="Escolha um tipo de Equipamento...">
                                     {% for tipoequipamento in tiposequipamentos %}
                                     <option value="{{ tipoequipamento.0 }}">{{ tipoequipamento.1 }}</option>
                                     {% endfor %}
@@ -116,6 +130,21 @@ Nova encomenda
         </div>
         <div class="block block-rounded block-mode-loading-refresh">
             <div class="block-header block-header-default">
+                <h3 class="block-title">Preço de Venda<span class="text-danger">*</span></h3>
+            </div>
+            <div class="block-content block-content-full">
+                <div class="row items-push">
+                    <div class="row" id="precoVendaSection">
+                        <div class="col-lg-6 col-xl-5 mb-2">
+                            <input type="number" name="precoVenda" id="precoVenda" class="form-control form-control-sm" value="1"
+                                min="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="block block-rounded block-mode-loading-refresh">
+            <div class="block-header block-header-default">
                 <h3 class="block-title">Mão de obra</h3>
                 <div class="block-options">
                     <div class="dropdown">
@@ -156,10 +185,9 @@ Nova encomenda
                             Escolhe o tipo de mão de obra
                         </p>
                     </div>
-
                     <div class="row" id="maoObraSection">
                         <div class="col-lg-6 col-xl-5 mb-2">
-                            <label class="form-label" for="val-select2">Tipo de mão de obra<span
+                            <label class="form-label" for="inputmaoobra">Tipo de mão de obra<span
                                     class="text-danger">*</span></label>
                             <div class="input-group">
                                 <select class="js-select2 form-select" id="inputmaoobra" name="inputmaoobra"
@@ -168,17 +196,30 @@ Nova encomenda
                                     <option value="{{ tipomaoobra.0 }}">{{ tipomaoobra.1 }}</option>
                                     {% endfor %}
                                 </select>
-
                             </div>
                         </div>
                         <div class="col-lg-6 col-xl-5 mb-2">
-                            <label class="form-label" for="val-select2">Horas gastas<span
+                            <label class="form-label" for="horas_maoobra">Horas gastas<span
                                     class="text-danger">*</span></label>
-                            <input type="number" name="num_maoobra" class="form-control form-control-sm" value="1"
+                            <input type="number" name="horas_maoobra" id="horas_maoobra" class="form-control form-control-sm" value="1"
                                 min="1">
                         </div>
                     </div>
-
+                </div>
+            </div>
+        </div>
+        <div class="block block-rounded block-mode-loading-refresh">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Imagem URL<span class="text-danger">*</span></h3>
+            </div>
+            <div class="block-content block-content-full">
+                <div class="row items-push">
+                    <div class="row" id="imagemSection">
+                        <div class="col-lg-6 col-xl-5 mb-2">
+                            <input type="text" name="imagem" id="imagem" class="form-control form-control-sm" value=""
+                                placeholder="link imagem para já">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -196,7 +237,6 @@ Nova encomenda
         var quantidade = row.find('input[name="quantidade"]').val();
         var precoStr = row.find('td:nth-child(4)').text();
         var preco = parseFloat(precoStr.replace(/[^\d.]/g, ''));
-        console.log(descricao)
 
         if (isNaN(preco)) {
             preco = parseFloat(row.find('input[name="quantidade"]').data('preco').replace(/[^\d.]/g, ''));
@@ -274,13 +314,14 @@ Nova encomenda
         $('.block-header-default span.mb-3.m-3.float-end').text('Total Encomenda: ' + orderTotal.toFixed(2));
     }
 
-    $(document).on('click', '.btn-success', function () {
-        addQuantity();
-    });
-
-    function saveEncomenda() {
-        var idFornecedor = $('#val-select2').val();
-        $('#id_fornecedor').val(idFornecedor);
+    function saveEquipamento() {
+        var nome_equipamento = $('#nomeEquip').val();
+        var descricao_equipamento = $('#descrEquip').val();
+        var id_tipoequipamento = $('#tpequipamento').val();
+        var preco_equipamento = $('#precoVenda').val();
+        var tipo_maoobra = $('#inputmaoobra').val();
+        var horas_maoobra = $('#horas_maoobra').val();
+        var imagem = $('#imagem').val();
 
         var totalEncomenda = parseFloat($('.block-header-default span.mb-3.m-3.float-end').text().replace(/[^\d.]/g, ''));
         var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
@@ -288,7 +329,7 @@ Nova encomenda
         // Check if there are no rows in the table
         if (!isNaN(totalEncomenda) && totalEncomenda !== 0) {
             // Create an array to store component data
-            var componentes = [];
+            var equipamento_componente = [];
 
             // Iterate over rows in the cesto table
             $('#cestoTable tbody tr').each(function () {
@@ -298,29 +339,32 @@ Nova encomenda
                 var total = $(this).find('td:nth-child(5)').text();
 
                 // Add component data to the array
-                componentes.push({
+                equipamento_componente.push({
                     'id_componente': idComponente,
-                    'quantidade': quantidade,
-                    'preco_unit': preco,
-                    'preco_total': total
+                    'quantidade': quantidade
                 });
             });
 
-            // Add componentes data to the AJAX request
             var requestData = {
-                'id_fornecedor': idFornecedor,
+                'id_tipoequipamento': id_tipoequipamento,
+                'nome': nome_equipamento,
+                'descricao': descricao_equipamento,
+                'preco': preco_equipamento,
+                'imagem': imagem,
+                'id_tipomaoobra': tipo_maoobra,
+                'nhorasunitario': horas_maoobra,
                 'total_encomenda': totalEncomenda,
-                'componentes': JSON.stringify(componentes),
+                'componentes': JSON.stringify(equipamento_componente),
                 'csrfmiddlewaretoken': csrfToken
             };
 
-            // Send the AJAX request
             $.ajax({
                 type: 'POST',
-                url: '{% url "save_encomenda" %}',
+                url: '{% url "create_equipamento" %}',
                 data: requestData,
                 success: function (response) {
                     console.log(response);
+                    window.location.href = "/equipamento/list";
                 },
                 error: function (error) {
                     console.error(error);
