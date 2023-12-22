@@ -326,19 +326,15 @@ Nova encomenda
         var totalEncomenda = parseFloat($('.block-header-default span.mb-3.m-3.float-end').text().replace(/[^\d.]/g, ''));
         var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 
-        // Check if there are no rows in the table
         if (!isNaN(totalEncomenda) && totalEncomenda !== 0) {
-            // Create an array to store component data
             var equipamento_componente = [];
 
-            // Iterate over rows in the cesto table
             $('#cestoTable tbody tr').each(function () {
                 var idComponente = $(this).find('td:nth-child(1)').text();
                 var quantidade = $(this).find('td:nth-child(3)').text();
                 var preco = $(this).find('td:nth-child(4)').text();
                 var total = $(this).find('td:nth-child(5)').text();
 
-                // Add component data to the array
                 equipamento_componente.push({
                     'id_componente': idComponente,
                     'quantidade': quantidade
@@ -352,7 +348,7 @@ Nova encomenda
                 'preco': preco_equipamento,
                 'imagem': imagem,
                 'id_tipomaoobra': tipo_maoobra,
-                'nhorasunitario': horas_maoobra,
+                'nhoras': horas_maoobra,
                 'total_encomenda': totalEncomenda,
                 'componentes': JSON.stringify(equipamento_componente),
                 'csrfmiddlewaretoken': csrfToken
@@ -363,8 +359,13 @@ Nova encomenda
                 url: '{% url "create_equipamento" %}',
                 data: requestData,
                 success: function (response) {
-                    console.log(response);
-                    window.location.href = "/equipamento/list";
+                    console.log("respponseeeeeeeeeeeee:  ", response);
+                    if(response == 0){
+                        alert("Existe um componente que não tem stock!!")
+                    }
+                    else{
+                        window.location.href = "/equipamento/list";
+                    }
                 },
                 error: function (error) {
                     console.error(error);
@@ -383,7 +384,7 @@ Nova encomenda
     }
 
     function criar_mao_obra(event) {
-        event.preventDefault(); // Impede o envio automático do formulário
+        event.preventDefault(); 
         var nometipomaoobra = $('#dropdown-content-form-tipomaoobra').val();
         var custo_hora = $('#num_maoobra').val();
         $('#nome_tipomaoobra').val(nometipomaoobra);

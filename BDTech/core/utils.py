@@ -241,6 +241,19 @@ def fn_equipamento_inserir(id_utilizador, equipamento_json, componente_json):
         result = cursor.fetchone()
 
         return resultado(result)
+    
+def fn_producao_inserir(id_utilizador, equipamento_json):
+    equipamento_json_str = json.dumps(equipamento_json, default=datetime_serializer)
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM fn_producao_inserir(%s, %s);
+            """,
+            [id_utilizador, equipamento_json_str],
+        )
+        result = cursor.fetchone()
+
+        return resultado(result)
 
 
 #################

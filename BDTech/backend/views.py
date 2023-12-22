@@ -22,6 +22,7 @@ from core.utils import (
     fn_componente_inserir,
     fn_inserir_componente_atributos,
     fn_equipamento_inserir,
+    fn_producao_inserir,
 )
 from core.utilsMongo import (
     get_all_atributos,
@@ -311,35 +312,50 @@ def create_componente(request):
 
 def create_equipamento(request):
     if request.method == "POST":
-        total_encomenda = float(request.POST.get("total_encomenda"))
-        componentes_json = request.POST.get("componentes", "[]")
-
-        componentes = json.loads(componentes_json)
+        componentes_json = json.loads(request.POST.get("componentes", "[]"))
 
         equipamento_json = {
             "id_tipoequipamento": request.POST.get("id_tipoequipamento"),
             "id_estado": 1,
             "id_moeda": 1,
             "descricao": request.POST.get("descricao"),
-            "quantidade_stock": 1,
+            "quantidade_stock": 0,
             "preco": request.POST.get("preco"),
             "imagem": request.POST.get("imagem"),
             "nome": request.POST.get("nome"),
         }
 
-        print(equipamento_json)
-
         resultado_equipamento = fn_equipamento_inserir(
-            request.session["id_utilizador"], equipamento_json, Json(componentes) 
+            request.session["id_utilizador"], equipamento_json, Json(componentes_json) 
         )
-        if "id_novo" in resultado_equipamento:
-            id_compra = resultado_equipamento["id_novo"]
+        if "id_novo" in resultado_equipamento and resultado_equipamento["id_novo"] != 0:
+            id_equipamento = resultado_equipamento["id_novo"]
+            create_producao(request, id_equipamento)
+            return HttpResponse("Equipamento criado")
         else:
-            print("Erro a obter o id_compra")
-
-        
-
-        return HttpResponse("Equipamento criado")
+            return HttpResponse(0)
     else:
         return HttpResponse("Método não permitido.")
+    
+def create_producao(request, id_equipamento):
+        producao_json = {
+            "id_equipamento": id_equipamento,
+            "id_tipomaoobra": request.POST.get("id_tipomaoobra"),
+            "id_estado": 1,
+            "id_moeda": 1,
+            "data": timezone.now(),
+            "quantidade": 1,
+            "custounitario": request.POST.get("total_encomenda"),
+            "nhoras": request.POST.get("nhoras")
+        }
+
+        resultado_producao = fn_producao_inserir(
+            request.session["id_utilizador"], producao_json 
+        )
+        if "id_novo" in resultado_producao:
+            id_producao = resultado_producao["id_novo"]
+            print("id_producao", id_producao)
+        else:
+            print("Erro a obter o id_producao")
+
     
