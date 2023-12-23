@@ -6,7 +6,8 @@ from django.http import JsonResponse
 from core.utils import (
     get_detalhes_equipamento,
     get_equipamento_by_type,
-    get_top_x_equipamento
+    get_top_x_equipamento,
+    obter_maximo_preco_por_tipo
 )
 
 def masterPageFront(request):
@@ -69,17 +70,14 @@ def logout_utilizador(request):
                 pass
             return HttpResponse("You're logged out.")
 
-
-
-
 def equipamento_type(request, tipo):
     if tipo:
         equipamentos = get_equipamento_by_type(tipo)
-    return render(request, 'filtro.html', {'equipamentos': equipamentos})
+        nome = "Portáteis" if tipo == 1 else "Desktops"
    
+        maxpricefiltro = obter_maximo_preco_por_tipo(tipo)
+    return render(request, 'filtro.html', {'equipamentos': equipamentos, 'nome': nome, 'tipo_selecionado': tipo, 'maxpricefiltro': maxpricefiltro})
 
 def detalhes_equipamento(request, equipamento_id):
     equipamento = get_detalhes_equipamento(equipamento_id)
     return render(request, 'detalhes_equipamento.html', {'equipamento': equipamento[0]})
-    
-   
