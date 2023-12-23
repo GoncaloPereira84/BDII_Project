@@ -65,7 +65,25 @@ Nova encomenda
 
                             </div>
                         </div>
+                        <div class="col-lg-6 col-xl-5 mb-2">
+                            <label class="form-label" for="quantdEquip">Quantidade equipamentos a produzir<span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="quantdEquip" name="quantdEquip" value="1" min="1">
+                            </input>
+                            </div>
+                        </div>
                     </div>
+                    
+                    <div class="row">
+                        <div class="text-dark" style="background-color: rgba(255, 165, 0, 0.5); padding: 5px; border-radius: 5px;">
+                            <p>
+                                <strong>NOTA:</strong> Os componentes e definições abaixo são relativos a 1 equipamento, <strong>excepto o cesto!</strong><br>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    
                 </div>
             </div>
         </div>
@@ -117,7 +135,8 @@ Nova encomenda
                         <tr>
                             <th class="d-none d-sm-table-cell">ID</th>
                             <th class="d-none d-sm-table-cell">Descrição</th>
-                            <th class="d-none d-sm-table-cell">Quantidade</th>
+                            <th class="d-none d-sm-table-cell">Quantidade 1 Equip.</th>
+                            <th class="d-none d-sm-table-cell">Quantidade total</th>
                             <th class="d-none d-sm-table-cell">Preço unid.</th>
                             <th class="d-none d-sm-table-cell">Total</th>
                             <th class="d-none d-sm-table-cell">Ações</th>
@@ -227,14 +246,35 @@ Nova encomenda
 </div>
 {% endblock %}
 {% block scripts %}
+<script>
+    $(document).ready(function() {
+        // Função para verificar o número de linhas na tabela cestoTable e desabilitar o campo quantdEquip
+        function checkCestoTableRows() {
+            var rowCount = $('#cestoTable tbody tr').length;
+            var quantdEquipInput = $('#quantdEquip');
+
+            // Se a tabela tiver pelo menos uma linha, desabilita o campo quantdEquip, caso contrário, habilita
+            quantdEquipInput.prop('disabled', rowCount > 0);
+        }
+
+        // Adiciona um ouvinte de eventos para verificar sempre que a tabela é modificada
+        $('#cestoTable').on('DOMSubtreeModified', function() {
+            checkCestoTableRows();
+        });
+
+        // Chama a função ao carregar a página para configurar inicialmente o estado do campo quantdEquip
+        checkCestoTableRows();
+    });
+</script>
 
 <script>
     function addQuantity() {
         var row = $(event.target).closest('tr');
-
+        var quantdEquip = $('#quantdEquip').val();
         var id_componente = row.find('td:first').text();
         var descricao = row.find('td:nth-child(3)').text();
-        var quantidade = row.find('input[name="quantidade"]').val();
+        var quantidade1equip = row.find('input[name="quantidade"]').val();
+        var quantidade = row.find('input[name="quantidade"]').val()* quantdEquip;
         var precoStr = row.find('td:nth-child(4)').text();
         var preco = parseFloat(precoStr.replace(/[^\d.]/g, ''));
 
@@ -248,13 +288,15 @@ Nova encomenda
             var existingRow = $('#cestoTable tbody').find('tr[data-id="' + id_componente + '"]');
 
             if (existingRow.length > 0) {
-                existingRow.find('td:nth-child(3)').text(parseFloat(existingRow.find('td:nth-child(3)').text()) + parseFloat(quantidade));
-                existingRow.find('td:nth-child(4)').text(preco);
-                existingRow.find('td:nth-child(5)').text(parseFloat(existingRow.find('td:nth-child(5)').text()) + total);
+                existingRow.find('td:nth-child(3)').text(parseFloat(existingRow.find('td:nth-child(3)').text()) + parseFloat(quantidade1equip));
+                existingRow.find('td:nth-child(4)').text(parseFloat(existingRow.find('td:nth-child(4)').text()) + parseFloat(quantidade));
+                existingRow.find('td:nth-child(5)').text(preco);
+                existingRow.find('td:nth-child(6)').text(parseFloat(existingRow.find('td:nth-child(6)').text()) + total);
             } else {
                 var newRow = '<tr data-id="' + id_componente + '">' +
                     '<td>' + id_componente + '</td>' +
                     '<td>' + descricao + '</td>' +
+                    '<td>' + quantidade1equip + '</td>' +
                     '<td>' + quantidade + '</td>' +
                     '<td>' + preco + '</td>' +
                     '<td>' + total.toFixed(2) + '</td>' +
@@ -275,10 +317,10 @@ Nova encomenda
 
     function removeQuantity(button) {
         var row = $(button).closest('tr');
-
+        var quantdEquip = $('#quantdEquip').val();
         var id_componente = row.find('td:first').text();
         var quantidadeRemover = parseFloat(row.find('input[name="quantidadeRemover"]').val());
-        var precoStr = row.find('td:nth-child(4)').text();
+        var precoStr = row.find('td:nth-child(5)').text();
         var preco = parseFloat(precoStr.replace(/[^\d.]/g, ''));
         var total = parseFloat(row.find('td:nth-child(5)').text());
 
@@ -287,12 +329,13 @@ Nova encomenda
         }
 
         if (!isNaN(preco)) {
-            var totalRemover = quantidadeRemover * preco;
+            var totalRemover = (quantidadeRemover * preco) * quantdEquip;
 
             row.find('td:nth-child(3)').text(parseFloat(row.find('td:nth-child(3)').text()) - quantidadeRemover);
-            row.find('td:nth-child(5)').text(parseFloat(row.find('td:nth-child(5)').text()) - totalRemover);
+            row.find('td:nth-child(4)').text(parseFloat(row.find('td:nth-child(4)').text()) - (quantidadeRemover * quantdEquip));
+            row.find('td:nth-child(6)').text(parseFloat(row.find('td:nth-child(6)').text()) - totalRemover);
 
-            if (parseFloat(row.find('td:nth-child(3)').text()) <= 0) {
+            if (parseFloat(row.find('td:nth-child(4)').text()) <= 0) {
                 row.remove();
             }
             recalculateOrderTotal();
@@ -305,7 +348,7 @@ Nova encomenda
         var orderTotal = 0;
 
         $('#cestoTable tbody tr').each(function () {
-            var total = parseFloat($(this).find('td:nth-child(5)').text());
+            var total = parseFloat($(this).find('td:nth-child(6)').text());
             if (!isNaN(total)) {
                 orderTotal += total;
             }
@@ -322,6 +365,7 @@ Nova encomenda
         var tipo_maoobra = $('#inputmaoobra').val();
         var horas_maoobra = $('#horas_maoobra').val();
         var imagem = $('#imagem').val();
+        var quantdEquip = $('#quantdEquip').val();
 
         var totalEncomenda = parseFloat($('.block-header-default span.mb-3.m-3.float-end').text().replace(/[^\d.]/g, ''));
         var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
@@ -331,9 +375,9 @@ Nova encomenda
 
             $('#cestoTable tbody tr').each(function () {
                 var idComponente = $(this).find('td:nth-child(1)').text();
-                var quantidade = $(this).find('td:nth-child(3)').text();
-                var preco = $(this).find('td:nth-child(4)').text();
-                var total = $(this).find('td:nth-child(5)').text();
+                var quantidade = $(this).find('td:nth-child(4)').text();
+                var preco = $(this).find('td:nth-child(5)').text();
+                var total = $(this).find('td:nth-child(6)').text();
 
                 equipamento_componente.push({
                     'id_componente': idComponente,
@@ -377,12 +421,6 @@ Nova encomenda
     }
 </script>
 <script>
-    function confirmDelete(tableName, recordId) {
-        if (confirm('Tem certeza de que deseja excluir este registro?')) {
-            window.location.href = `/delete_record/${tableName}/${recordId}/`;
-        }
-    }
-
     function criar_mao_obra(event) {
         event.preventDefault(); 
         var nometipomaoobra = $('#dropdown-content-form-tipomaoobra').val();
