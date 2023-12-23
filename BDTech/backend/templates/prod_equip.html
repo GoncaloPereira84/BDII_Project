@@ -248,21 +248,17 @@ Nova encomenda
 {% block scripts %}
 <script>
     $(document).ready(function() {
-        // Função para verificar o número de linhas na tabela cestoTable e desabilitar o campo quantdEquip
         function checkCestoTableRows() {
             var rowCount = $('#cestoTable tbody tr').length;
             var quantdEquipInput = $('#quantdEquip');
 
-            // Se a tabela tiver pelo menos uma linha, desabilita o campo quantdEquip, caso contrário, habilita
             quantdEquipInput.prop('disabled', rowCount > 0);
         }
 
-        // Adiciona um ouvinte de eventos para verificar sempre que a tabela é modificada
         $('#cestoTable').on('DOMSubtreeModified', function() {
             checkCestoTableRows();
         });
 
-        // Chama a função ao carregar a página para configurar inicialmente o estado do campo quantdEquip
         checkCestoTableRows();
     });
 </script>
