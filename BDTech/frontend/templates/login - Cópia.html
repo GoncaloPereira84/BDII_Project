@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    {% if erro %}
+        <p>Credenciais inválidas. Tente novamente.</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="username">Utilizador:</label><br>
+        <input type="text" id="username" name="username"><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"><br><br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>
