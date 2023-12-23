@@ -9,6 +9,8 @@ from core.utils import (
     get_top_x_equipamento
 )
 
+from django.http import HttpResponseRedirect
+
 def masterPageFront(request):
     return render(request, "masterPageFront.html")
 
@@ -70,7 +72,39 @@ def logout_utilizador(request):
             return HttpResponse("You're logged out.")
 
 
+# view login
+def fulllogin(request):
 
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM dologin_utilizador(%s, %s)",[username, password])
+            result = cursor.fetchone()        
+
+        if result and result[0] > 0:  # Verifica se há um resultado e se o id_utilizador não é 0
+            # Autenticação bem-sucedida
+            # implementar a lógica de login
+            id_utilizador, nome, email, id_perfil, nivel_acesso, msg = result
+
+            request.session["id_utilizador"] = id_utilizador
+            request.session["nome"] = nome
+            request.session["email"] = email    
+            request.session["nivel_acesso"] = nivel_acesso                        
+
+            # Redirecionar para uma página após o login bem-sucedido
+            return HttpResponseRedirect('/dashboard/')
+        
+        else:
+            # Credenciais inválidas
+            return render(request, 'login.html', {'erro': True})
+        
+    else:
+        return render(request, 'login.html')
+    
+
+     
 
 def equipamento_type(request, tipo):
     if tipo:
