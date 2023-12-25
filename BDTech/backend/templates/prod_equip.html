@@ -371,7 +371,7 @@ Nova encomenda
 
             $('#cestoTable tbody tr').each(function () {
                 var idComponente = $(this).find('td:nth-child(1)').text();
-                var quantidade = $(this).find('td:nth-child(4)').text();
+                var quantidade = $(this).find('td:nth-child(3)').text();
                 var preco = $(this).find('td:nth-child(5)').text();
                 var total = $(this).find('td:nth-child(6)').text();
 
@@ -391,6 +391,7 @@ Nova encomenda
                 'nhoras': horas_maoobra,
                 'total_encomenda': totalEncomenda,
                 'componentes': JSON.stringify(equipamento_componente),
+                'quantdEquip':quantdEquip,
                 'csrfmiddlewaretoken': csrfToken
             };
 

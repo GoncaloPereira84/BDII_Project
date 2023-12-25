@@ -1,0 +1,313 @@
+{% extends "masterPage.html" %}
+
+{% block title %}
+Nova encomenda
+{% endblock %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css'%}">
+
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <!-- Elements -->
+    <form id="encomendaForm" class="js-validation" method="POST" action="{% url 'create_producao_equip_existente' %}">
+        {% csrf_token %}
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Nova produção</h3>
+                <div class="block-options">
+                    <button type="button" class="btn btn-sm btn-success" onclick="saveProducao()">
+                        <i class="fa fa-fw fa-check"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Equipamentos</small></h3>
+            </div>
+            <div class="block-content block-content-full">
+                <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
+                    <thead>
+                        <tr>
+                            <th class="d-none d-sm-table-cell">ID</th>
+                            <th class="d-none d-sm-table-cell">Imagem</th>
+                            <th class="d-none d-sm-table-cell">Tipo Equip.</th>
+                            <th class="d-none d-sm-table-cell">Nome</th>
+                            <th class="d-none d-sm-table-cell">Stock</th>
+                            <th class="d-none d-sm-table-cell">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for equipamento in equipamentos %}
+                        <tr>
+                            <td>{{ equipamento.1 }}</td>
+                            <td><img src="{{ equipamento.0 }}" alt="Image" style="max-width: 47px; max-height: 47px;">
+                            </td>
+                            <td>{{ equipamento.2 }}</td>
+                            <td>{{ equipamento.3 }}</td>
+                            <td>{{ equipamento.4 }}</td>
+                            <td class="text-center">
+                                <div class="input-group">
+                                    <input type="number" name="quantidade" class="form-control form-control-sm"
+                                        value="1" min="1">
+                                    <button type="button" class="btn btn-success ms-2"
+                                        onclick="addQuantity()">Add</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="block-header block-header-default mt-3">
+                <h3 class="block-title">Equipamentos a produzir</small></h3>
+                <!-- <span class="mb-3 m-3 float-end text-danger">Total Encomenda: </span> -->
+            </div>
+
+            <div class="block-content block-content-full">
+                <table id="cestoTable" class="table table-sm table-vcenter">
+                    <thead>
+                        <tr>
+                            <th class="d-none d-sm-table-cell">ID</th>
+                            <th class="d-none d-sm-table-cell">Tipo Equip.</th>
+                            <th class="d-none d-sm-table-cell">Nome</th>
+                            <th class="d-none d-sm-table-cell">Quantidade</th>
+                            <th class="d-none d-sm-table-cell">Stock</th>
+                            <th class="d-none d-sm-table-cell">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="block block-rounded block-mode-loading-refresh">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Mão de obra</h3>
+                <div class="block-options">
+                    <div class="dropdown">
+                        <button type="button" class="btn-block-option" data-toggle="block-option"
+                            data-action="state_toggle" data-action-mode="demo">
+                            <i class="si si-refresh"></i>
+                        </button>
+                        <button type="button" class="btn btn-warning dropdown-toggle" id="dropdown-content-hero-primary"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-fw fa-plus"></i>Mão de obra
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdown-content-hero-primary">
+                            <form class="p-2" id="formCriarMaoObra">
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    <label class="form-label" for="dropdown-content-form-tipomaoobra">Nome mão de
+                                        obra<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="dropdown-content-form-tipomaoobra"
+                                        name="dropdown-content-form-tipomaoobra" placeholder="ex: Robótica">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label" for="val-select2">Custo Hora<span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" name="num_maoobra" id="num_maoobra"
+                                        class="form-control form-control-sm" value="1" min="1">
+                                </div>
+                                <button type="submit" class="btn btn-primary" id="btnCriarMaoObra"
+                                    onclick="criar_mao_obra(event)">Criar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="block-content block-content-full">
+                <div class="row items-push">
+                    <div class="col-lg-4">
+                        <p class="text-muted">
+                            Escolhe o tipo de mão de obra
+                        </p>
+                    </div>
+                    <div class="row" id="maoObraSection">
+                        <div class="col-lg-6 col-xl-5 mb-2">
+                            <label class="form-label" for="inputmaoobra">Tipo de mão de obra<span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <select class="js-select2 form-select" id="inputmaoobra" name="inputmaoobra"
+                                    style="width: 100%;" data-placeholder="Escolha um tipo de mão de obra...">
+                                    {% for tipomaoobra in tiposmaoobra %}
+                                    <option value="{{ tipomaoobra.0 }}">{{ tipomaoobra.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xl-5 mb-2">
+                            <label class="form-label" for="horas_maoobra">Horas gastas<span
+                                    class="text-danger">*</span></label>
+                            <input type="number" name="horas_maoobra" id="horas_maoobra"
+                                class="form-control form-control-sm" value="1" min="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    function addQuantity() {
+        var row = $(event.target).closest('tr');
+        var id_equipamento = row.find('td:first').text();
+        var tipoequipamento = row.find('td:nth-child(3)').text();
+        var quantidade = row.find('input[name="quantidade"]').val();
+        var nome = row.find('td:nth-child(4)').text();
+        var stock = row.find('td:nth-child(5)').text();
+
+        // console.log(row.find('td:nth-child(2)').text());
+        // console.log(row.find('td:nth-child(3)').text());
+        // console.log(row.find('td:nth-child(4)').text());
+        // console.log(row.find('td:nth-child(5)').text());
+        // console.log(row.find('td:nth-child(6)').text());
+
+        var existingRow = $('#cestoTable tbody').find('tr[data-id="' + id_equipamento + '"]');
+
+        if (existingRow.length > 0) {
+            existingRow.find('td:nth-child(4)').text(parseFloat(existingRow.find('td:nth-child(4)').text()) + parseFloat(quantidade));
+        } else {
+            var newRow = '<tr data-id="' + id_equipamento + '">' +
+                '<td>' + id_equipamento + '</td>' +
+                '<td>' + tipoequipamento + '</td>' +
+                '<td>' + nome + '</td>' +
+                '<td>' + quantidade + '</td>' +
+                '<td>' + stock + '</td>' +
+                '<td class="text-center">' +
+                '<div class="input-group">' +
+                '<input type="number" name="quantidadeRemover" class="form-control form-control-sm" value="1" min="1">' +
+                '<button type="button" class="btn btn-danger btn-sm" onclick="removeQuantity(this)">Remover</button></td></div></td>' +
+                '</tr>';
+
+            $('#cestoTable tbody').append(newRow);
+
+        }
+    }
+
+    function removeQuantity(button) {
+        var row = $(button).closest('tr');
+        var id_equipamento = row.find('td:first').text();
+        var quantidadeRemover = parseFloat(row.find('input[name="quantidadeRemover"]').val());
+
+        row.find('td:nth-child(4)').text(parseFloat(row.find('td:nth-child(4)').text()) - quantidadeRemover);
+
+        if (parseFloat(row.find('td:nth-child(4)').text()) <= 0) {
+            row.remove();
+        }
+    }
+
+    function saveProducao() {
+        var tipo_maoobra = $('#inputmaoobra').val();
+        var horas_maoobra = $('#horas_maoobra').val();
+        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+
+        var equipamento_componente = [];
+        $('#cestoTable tbody tr').each(function () {
+            var idEquipamento = $(this).find('td:nth-child(1)').text();
+            var id_tipoequipamento = $(this).find('td:nth-child(2)').text();
+            var quantidade = $(this).find('td:nth-child(4)').text();
+
+            equipamento_componente.push({
+                'id_equipamento': idEquipamento,
+                'quantidade': quantidade,
+            });
+        });
+
+        var requestData = {
+            'id_tipomaoobra': tipo_maoobra,
+            'nhoras': horas_maoobra,
+            'equipamentos': JSON.stringify(equipamento_componente),
+            'csrfmiddlewaretoken': csrfToken
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "create_producao_equip_existente" %}',
+            data: requestData,
+            success: function (response) {
+                console.log("respponseeeeeeeeeeeee:  ", response);
+                if (response == 0) {
+                    alert("A produção não foi iniciada, pois existem equipamentos onde faltam componentes em stock!!")
+                }
+                else {
+                    window.location.href = "/equipamento/list";
+                }
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+
+    }
+</script>
+
+<script>
+    function criar_mao_obra(event) {
+        event.preventDefault();
+        var nometipomaoobra = $('#dropdown-content-form-tipomaoobra').val();
+        var custo_hora = $('#num_maoobra').val();
+        $('#nome_tipomaoobra').val(nometipomaoobra);
+        var valorCampo = document.getElementById('dropdown-content-form-tipomaoobra').value;
+
+        if (valorCampo.trim() !== '') {
+            var requestData = {
+                'nome': nometipomaoobra,
+                'custo_hora': custo_hora,
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "criar_mao_obra" %}',
+                data: requestData,
+                success: function (response) {
+                    console.log(response);
+                    if (response.hasOwnProperty('id_tipomaoobra')) {
+                        var id_tipomaoobra = response.id_tipomaoobra;
+                        var nome = response.nome;
+                        var data = {
+                            id: id_tipomaoobra,
+                            text: nome
+                        };
+                        var newOption = new Option(data.text, data.id, false, false);
+                        $('#inputmaoobra').append(newOption).trigger('change');
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+
+        } else {
+            alert('Preencha os dois campos!');
+        }
+    }
+</script>
+
+<!-- jQuery (required for DataTables plugin) -->
+<script src="{% static 'assets/js/lib/jquery.min.js'%}"></script>
+
+<!-- Page JS Plugins -->
+<script src="{% static 'assets/js/plugins/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/dataTables.buttons.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-jszip/jszip.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/pdfmake.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/vfs_fonts.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.print.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.html5.min.js'%}"></script>
+
+<script src="{% static 'assets/js/pages/be_tables_datatables.min.js'%}"></script>
+
+
+{% endblock %}

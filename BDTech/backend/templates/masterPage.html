@@ -27,7 +27,7 @@
       <div class="bg-header-dark">
         <div class="content-header bg-white-5">
           <!-- Logo -->
-          <a class="fw-semibold text-white tracking-wide" href="/index">
+          <a class="fw-semibold text-white tracking-wide" href="/">
             <span class="smini-visible">
               B<span class="opacity-75">D</span>
             </span>
@@ -104,10 +104,40 @@
               </a>
             </li>
             <li class="nav-main-item">
-              <a class="nav-main-link" href="/equipamento/list">
+              <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
                 <i class="nav-main-link-icon fa fa-laptop"></i>
                 <span class="nav-main-link-name">Equipamentos</span>
               </a>
+              <ul class="nav-main-submenu">
+                <li class="nav-main-item">
+                  <a class="nav-main-link" href="/equipamento/list">
+                    <span class="nav-main-link-name">Listar</span>
+                  </a>
+                </li>
+                <li class="nav-main-item"> 
+                  <a class="nav-main-link" href="/equipamento/create">
+                    <span class="nav-main-link-name">Criar Equipamento</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-main-item">
+              <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                <i class="nav-main-link-icon fa fa-hammer"></i>
+                <span class="nav-main-link-name">Produção</span>
+              </a>
+              <ul class="nav-main-submenu">
+                <li class="nav-main-item">
+                  <a class="nav-main-link" href="/producao/list">
+                    <span class="nav-main-link-name">Listar</span>
+                  </a>
+                </li>
+                <li class="nav-main-item"> 
+                  <a class="nav-main-link" href="/producao/create/">
+                    <span class="nav-main-link-name">Criar Produção Equipamento existente</span>
+                  </a>
+                </li>
+              </ul>
             </li>
           </ul>
         </div>
