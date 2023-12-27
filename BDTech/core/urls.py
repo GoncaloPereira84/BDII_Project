@@ -1,5 +1,5 @@
 from django.urls import path
-from backend.views import dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod, criar_mao_obra, mango, form_create_componente, get_atributo_options, create_componente, create_equipamento, new_prod_existente, create_producao_equip_existente
+from backend.views import dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod, criar_mao_obra, mango, form_create_componente, get_atributo_options, create_componente, create_equipamento, new_prod_existente, create_producao_equip_existente, fn_populate_equipamento_comp_atrib
 from frontend.views import index, kanban, login_utilizador, logout_utilizador, equipamento_type, detalhes_equipamento, fulllogin
 
 
@@ -21,7 +21,7 @@ urlpatterns = [
     path('save_encomenda/', save_encomenda, name='save_encomenda'),
     path('criar_mao_obra/', criar_mao_obra, name='criar_mao_obra'),
     path('equipamento/<int:equipamento_id>/', detalhes_equipamento, name='detalhes_equipamento'),
-    path('mango/', mango),
+    path('mango/', fn_populate_equipamento_comp_atrib),
     path("componente/create", form_create_componente),
     path("get_atributo_options/", get_atributo_options, name='get_atributo_options'),
     path('create_componente/', create_componente, name='create_componente'),

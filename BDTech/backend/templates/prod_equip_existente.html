@@ -206,6 +206,10 @@ Nova encomenda
     }
 
     function saveProducao() {
+        if ($('#cestoTable tbody tr').length <= 0) {
+            alert("A tabela está vazia. Adicione equipamentos antes de guardar a produção.");
+            return;
+        }
         var tipo_maoobra = $('#inputmaoobra').val();
         var horas_maoobra = $('#horas_maoobra').val();
         var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();

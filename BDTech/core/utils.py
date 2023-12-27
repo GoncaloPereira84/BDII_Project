@@ -117,32 +117,6 @@ def get_all_tipoequipamento(id_utilizador, id_tipoequipamento):
 
     return result
 
-def getAtributoLista(var):
-    with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT * FROM getAtributoLista(%s);
-            """,
-            [var],
-        )
-        result = cursor.fetchall()
-
-    return result
-
-def getAtributoMarcaLista():
-    with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT * FROM getAtributoMarcaLista();
-            """
-        )
-        result = cursor.fetchone()
-
-        if result:
-            id_atributo, marca_valorlista = result
-            return id_atributo, marca_valorlista
-        else:
-            return None, None
         
 #################
 ##   inserts   ##
@@ -312,3 +286,20 @@ def fn_check_stock_producao(equipamentos_json):
         result = cursor.fetchone()
 
     return result[0]
+
+
+###########################
+## equipamento_comp_atrib##
+###########################
+def get_for_equipamento_comp_atrib(id_utilizador, id_equipamento):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM get_for_equipamento_comp_atrib(%s, %s);
+            """,
+            [id_utilizador, id_equipamento],
+        )
+        result = cursor.fetchall()
+    print(result)
+
+    return result

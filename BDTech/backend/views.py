@@ -17,8 +17,6 @@ from core.utils import (
     get_all_tipomaoobra,
     get_all_tipoequipamento,
     fn_tipomaoobra_inserir,
-    getAtributoLista,
-    getAtributoMarcaLista,
     fn_componente_inserir,
     fn_inserir_componente_atributos,
     fn_equipamento_inserir,
@@ -26,9 +24,13 @@ from core.utils import (
     get_all_equipamentos,
     fn_producao_equip_existente_inserir,
     fn_check_stock_producao,
+    get_for_equipamento_comp_atrib,
 )
 from core.utilsMongo import (
-    get_all_atributos,
+    get_tamanho_atributo,
+    get_tipo_atributo,
+    get_marca_atributo,
+    insert_batch_into_equipamento_comp_atrib,
 )
 
 
@@ -245,28 +247,49 @@ def criar_mao_obra(request):
         return JsonResponse({"error": "Método não permitido."})
     
 def mango(request):
-    x = get_all_atributos(request)
-    return HttpResponse(x)
+    texto_procurado = "Disco"
+    resultados = get_tamanho_atributo(request, texto_procurado)
+    
+    valores_encontrados = resultados.get("resultados")
+    id_atributo = resultados.get("id_atributo")
+
+    # Imprime os valores encontrados
+    print("Valores encontrados:")
+    print(valores_encontrados)
+
+    # Imprime os id_atributo
+    print("ID Atributo Array:")
+    print(id_atributo)
+
+    return HttpResponse(resultados)
         
 def form_create_componente(request):
-    id_atributo, marca_valorlista = getAtributoMarcaLista()
+    resultado_marca = get_marca_atributo(request)
 
     context = {
-        'id_atributo_marca': id_atributo,
-        'marca_valorlista': marca_valorlista
+        'id_atributo_marca': resultado_marca.get("id_atributo"),
+        'marca_valorlista': resultado_marca.get("resultados")
     }
     return render(request, "create_componente.html", context)
 
 def get_atributo_options(request):
     tpcomponente_value = request.GET.get('tpcomponente', None)
-    result = getAtributoLista(tpcomponente_value)
+    resultado_tipo = get_tipo_atributo(request, tpcomponente_value)
+    resultado_tamanho = get_tamanho_atributo(request, tpcomponente_value)
 
-    if result:
-        id_atributo_tipo, tipo_valorlista, id_atributo_tamanho, tamanho_valorlista = result[0]
-
-        tipo_valorlista_options = [{'value': chave, 'text': valor} for chave, valor in tipo_valorlista.items()]
-        tamanho_valorlista_options = [{'value': chave, 'text': valor} for chave, valor in tamanho_valorlista.items()]
-
+    if resultado_tipo and resultado_tamanho:
+        
+        id_atributo_tipo = resultado_tipo.get("id_atributo")
+        tipo_valorlista_options = resultado_tipo.get("resultados")
+        
+        id_atributo_tamanho = resultado_tamanho.get("id_atributo")
+        tamanho_valorlista_options = resultado_tamanho.get("resultados")
+        
+        print(id_atributo_tipo)
+        print(tipo_valorlista_options)
+        print(id_atributo_tamanho)
+        print(tamanho_valorlista_options)
+        
         return JsonResponse({
             'id_atributo_tipo': id_atributo_tipo,
             'tipo_valorlista_options': tipo_valorlista_options,
@@ -368,7 +391,7 @@ def create_producao(request, id_equipamento):
     )
     if "id_novo" in resultado_producao:
         id_producao = resultado_producao["id_novo"]
-        print("id_producao", id_producao)
+        fn_populate_equipamento_comp_atrib(request, id_equipamento)
     else:
         print("Erro a obter o id_producao")
 
@@ -398,4 +421,9 @@ def create_producao_equip_existente(request):
     else:
         return HttpResponse("Método não permitido.")
 
+
+def fn_populate_equipamento_comp_atrib(request, id_equipamento):    
+    result = get_for_equipamento_comp_atrib(request.session["id_utilizador"], id_equipamento)
     
+    resultado = insert_batch_into_equipamento_comp_atrib(request, result)
+      
