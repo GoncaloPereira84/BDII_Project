@@ -19,8 +19,20 @@ def get_all_atributos(request):
 
     for x in mydoc:
         print("\nmongooos", x)
-        return x
-    
+        return x    
+
+def get_marcas(request):
+    mycol = connection(request, "atributo")
+    myquery = {"descricao": "Marca"}
+    mydoc = mycol.find(myquery)
+
+    marcas_lista = []
+
+    for doc in mydoc:
+        marcas_lista.extend(doc.get('valorlista', []))
+
+    return marcas_lista
+
     
 def get_tipo_atributo(request, texto):
     mycol = connection(request, "atributo")
@@ -81,15 +93,12 @@ def get_atributo_mongo_id(request, id_atributo):
 def insert_batch_into_equipamento_comp_atrib(request, data):
     mycol = connection(request, "equipamento_comp_atrib")
 
-    # Percorra a lista de tuplas e insira cada tupla como um documento
     for tupla in data:
         id_equipamento, id_componente, id_atributo, valoratrib = tupla
 
-        # Obtenha o _id correspondente ao id_atributo da tabela atributo
         id_atributo_mongo = get_atributo_mongo_id(request, id_atributo)
 
         if id_atributo_mongo is not None:
-            # Crie um documento com os valores da tupla e o _id obtido
             document_to_insert = {
                 "id_equipamento": id_equipamento,
                 "id_componente": id_componente,
@@ -98,10 +107,8 @@ def insert_batch_into_equipamento_comp_atrib(request, data):
                 "valoratrib": valoratrib,
             }
 
-            # Insira o documento na coleção
             result = mycol.insert_one(document_to_insert)
 
-            # Verifique se a inserção foi bem-sucedida
             if not result.inserted_id:
                 return "Erro durante a inserção."
 

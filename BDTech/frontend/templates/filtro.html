@@ -15,33 +15,33 @@ Página Inicial
 {% block content %}
 
 <div class="row g-0 flex-md-grow-1 mt-7">
-    <div class="col-lg-3 col-xl-3 h100-scroll">
+    <div class="col-lg-3 col-xl-3">
         <div class="content">
             <!-- Toggle Side Content -->
             <div class="row g-sm d-lg-none push">
                 <div class="col-6">
-                    <!-- Toggle Sidebar 
-                   Layout API, functionality initialized in Template._uiApiLayout() -->
+                    <!-- Toggle Sidebar
+                    Layout API, functionality initialized in Template._uiApiLayout() -->
                     <button type="button" class="btn w-100 btn-primary" data-toggle="layout"
-                        data-action="sidebar_toggle">
+                            data-action="sidebar_toggle">
                         <i class="fa fa-bars opacity-50 me-1"></i> Menu
                     </button>
                 </div>
                 <div class="col-6">
                     <!-- Class Toggle, functionality initialized in Helpers.dmToggleClass() -->
                     <button type="button" class="btn w-100 btn-alt-primary" data-toggle="class-toggle"
-                        data-target="#side-content" data-class="d-none">
+                            data-target="#side-content" data-class="d-none">
                         <i class="fa fa-flask me-1"></i> Filters
                     </button>
                 </div>
             </div>
-            <!-- END Toggle Side Content 
+            <!-- END Toggle Side Content
 
             Search Travel -->
             <form class="push" id="search-form" method="POST">
                 <div class="mb-2">
                     <input type="text" class="form-control form-control-lg py-3 fs-base text-center"
-                        id="db-travel-location" name="db-travel-location" placeholder="Pesquisa">
+                           id="db-travel-location" name="db-travel-location" placeholder="Pesquisa">
                 </div>
             </form>
 
@@ -49,206 +49,127 @@ Página Inicial
 
              Side Content -->
             <div id="side-content" class="d-none d-lg-block push">
-                <!-- House Type -->
+                <!-- MARCA -->
                 <div class="block block-rounded">
                     <div class="block-header block-header-default">
                         <h3 class="block-title">
-                            <i class="fa fa-fw fa-home opacity-25 me-1"></i> Nome
+                            <!--   <i class="fa fa-fw fa-copyright opacity-25 me-1"></i>--> Marca
                         </h3>
                         <div class="block-options">
                             <button type="button" class="btn-block-option" data-toggle="block-option"
-                                data-action="content_toggle"></button>
+                                    data-action="content_toggle"></button>
                         </div>
                     </div>
                     <div class="block-content">
                         <div class="row g-sm items-push mb-4">
                             <div class="col-12">
-                                <div class="form-check form-block">
-                                    <input type="radio" class="form-check-input" id="db-travel-house-type-entire"
-                                        name="db-travel-house-type">
-                                    <label class="form-check-label" for="db-travel-house-type-entire">
-                                        <span class="d-block text-center">
-                                            <span class="d-block">
-                                                Entire Place
-                                            </span>
-                                        </span>
-                                    </label>
-                                </div>
+                                <input type="text" id="marca-search" class="form-control" placeholder="Pesquisar marca...">
                             </div>
-                            <div class="col-6">
-                                <div class="form-check form-block">
-                                    <input type="radio" class="form-check-input" id="db-travel-house-type-private"
-                                        name="db-travel-house-type">
-                                    <label class="form-check-label" for="db-travel-house-type-private">
-                                        <span class="d-block text-center">
-                                            Private Room
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check form-block">
-                                    <input type="radio" class="form-check-input" id="db-travel-house-type-shared"
-                                        name="db-travel-house-type">
-                                    <label class="form-check-label" for="db-travel-house-type-shared">
-                                        <span class="d-block text-center">
-                                            Shared Room
-                                        </span>
-                                    </label>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    {% for marca in marcas %}
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="{{ marca }}" name="{{ marca }}">
+                                        <label class="form-check-label" for="{{ marca }}">{{ marca }}</label>
+                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- END House Type 
+                <!-- END MARCA
 
-                 Trip -->
-                <div class="block block-rounded block-mode-hidden">
-                    <div class="block-header block-header-default">
-                        <h3 class="block-title">
-                            <i class="fa fa-fw fa-plane opacity-25 me-1"></i> Trip
-                        </h3>
-                        <div class="block-options">
-                            <button type="button" class="btn-block-option" data-toggle="block-option"
-                                data-action="content_toggle"></button>
-                        </div>
-                    </div>
-                    <div class="block-content">
-                        <div class="row g-sm items-push mb-4">
-                            <div class="col-6">
-                                <div class="form-check form-block">
-                                    <input type="radio" class="form-check-input" id="db-travel-trip-work"
-                                        name="db-travel-trip">
-                                    <label class="form-check-label" for="db-travel-trip-work">
-                                        <span class="d-block text-center">
-                                            Work
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check form-block">
-                                    <input type="radio" class="form-check-input" id="db-travel-trip-leisure"
-                                        name="db-travel-trip">
-                                    <label class="form-check-label" for="db-travel-trip-leisure">
-                                        <span class="d-block text-center">
-                                            Leisure
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- END Trip 
-
-                 Price Range -->
+                INTERVALO DE PRECO -->
                 <div class="block block-rounded">
                     <div class="block-header block-header-default">
                         <h3 class="block-title">
-                            <i class="fa fa-fw fa-dollar-sign opacity-25 me-1"></i> Price Range
+                            <!--  <i class="fa fa-fw fa-euro-sign opacity-25 me-1"></i>--> Preços
                         </h3>
                         <div class="block-options">
                             <button type="button" class="btn-block-option" data-toggle="block-option"
-                                data-action="content_toggle"></button>
+                                    data-action="content_toggle"></button>
                         </div>
                     </div>
                     <div class="block-content">
                         <div class="mb-4">
                             <input type="text" class="js-rangeslider" id="db-travel-price" name="db-travel-price"
-                                data-type="double" data-min="0" data-max="1000" data-from="0" data-to="1000"
-                                data-prefix="$">
+                                   data-type="double" data-min="0" data-max="{{maxpricefiltro}}" data-from="0" data-to="{{maxpricefiltro}}"
+                                   data-prefix="€">
                         </div>
                     </div>
                 </div>
-                <!-- END Price Range 
+                <!-- END INTERVALO DE PRECO
 
-                Amenities -->
-                <div class="block block-rounded">
+                RAM -->
+                <div class="block block-rounded block-mode-hidden">
                     <div class="block-header block-header-default">
                         <h3 class="block-title">
-                            <i class="fa fa-fw fa-box-open opacity-25 me-1"></i> Amenities
+                            <!-- <i class="fa fa-fw fa-plane opacity-25 me-1"></i>--> Memória RAM
                         </h3>
                         <div class="block-options">
                             <button type="button" class="btn-block-option" data-toggle="block-option"
-                                data-action="content_toggle"></button>
+                                    data-action="content_toggle"></button>
                         </div>
                     </div>
                     <div class="block-content">
                         <div class="row g-sm items-push mb-4">
-                            <div class="col-6">
+                            <div class="col-12">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="db-travel-amenities-kitchen"
-                                        name="db-travel-amenities-kitchen">
-                                    <label class="form-check-label" for="db-travel-amenities-kitchen">Kitchen</label>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-shampoo"
-                                        name="db-travel-amenities-shampoo">
-                                    <label class="form-check-label" for="db-travel-amenities-shampoo">Shampoo</label>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-heating"
-                                        name="db-travel-amenities-heating">
-                                    <label class="form-check-label" for="db-travel-amenities-heating">Heating</label>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input"
-                                        id="db-travel-amenities-airconditioning"
-                                        name="db-travel-amenities-airconditioning">
-                                    <label class="form-check-label" for="db-travel-amenities-airconditioning">Air
-                                        conditioning</label>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-washer"
-                                        name="db-travel-amenities-washer">
-                                    <label class="form-check-label" for="db-travel-amenities-washer">Washer</label>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-dryer"
-                                        name="db-travel-amenities-dryer">
-                                    <label class="form-check-label" for="db-travel-amenities-dryer">Dryer</label>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-wifi"
-                                        name="db-travel-amenities-wifi">
-                                    <label class="form-check-label" for="db-travel-amenities-wifi">Wifi</label>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-breakfast"
-                                        name="db-travel-amenities-breakfast">
-                                    <label class="form-check-label"
-                                        for="db-travel-amenities-breakfast">Breakfast</label>
+                                           name="db-travel-amenities-kitchen">
+                                    <label class="form-check-label" for="db-travel-amenities-kitchen">4 GB</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- END Amenities -->
+                <!-- END RAM
+
+                ARMAZENAMENTO -->
+                <div class="block block-rounded">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">
+                            <!-- <i class="fa fa-fw fa-box-open opacity-25 me-1"></i>--> Capacidade de Armazenamento
+                        </h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-toggle="block-option"
+                                    data-action="content_toggle"></button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <div class="row g-sm items-push mb-4">
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-kitchen"
+                                           name="db-travel-amenities-kitchen">
+                                    <label class="form-check-label" for="db-travel-amenities-kitchen">Kitchen</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-shampoo"
+                                           name="db-travel-amenities-shampoo">
+                                    <label class="form-check-label" for="db-travel-amenities-shampoo">Shampoo</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END ARMAZENAMENTO -->
+
             </div>
             <!-- END Side Content -->
         </div>
     </div>
-    <div class="col-lg-9 col-xl-8 mx-auto"> <!-- Ajuste a classe col-xl-8 conforme necessário -->
+    <div class="col-lg-9 col-xl-8 mx-auto">
+        <!-- Ajuste a classe col-xl-8 conforme necessário -->
         <!-- Main Content -->
         <div class="bg-body-extra-light mt-4 mb-4 p-4">
             <div class="container">
                 <div class="row">
-                    <h1 class="mt-4 mb-4">Portáteis</h1>
+                    <h1 class="mt-4 mb-4">{{nome}}</h1>
                     {% for equipamento in equipamentos %}
                     <!-- Adicione isso à seção onde você lista os equipamentos em filtro.html -->
                     <div class="col-md-3 mb-4">
@@ -256,9 +177,9 @@ Página Inicial
                             <img src="{{ equipamento.imagem }}" class="card-img-top" alt="{{ equipamento.nome }}">
                             <div class="card-body">
                                 <h5 class="card-title">{{ equipamento.nome }}</h5>
-                                <p class="card-text">Preço: € {{ equipamento.preco }}</p>
+                                <p class="card-text">Preço: € {{ equipamento.preco|slice:"1:" }}</p>
                                 <a href="{% url 'detalhes_equipamento' equipamento.id_equipamento %}"
-                                    class="btn btn-primary">Ver Detalhes</a>
+                                   class="btn btn-primary">Ver Detalhes</a>
                             </div>
                         </div>
                     </div>
@@ -268,18 +189,13 @@ Página Inicial
             </div>
         </div>
         <!-- END Main Content -->
-
     </div>
-
 </div>
 
-
 {% endblock %}
-
 {% block scripts %}
 <script src="{% static 'assets/js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'%}"></script>
 <script src="{% static 'assets/js/plugins/ion-rangeslider/js/ion.rangeSlider.min.js'%}"></script>
 <script src="{% static 'assets/js/plugins/slick-carousel/slick.min.js'%}"></script>
-
 <script>Dashmix.helpersOnLoad(['jq-datepicker', 'jq-rangeslider', 'jq-slick']);</script>
 {% endblock %}

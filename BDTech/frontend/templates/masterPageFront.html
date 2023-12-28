@@ -168,7 +168,7 @@
       <header id="page-header">
         <div class="content-header">
           <div>
-            <a class="fw-semibold tracking-wide" style="color: black;" href="index.html">
+            <a class="fw-semibold tracking-wide" style="color: black;" href="/">
               BDTech
             </a>
           </div>
@@ -248,9 +248,32 @@
 
 
       <div class="content">
+          <div class="bg-body-extra-light mt-5">
+              <div class="content py-3">
+                  <ul class="nav nav-pills justify-content-center justify-content-md-start">
+                      <li class="nav-item me-3">
+                          <a class="nav-link" href="/tipo/1">
+                              <i class="fa fa-laptop"></i> <span class="d-none d-md-inline ms-1">Portáteis</span>
+                          </a>
 
-        {% block content %}
-        {% endblock %}
+                      </li>
+                      <li class="nav-item me-3">
+                          <a class="nav-link" href="/tipo/2">
+                              <i class="fa fa-desktop"></i> <span class="d-none d-md-inline ms-1">Desktops</span>
+                          </a>
+
+                      </li>
+
+                      <li class="nav-item ms-md-auto">
+                          <a class="nav-link" href="db_booking.html">
+                              <i class="fa fa-star text-warning fa-fw"></i> <span class="d-none d-md-inline ms-1">Ofertas</span>
+                          </a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+          {% block content %}
+          {% endblock %}
       </div>
   </main>
 
@@ -258,12 +281,12 @@
   <footer id="page-footer" class="bg-body-light">
     <div class="content py-0">
       <div class="row fs-sm">
-        <div class="col-sm-6 order-sm-2 mb-1 mb-sm-0 text-center text-sm-end">
+      <!--  <div class="col-sm-6 order-sm-2 mb-1 mb-sm-0 text-center text-sm-end">
           Crafted with <i class="fa fa-heart text-danger"></i> by <a class="fw-semibold"
             href="https://1.envato.market/ydb" target="_blank">pixelcave</a>
-        </div>
+        </div>-->
         <div class="col-sm-6 order-sm-1 text-center text-sm-start">
-          <a class="fw-semibold" href="https://1.envato.market/r6y" target="_blank">Dashmix 5.1</a> &copy; <span
+          <a class="fw-semibold" href="https://1.envato.market/r6y" target="_blank">BDTech</a> &copy; <span
             data-toggle="year-copy"></span>
         </div>
       </div>

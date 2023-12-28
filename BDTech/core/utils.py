@@ -275,6 +275,18 @@ def fn_get_max_ndoc_by_tpdoc(id_utilizador, tpdoc):
     return result[0]
 
 
+
+def obter_maximo_preco_por_tipo(tipo_id):
+    with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT obter_maximo_preco_por_tipo(%s);
+                """,
+                [tipo_id],
+            )
+            result = cursor.fetchone()
+    return result[0]
+
 def fn_check_stock_producao(equipamentos_json):
     with connection.cursor() as cursor:
         cursor.execute(
