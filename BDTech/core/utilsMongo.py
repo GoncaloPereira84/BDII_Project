@@ -21,3 +21,15 @@ def get_all_atributos(request):
     for x in mydoc:
         print("\nmongooos", x)
         return x
+
+def get_marcas(request):
+    mycol = connection(request, "atributo")
+    myquery = {"descricao": "Marca"}
+    mydoc = mycol.find(myquery)
+
+    marcas_lista = []
+
+    for doc in mydoc:
+        marcas_lista.extend(doc.get('valorlista', []))
+
+    return marcas_lista

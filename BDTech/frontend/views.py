@@ -9,6 +9,9 @@ from core.utils import (
     get_top_x_equipamento,
     obter_maximo_preco_por_tipo
 )
+from core.utilsMongo import (
+    get_marcas
+)
 
 def masterPageFront(request):
     return render(request, "masterPageFront.html")
@@ -76,7 +79,12 @@ def equipamento_type(request, tipo):
         nome = "Portáteis" if tipo == 1 else "Desktops"
    
         maxpricefiltro = obter_maximo_preco_por_tipo(tipo)
-    return render(request, 'filtro.html', {'equipamentos': equipamentos, 'nome': nome, 'tipo_selecionado': tipo, 'maxpricefiltro': maxpricefiltro})
+        
+        marcas = get_marcas(request)
+        context = {
+        'marcas': marcas
+        }
+    return render(request, 'filtro.html', {'equipamentos': equipamentos, 'nome': nome, 'tipo_selecionado': tipo, 'maxpricefiltro': maxpricefiltro, **context})
 
 def detalhes_equipamento(request, equipamento_id):
     equipamento = get_detalhes_equipamento(equipamento_id)

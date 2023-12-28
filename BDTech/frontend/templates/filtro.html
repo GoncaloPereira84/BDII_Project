@@ -63,22 +63,16 @@ Página Inicial
                     <div class="block-content">
                         <div class="row g-sm items-push mb-4">
                             <div class="col-12">
-
                                 <input type="text" id="marca-search" class="form-control" placeholder="Pesquisar marca...">
-
                             </div>
                             <div class="col-12">
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-kitchen"
-                                           name="db-travel-amenities-kitchen">
-                                    <label class="form-check-label" for="db-travel-amenities-kitchen">ASUS</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-kitchen"
-                                           name="db-travel-amenities-kitchen">
-                                    <label class="form-check-label" for="db-travel-amenities-kitchen">Kitchen</label>
+                                    {% for marca in marcas %}
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="{{ marca }}" name="{{ marca }}">
+                                        <label class="form-check-label" for="{{ marca }}">{{ marca }}</label>
+                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
