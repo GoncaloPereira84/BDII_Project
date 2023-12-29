@@ -1,0 +1,28 @@
+{% extends "masterPageFront.html" %}
+
+{% block title %}
+Página Inicial
+{% endblock %}
+
+
+{% block content %}
+{% load static %}
+
+<!-- minhas_compras.html -->
+<div class="content">
+    {% if vendas %}
+        <ul>
+            {% for venda in vendas %}
+                <li>
+                    <strong>ID da Compra:</strong> {{ venda.id_venda}}<br>
+                    <strong>Data:</strong> {{ venda.2 }}<br>
+                    <strong>Total:</strong> {{ venda.3 }}<br>
+                    <strong>descrição:</strong> {{ venda.4 }}<br>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Não há compras disponíveis.</p>
+    {% endif %}
+</div>
+{% endblock %}

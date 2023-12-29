@@ -81,6 +81,34 @@ def get_equipamento_by_type(id_tipoequipamento):
     else:
         return None
 
+def get_equipamento_by_name(nome, tipo_equipamento):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM get_equipamento_by_name(%s,%s);
+            """,
+            [nome, tipo_equipamento],
+        )
+        result = cursor.fetchall()
+
+    if result:
+        json_result = json.loads(result[0][0])
+        return json_result
+    else:
+        return None
+
+def obter_compras_usuario(id_utilizador):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM obter_compras_usuario(%s);
+            """,
+            [id_utilizador]
+        )
+        result = cursor.fetchall()
+
+    return result
+
 def get_all_componente(id_utilizador, id_componente):
     with connection.cursor() as cursor:
         cursor.execute(

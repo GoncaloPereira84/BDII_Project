@@ -1,12 +1,15 @@
 from django.http import HttpResponse
 from django.db import connection
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Utilizador
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from core.utils import (
     get_detalhes_equipamento,
     get_equipamento_by_type,
-    get_top_x_equipamento
+    get_top_x_equipamento,
+    get_equipamento_by_name,
+    obter_compras_usuario
 )
 
 def masterPageFront(request):
@@ -82,4 +85,39 @@ def detalhes_equipamento(request, equipamento_id):
     equipamento = get_detalhes_equipamento(equipamento_id)
     return render(request, 'detalhes_equipamento.html', {'equipamento': equipamento[0]})
     
+
+
+def pesquisa_equipamento(request):
+    termo_pesquisa = request.GET.get('dm-booking-destination', '')
+    categoria = request.GET.get('categoria', '')
    
+    if categoria :
+        id_categoria = int(categoria)
+    else: 
+        id_categoria = 0
+    
+    # Obter equipamentos com base no termo de pesquisa e categoria
+    equipamentos = get_equipamento_by_name(termo_pesquisa, id_categoria)
+
+    # Se houver um único resultado, redirecione para a página de detalhes
+    if len(equipamentos) == 1:
+        equipamento_id = equipamentos[0]['id_equipamento']
+        return redirect('detalhes_equipamento', equipamento_id)
+
+    # Se houver mais de um resultado ou nenhum, exiba uma página de resultados de pesquisa
+    return render(request, 'filtro.html', {'equipamentos': equipamentos, 'termo_pesquisa': termo_pesquisa, 'categoria': id_categoria})
+
+
+
+def usercompras(request):
+    
+    utilizador = request.session["id_utilizador"]
+    vendas = obter_compras_usuario(utilizador)
+    resultado = [{'nome_utilizador': row[0],
+                'id_venda': row[1],
+                'data_venda': row[2],
+                'valortotal': row[3],
+                'tpdoc': row[4],
+                'ndoc': row[5]} for row in vendas]
+    return render(request, 'usercompras.html', {'vendas': resultado})
+    

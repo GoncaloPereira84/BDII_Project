@@ -24,8 +24,8 @@ Página Inicial
             </li>
 
             <li class="nav-item ms-md-auto">
-                <a class="nav-link" href="db_booking.html">
-                    <i class="fa fa-star text-warning fa-fw"></i> <span class="d-none d-md-inline ms-1">Ofertas</span>
+                <a class="nav-link" href="/usercompras/">
+                    <i class="fa fa-star text-warning fa-fw"></i> <span class="d-none d-md-inline ms-1">Minhas Compras</span>
                 </a>
             </li>
         </ul>
@@ -39,7 +39,7 @@ Página Inicial
         <h1 class="h3 fw-bold mb-2">Verifica as melhores ofertas</h1>
         <h2 class="h5 fw-normal text-muted">Explora a melhor loja online de tecnologia</h2>
     </div>
-    <form action="db_booking.html" method="POST" onsubmit="return false;">
+    <form action="{% url 'pesquisa_equipamento' %}" method="GET">
         <div class="mb-4 row">
             <div class="col-md-6">
                 <input type="text" class="form-control form-control-lg py-1 text-center" id="dm-booking-destination"
@@ -47,11 +47,10 @@ Página Inicial
             </div>
 
             <div class="col-md-2">
-                <select class="form-select" id="example-hosting-vps" name="example-hosting-vps">
+                <select class="form-select" id="categoria" name="categoria">
                     <option value="" disabled selected>Categoria</option>
                     <option value="1">Portáteis</option>
                     <option value="2">Desktops</option>
-
                 </select>
             </div>
 
@@ -59,9 +58,9 @@ Página Inicial
                 <button type="submit" class="btn btn-primary w-100">Pesquisa</button>
             </div>
         </div>
-
     </form>
 </div>
+
 <!-- END Search -->
 
 <!-- Travel Packages -->
