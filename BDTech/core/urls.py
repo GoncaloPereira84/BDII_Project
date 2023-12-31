@@ -1,6 +1,6 @@
 from django.urls import path
 from backend.views import dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod, criar_mao_obra, mango, form_create_componente, get_atributo_options, create_componente, create_equipamento, new_prod_existente, create_producao_equip_existente, fn_populate_equipamento_comp_atrib
-from frontend.views import index, kanban, login_utilizador, logout_utilizador, equipamento_type, detalhes_equipamento, fulllogin
+from frontend.views import index, kanban, login_utilizador, logout_utilizador, equipamento_type, detalhes_equipamento, fulllogin, aplicarfiltros, aplicarpreco
 
 
 urlpatterns = [
@@ -28,4 +28,6 @@ urlpatterns = [
     path('create_equipamento/', create_equipamento, name='create_equipamento'),
     path('create_producao_equip_existente/', create_producao_equip_existente, name='create_producao_equip_existente'),
     path('fulllogin/', fulllogin, name='login'),
+    path('aplicarfiltros/', aplicarfiltros, name='aplicarfiltros'),
+    path('aplicarpreco/', aplicarpreco, name='aplicarpreco')
 ]
