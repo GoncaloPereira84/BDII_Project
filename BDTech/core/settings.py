@@ -76,8 +76,8 @@ DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
        'NAME': 'BDTech',
-       'USER': 'sysadmin',
-       'PASSWORD': 'Acesso123$',
+       'USER': 'bdtechuser',
+       'PASSWORD': 'AcessoBD2023$',
        'HOST': '144.91.103.133',
        'PORT': '6432',
    }
