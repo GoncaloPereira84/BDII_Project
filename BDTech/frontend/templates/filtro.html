@@ -31,7 +31,7 @@ Página Inicial
                     <!-- Class Toggle, functionality initialized in Helpers.dmToggleClass() -->
                     <button type="button" class="btn w-100 btn-alt-primary" data-toggle="class-toggle"
                             data-target="#side-content" data-class="d-none">
-                        <i class="fa fa-flask me-1"></i> Filters
+                        <i class="fa fa-flask me-1"></i> Filtros
                     </button>
                 </div>
             </div>
@@ -67,10 +67,10 @@ Página Inicial
                             </div>
                             <div class="col-12">
                                 <div class="form-check">
-                                    {% for marca in marcas %}
+                                    {% for marca_item in marcas %}
                                     <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="{{ marca }}" name="{{ marca }}">
-                                        <label class="form-check-label" for="{{ marca }}">{{ marca }}</label>
+                                        <input type="checkbox" class="form-check-input" id="marca_checkbox_{{ marca_item.id_atributo }}" name="marca_checkbox" value="{{ marca_item.valor }}">
+                                        <label class="form-check-label" for="marca_checkbox_{{ marca_item.id_atributo }}">{{ marca_item.valor }}</label>
                                     </div>
                                     {% endfor %}
                                 </div>
@@ -102,7 +102,7 @@ Página Inicial
                 <!-- END INTERVALO DE PRECO
 
                 RAM -->
-                <div class="block block-rounded block-mode-hidden">
+                <div class="block block-rounded ">
                     <div class="block-header block-header-default">
                         <h3 class="block-title">
                             <!-- <i class="fa fa-fw fa-plane opacity-25 me-1"></i>--> Memória RAM
@@ -115,11 +115,12 @@ Página Inicial
                     <div class="block-content">
                         <div class="row g-sm items-push mb-4">
                             <div class="col-12">
+                                {% for ram_item in ram %}
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-kitchen"
-                                           name="db-travel-amenities-kitchen">
-                                    <label class="form-check-label" for="db-travel-amenities-kitchen">4 GB</label>
+                                    <input type="checkbox" class="form-check-input" id="ram_checkbox_{{ ram_item.id_atributo }}" name="ram_checkbox" value="{{ ram_item.valor }}">
+                                    <label class="form-check-label" for="ram_checkbox_{{ ram_item.id_atributo }}">{{ ram_item.valor }}</label>
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -140,25 +141,27 @@ Página Inicial
                     <div class="block-content">
                         <div class="row g-sm items-push mb-4">
                             <div class="col-12">
+                                {% for rom_item in rom %}
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-kitchen"
-                                           name="db-travel-amenities-kitchen">
-                                    <label class="form-check-label" for="db-travel-amenities-kitchen">Kitchen</label>
+                                    <input type="checkbox" class="form-check-input" id="rom_checkbox_{{ rom_item.id_atributo }}" name="rom_checkbox" value="{{ rom_item.valor }}">
+                                    <label class="form-check-label" for="rom_checkbox_{{ rom_item.id_atributo }}">{{ rom_item.valor }}</label>
                                 </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="db-travel-amenities-shampoo"
-                                           name="db-travel-amenities-shampoo">
-                                    <label class="form-check-label" for="db-travel-amenities-shampoo">Shampoo</label>
-                                </div>
+                                {% endfor %}
                             </div>
 
                         </div>
+
                     </div>
+
                 </div>
                 <!-- END ARMAZENAMENTO -->
-
+                <!-- Adicione o botão aqui -->
+                <div class="col-12 mt-4">
+                    <button type="button" class="btn btn-primary">Aplicar Filtros</button>
+                </div>
+                <div class="col-12 mt-4">
+                    <label id="resultadoFiltrosLabel"></label>
+                </div>
             </div>
             <!-- END Side Content -->
         </div>
@@ -170,21 +173,20 @@ Página Inicial
             <div class="container">
                 <div class="row">
                     <h1 class="mt-4 mb-4">{{nome}}</h1>
-                    {% for equipamento in equipamentos %}
-                    <!-- Adicione isso à seção onde você lista os equipamentos em filtro.html -->
-                    <div class="col-md-3 mb-4">
-                        <div class="card">
-                            <img src="{{ equipamento.imagem }}" class="card-img-top" alt="{{ equipamento.nome }}">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ equipamento.nome }}</h5>
-                                <p class="card-text">Preço: € {{ equipamento.preco|slice:"1:" }}</p>
-                                <a href="{% url 'detalhes_equipamento' equipamento.id_equipamento %}"
-                                   class="btn btn-primary">Ver Detalhes</a>
+                    <div id="equipamentos-container" class="row">
+                        {% for equipamento in equipamentos %}
+                        <div class="col-md-3 mb-4">
+                            <div class="card">
+                                <img src="{{ equipamento.imagem }}" class="card-img-top" alt="{{ equipamento.nome }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ equipamento.nome }}</h5>
+                                    <p class="card-text">Preço: € {{ equipamento.preco|slice:"1:" }}</p>
+                                    <a href="{% url 'detalhes_equipamento' equipamento.id_equipamento %}" class="btn btn-primary">Ver Detalhes</a>
+                                </div>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
-
-                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -197,5 +199,199 @@ Página Inicial
 <script src="{% static 'assets/js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'%}"></script>
 <script src="{% static 'assets/js/plugins/ion-rangeslider/js/ion.rangeSlider.min.js'%}"></script>
 <script src="{% static 'assets/js/plugins/slick-carousel/slick.min.js'%}"></script>
+
+<script>
+    {% for equipamento in equipamentos %}
+    var tipo = "{{ equipamento.tipo_equipamento }}";
+    {% endfor %}
+
+    var tipo_equi;
+    if (tipo === 'Portatil') {
+        tipo_equi = 1;
+    } else {
+        tipo_equi = 2;
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    $("#db-travel-price").ionRangeSlider({
+        onFinish: function (data) {
+            var filtrosSelecionados = {
+                precos: {
+                    min: 0,
+                    max: 0
+                }
+            };
+                // Obter o intervalo de preços
+            filtrosSelecionados.precos.min = $("#db-travel-price").data("from");
+            filtrosSelecionados.precos.max = $("#db-travel-price").data("to");
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'aplicarpreco' %}",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({
+                    precos: filtrosSelecionados.precos,
+                    tipo: tipo_equi
+                }),
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+                },
+                success: function (response) {
+                    if (response.resultados.length > 0) {
+                        // Limpar a exibição atual de equipamentos
+                        $('#equipamentos-container').empty();
+
+                        // Adicionar os novos equipamentos à exibição
+                        response.resultados.forEach(function (equipamento) {
+                            var detalhesUrl = '{% url "detalhes_equipamento" 1 %}'.replace('1', equipamento.id_equipamento);
+                            var equipamentoHtml = `
+                        <div class="col-md-3 mb-4">
+                            <div class="card">
+                                <img src="${equipamento.imagem}" class="card-img-top" alt="${equipamento.nome}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${equipamento.nome}</h5>
+                                    <p class="card-text">Preço: € ${equipamento.preco.slice(1)}</p>
+                                  <a href="${detalhesUrl}" class="btn btn-primary">Ver Detalhes</a>
+
+                                      </div>
+                            </div>
+                        </div>`;
+                            $('#equipamentos-container').append(equipamentoHtml);
+                        });
+                    } else {
+                        // Se não houver resultados, exibir uma mensagem ou realizar outra ação apropriada
+                        alert("Nenhum equipamento encontrado com os filtros selecionados.");
+                    }
+                },
+                error: function (error) {
+                    alert("Erro ao aplicar filtros:\n" + error.responseText);
+                }
+            });
+
+        }
+    });
+
+    $(document).ready(function () {
+        $('#side-content').on('click', '.btn-primary', function () {
+            var filtrosSelecionados = {
+                marcas: [],
+                precos: {
+                    min: 0,
+                    max: 0
+                },
+                ram: [],
+                rom: []
+            };
+
+            //obter marcas selecionadas
+            $('input[name="marca_checkbox"]:checked').each(function () {
+                filtrosSelecionados.marcas.push({
+                    id_atributo: $(this).attr('id').split('_')[2],
+                    valor: $(this).val()
+                });
+            });
+
+            // Obter o intervalo de preços
+            filtrosSelecionados.precos.min = $("#db-travel-price").data("from");
+            filtrosSelecionados.precos.max = $("#db-travel-price").data("to");
+
+            //obter ram selecionadas
+            $('input[name="ram_checkbox"]:checked').each(function () {
+                filtrosSelecionados.ram.push({
+                    id_atributo: $(this).attr('id').split('_')[2],
+                    valor: $(this).val()
+                });
+            });
+
+            //obter rom selecionados
+            $('input[name="rom_checkbox"]:checked').each(function () {
+                filtrosSelecionados.rom.push({
+                    id_atributo: $(this).attr('id').split('_')[2],
+                    valor: $(this).val()
+                });
+            });
+         //   alert("filtros selecionados " + filtrosSelecionados);
+            $.ajax({
+                type: "POST",
+                url: "{% url 'aplicarfiltros' %}",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({
+                    marcas: filtrosSelecionados.marcas,
+                    precos: filtrosSelecionados.precos,
+                    ram: filtrosSelecionados.ram,
+                    rom: filtrosSelecionados.rom,
+                    tipo: tipo_equi
+                }),
+                beforeSend: function (xhr, settings) {
+
+                    xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+                },
+                success: function (response) {
+                    if (response.resultados.length > 0) {
+                        // Limpar a exibição atual de equipamentos
+                        $('#equipamentos-container').empty();
+
+                        // Adicionar os novos equipamentos à exibição
+                        response.resultados.forEach(function (equipamento) {
+                            var detalhesUrl = '{% url "detalhes_equipamento" 1 %}'.replace('1', equipamento.id_equipamento);
+                            var equipamentoHtml = `
+                            <div class="col-md-3 mb-4">
+                                <div class="card">
+                                    <img src="${equipamento.imagem}" class="card-img-top" alt="${equipamento.nome}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${equipamento.nome}</h5>
+                                        <p class="card-text">Preço: € ${equipamento.preco.slice(1)}</p>
+                                      <a href="${detalhesUrl}" class="btn btn-primary">Ver Detalhes</a>
+
+                                          </div>
+                                </div>
+                            </div>`;
+                            $('#equipamentos-container').append(equipamentoHtml);
+                        });
+                    } else {
+                        // Se não houver resultados, exibir uma mensagem ou realizar outra ação apropriada
+                        alert("Nenhum equipamento encontrado com os filtros selecionados.");
+                    }
+                },
+                error: function (error) {
+                    alert("Erro ao aplicar filtros:\n" + error.responseText);
+                }
+            });
+        });
+    });
+
+    var marcasOriginais = $('.form-check');
+
+
+    // Função para lidar com a pesquisa dinâmica
+    $('#marca-search').on('input', function () {
+        var searchTerm = $(this).val().toLowerCase();
+
+        // Oculta todas as marcas
+        marcasOriginais.hide();
+
+        // Mostra apenas as marcas que correspondem à pesquisa
+        marcasOriginais.filter(function () {
+            var marca = $(this).text().toLowerCase();
+            return marca.startsWith(searchTerm) || marca.includes(' ' + searchTerm);
+        }).show();
+    });
+
+</script>
+
 <script>Dashmix.helpersOnLoad(['jq-datepicker', 'jq-rangeslider', 'jq-slick']);</script>
 {% endblock %}

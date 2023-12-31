@@ -30,6 +30,18 @@ def get_all_equipamentos(id_utilizador, id_equipamento):
 
     return result
 
+def get_equipamentos_by_id(id_equipamento,tipo):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM get_equipamentos_by_ids(%s,%s);
+            """,
+            [id_equipamento,tipo],
+        )
+        result = cursor.fetchall()
+
+    return result
+
 def get_detalhes_equipamento(id_equipamento):
     with connection.cursor() as cursor:
         cursor.execute(
@@ -74,9 +86,8 @@ def get_equipamento_by_type(id_tipoequipamento):
         )
         result = cursor.fetchall()
 
-    if result:
+    if result and result[0] and result[0][0]:
         json_result = json.loads(result[0][0])
-
         return json_result
     else:
         return None
@@ -304,7 +315,7 @@ def obter_maximo_preco_por_tipo(tipo_id):
     with connection.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT obter_maximo_preco_por_tipo(%s);
+                SELECT * FROM obter_maximo_preco_por_tipo(%s);
                 """,
                 [tipo_id],
             )
@@ -338,4 +349,29 @@ def get_for_equipamento_comp_atrib(id_utilizador, id_equipamento):
         result = cursor.fetchall()
     print(result)
 
+    return result
+
+def filtrar_equipamentos_por_preco(id_equipamento, min_price, max_price):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM filtrar_equipamentos_por_preco(%s, %s::money, %s::money);
+            """,
+            [id_equipamento, min_price, max_price],
+        )
+        result = cursor.fetchall()
+    print(result)
+
+    return result
+
+def get_equipamentos_by_preco(min_price, max_price, tipo):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM get_equipamentos_by_preco(%s::money, %s::money,%s);
+            """,
+            [min_price, max_price, tipo],
+        )
+        result = cursor.fetchall()
+    print(result)
     return result

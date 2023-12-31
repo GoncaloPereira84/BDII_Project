@@ -7,13 +7,23 @@ from core.utils import (
     get_detalhes_equipamento,
     get_equipamento_by_type,
     get_top_x_equipamento,
-    obter_maximo_preco_por_tipo
+    obter_maximo_preco_por_tipo,
+    get_equipamentos_by_id,
+    filtrar_equipamentos_por_preco,
+    get_equipamentos_by_preco
 )
 from core.utilsMongo import (
-    get_marcas
+    get_marcas,
+    get_ram,
+    get_rom,
+    aplicar_filtros
+
 )
 
 from django.http import HttpResponseRedirect
+from decimal import Decimal
+
+import json
 
 def masterPageFront(request):
     return render(request, "masterPageFront.html")
@@ -114,12 +124,168 @@ def equipamento_type(request, tipo):
    
         maxpricefiltro = obter_maximo_preco_por_tipo(tipo)
         
+        #get marcas
         marcas = get_marcas(request)
+        #get ram
+        ram = get_ram(request)
+        #get rom
+        rom = get_rom(request)
+        
         context = {
-        'marcas': marcas
+        'marcas': marcas,
+        'ram': ram,
+        'rom': rom
         }
+
     return render(request, 'filtro.html', {'equipamentos': equipamentos, 'nome': nome, 'tipo_selecionado': tipo, 'maxpricefiltro': maxpricefiltro, **context})
+
 
 def detalhes_equipamento(request, equipamento_id):
     equipamento = get_detalhes_equipamento(equipamento_id)
     return render(request, 'detalhes_equipamento.html', {'equipamento': equipamento[0]})
+
+
+def aplicarpreco(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        precos = data.get('precos', {})
+        tipo = data.get('tipo')
+        min_price = precos.get('min', 0)
+        max_price = precos.get('max', 1)
+        min_price_decimal = Decimal(min_price)
+        max_price_decimal = Decimal(max_price)
+
+            # Formatando como uma string monetária
+        min_price_str = '${:,.0f}'.format(min_price_decimal)
+        max_price_str = '${:,.0f}'.format(max_price_decimal)
+
+        if len(str(min_price)) <= 6:
+           min_price_str = min_price_str.replace(',', '.')
+
+        if len(str(max_price)) <= 6:
+           max_price_str = max_price_str.replace(',', '.')
+        print("ids_equipamento", min_price_str,max_price_str,tipo)
+        ids_equipamento = get_equipamentos_by_preco(min_price_str, max_price_str,tipo)  
+        print("ids_equipamento", ids_equipamento)
+        if ids_equipamento is not None:
+            # Obter os ids como uma lista
+            ids_equipamento = [item[0] for item in ids_equipamento]
+        else:
+            # Se ids_equipamento for None, definir como uma lista vazia
+            ids_equipamento = []
+        
+        equipamentos_filtrados = get_equipamentos_by_id(ids_equipamento, tipo)
+        equipamentos_dict_list = [
+                {  
+                    'id_equipamento': equipamento[1],
+                    'nome':equipamento[3] ,
+                    'preco': equipamento[5],
+                    'imagem': equipamento[0],
+                }
+                for equipamento in equipamentos_filtrados
+        ]
+
+        equipamentos_serializados = [
+                {
+                    'id_equipamento': equipamento['id_equipamento'],
+                    'nome': equipamento['nome'],
+                    'preco': equipamento['preco'],
+                    'imagem':equipamento['imagem']
+                }
+                for equipamento in equipamentos_dict_list
+        ]
+      
+        return JsonResponse({
+                'resultados': equipamentos_serializados,
+        })
+    else:
+        return JsonResponse({
+            'error': 'Método não permitido. Use POST para esta rota.',
+        }, status=405)
+
+
+    
+
+def aplicarfiltros(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        
+        marcas = data.get('marcas', [])
+        precos = data.get('precos', {})
+        ram = data.get('ram', [])
+        rom = data.get('rom', [])
+        tipo = data.get('tipo')
+        print("wxem", marcas, precos,ram, rom,tipo)
+        resultados = aplicar_filtros(request, marcas=marcas, precos=precos, ram=ram, rom=rom)
+        print("wxem", resultados)  
+        if resultados:
+            ids_equipamento = resultados
+            
+            equipamentos_filtrados = get_equipamentos_by_id(ids_equipamento, tipo)   
+           
+            equipamentos_ids = [equipamento[1] for equipamento in equipamentos_filtrados]
+
+            print("equipamentos_ids", equipamentos_ids)   
+            min_price = precos.get('min', 0)
+            max_price = precos.get('max', 1)
+
+            min_price_decimal = Decimal(min_price)
+            max_price_decimal = Decimal(max_price)
+
+            # Formatando como uma string monetária
+            min_price_str = '${:,.0f}'.format(min_price_decimal)
+            max_price_str = '${:,.0f}'.format(max_price_decimal)
+
+            if len(str(min_price)) <= 6:
+                min_price_str = min_price_str.replace(',', '.')
+
+            if len(str(max_price)) <= 6:
+                max_price_str = max_price_str.replace(',', '.')
+
+            if max_price_decimal >= 1000000:
+                max_price_str = '${:,.0f}'.format(max_price_decimal).replace(',', '')
+
+                print("max_price_str", max_price_str) 
+            if len(str(max_price_decimal)) > 6:
+                min_price_str = '${:,.0f}'.format(min_price_decimal).replace(',', '').replace('$', '$.')
+
+
+
+              
+            equipamentos_filtrados = filtrar_equipamentos_por_preco(equipamentos_ids, min_price_str, max_price_str)    
+    
+             
+
+            equipamentos_dict_list = [
+                {  
+                    'id_equipamento': equipamento[1],
+                    'nome':equipamento[3] ,
+                    'preco': equipamento[5],
+                    'imagem': equipamento[0],
+                }
+                for equipamento in equipamentos_filtrados
+            ]
+
+         
+            # Continuação do seu código...
+            equipamentos_serializados = [
+                {
+                    'id_equipamento': equipamento['id_equipamento'],
+                    'nome': equipamento['nome'],
+                    'preco': equipamento['preco'],
+                    'imagem':equipamento['imagem']
+                }
+                for equipamento in equipamentos_dict_list
+            ]
+            print("wxem", equipamentos_serializados)
+            return JsonResponse({
+                'resultados': equipamentos_serializados,
+            })
+        else:
+            return JsonResponse({
+                'resultados': [],
+            })
+    else:
+        return JsonResponse({
+            'error': 'Método não permitido. Use POST para esta rota.',
+        }, status=405)

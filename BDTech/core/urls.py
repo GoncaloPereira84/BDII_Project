@@ -30,7 +30,9 @@ from frontend.views import(
     logout_utilizador, 
     equipamento_type, 
     detalhes_equipamento, 
-    fulllogin
+    fulllogin,
+    aplicarfiltros, 
+    aplicarpreco
 )
 
 urlpatterns = [
@@ -62,4 +64,6 @@ urlpatterns = [
     path("compra/list/fr", list_compra_FR_doc, name='list_compra_FR_doc'),
     path('receive_order/<int:record_id>/', receber_encomenda, name='receber_encomenda'),
     path("import_componente_json/", import_componente_json, name='import_componente_json'),
+    path('aplicarfiltros/', aplicarfiltros, name='aplicarfiltros'),
+    path('aplicarpreco/', aplicarpreco, name='aplicarpreco')
 ]
