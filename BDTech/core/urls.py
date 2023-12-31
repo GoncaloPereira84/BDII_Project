@@ -10,7 +10,6 @@ from backend.views import(
     save_encomenda, 
     new_prod, 
     criar_mao_obra, 
-    mango, 
     form_create_componente, 
     get_atributo_options, 
     create_componente, 
