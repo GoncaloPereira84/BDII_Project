@@ -84,6 +84,15 @@ def new_prod_existente(request):
 
 
 def dashboard(request):
+
+    # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
+        pass
+    else:
+        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
+        return redirect('/fulllogin/')
+    # --------------------------
+
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM get_user_and_sales_counts();")
         result = cursor.fetchone()
@@ -102,6 +111,10 @@ def dashboard(request):
 
 def error404(request):
     return render(request, "404.html")
+
+def new_utilizador(request):
+    html = "<html><body><h1>Criação de Novo Utilizador</h1></html>"
+    return HttpResponse(html)
 
 
 def function_exists(table_name):
