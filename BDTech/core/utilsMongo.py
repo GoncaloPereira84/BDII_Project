@@ -94,6 +94,7 @@ def insert_batch_into_equipamento_comp_atrib(request, data):
     mycol = connection(request, "equipamento_comp_atrib")
 
     for tupla in data:
+        print("tupla:", tupla)
         id_equipamento, id_componente, id_atributo, valoratrib = tupla
 
         id_atributo_mongo = get_atributo_mongo_id(request, id_atributo)

@@ -1,11 +1,42 @@
 from django.urls import path
-from backend.views import dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod, criar_mao_obra, mango, form_create_componente, get_atributo_options, create_componente, create_equipamento, new_prod_existente, create_producao_equip_existente, fn_populate_equipamento_comp_atrib
-from frontend.views import index, kanban, login_utilizador, logout_utilizador, equipamento_type, detalhes_equipamento, fulllogin
-
+from backend.views import(
+    dashboard, 
+    generic_list, 
+    error404, 
+    delete_record, 
+    edit_record, 
+    edit_componente, 
+    new_order, 
+    save_encomenda, 
+    new_prod, 
+    criar_mao_obra, 
+    mango, 
+    form_create_componente, 
+    get_atributo_options, 
+    create_componente, 
+    create_equipamento, 
+    new_prod_existente, 
+    create_producao_equip_existente, 
+    fn_populate_equipamento_comp_atrib,
+    list_compra_FR_doc,
+    receber_encomenda,
+    import_componente_json,
+    import_componente_html,
+)
+from frontend.views import(
+    index, 
+    kanban,
+    login_utilizador, 
+    logout_utilizador, 
+    equipamento_type, 
+    detalhes_equipamento, 
+    fulllogin
+)
 
 urlpatterns = [
     path("dashboard/", dashboard),
     path("order/create/", new_order),
+    path("componente/import/", import_componente_html),
     path("equipamento/create/", new_prod),
     path("producao/create/", new_prod_existente),
     path("404/", error404),
@@ -28,4 +59,7 @@ urlpatterns = [
     path('create_equipamento/', create_equipamento, name='create_equipamento'),
     path('create_producao_equip_existente/', create_producao_equip_existente, name='create_producao_equip_existente'),
     path('fulllogin/', fulllogin, name='login'),
+    path("compra/list/fr", list_compra_FR_doc, name='list_compra_FR_doc'),
+    path('receive_order/<int:record_id>/', receber_encomenda, name='receber_encomenda'),
+    path("import_componente_json/", import_componente_json, name='import_componente_json'),
 ]

@@ -117,7 +117,6 @@ def get_all_tipoequipamento(id_utilizador, id_tipoequipamento):
 
     return result
 
-        
 #################
 ##   inserts   ##
 #################
@@ -242,7 +241,19 @@ def fn_producao_equip_existente_inserir(id_utilizador, producao_json, equipament
         print(result)
 
         return resultado(result)
+    
+def inserir_componentes_atributos(compra_json):
 
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM inserir_componentes_atributos(%s);
+            """,
+            [compra_json],
+        )
+        result = cursor.fetchone()
+
+        return result
 
 #################
 ##   updates   ##
@@ -258,6 +269,19 @@ def fn_update_stock_componente(id_utilizador, id_componente, quantidade_stock):
         result = cursor.fetchone()
 
     return resultado(result)
+
+def atualizar_encomenda_tpdoc(id_utilizador, id_compra):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM atualizar_encomenda_tpdoc(%s, %s);
+            """,
+            [id_utilizador, id_compra],
+        )
+        result = cursor.fetchone()
+        print("abc",result[0])
+
+    return result[0]
 
 #################
 ## single gets ##

@@ -1,0 +1,134 @@
+{% extends "masterPage.html" %}
+
+{% block title %}
+Nova encomenda
+{% endblock %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="{% static 'assets/js/plugins/simplemde/simplemde.min.css'%}">
+
+
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <form id="encomendaForm" class="js-validation" method="POST" action="{% url 'import_componente_json' %}">
+        {% csrf_token %}
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Importar Componentes</h3>
+                <div class="block-options">
+                    <button type="button" class="btn btn-sm btn-success" onclick="saveEquipamento()">
+                        <i class="fa fa-fw fa-check"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Editor de Json</h3>
+            </div>
+            <div class="block-content">
+                <div class="mb-4">
+                    <textarea name="jsonstring" id="jsonstring" class="form-control" placeholder='"{
+                        "componentes":[
+                           {
+                              "id_estado":1,
+                              "descricao":"Componente 1",
+                              "preco":19.99,
+                              "quantidade_stock":100,
+                              "imagem":"caminho/para/imagem1.jpg",
+                              "pcusto_medio":25.0,
+                              "atributo":[
+                                 {
+                                    "id_atributo":1,
+                                    "valoratrib":"Atributo1_valor1"
+                                 },
+                                 {
+                                    "id_atributo":2,
+                                    "valoratrib":"Atributo1_valor2"
+                                 }
+                              ]
+                           },
+                           {
+                              "id_estado":2,
+                              "descricao":"Componente 2",
+                              "preco":29.99,
+                              "quantidade_stock":50,
+                              "imagem":"caminho/para/imagem2.jpg",
+                              "pcusto_medio":25.0,
+                              "atributo":[
+                                 {
+                                    "id_atributo":1,
+                                    "valoratrib":"Atributo2_valor1"
+                                 },
+                                 {
+                                    "id_atributo":3,
+                                    "valoratrib":"Atributo2_valor3"
+                                 }
+                              ]
+                           }
+                        ]
+                     }"' rows="15"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+{% block scripts %}
+
+<script>
+    function saveEquipamento() {
+        var json = $('#jsonstring').val();
+        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+
+        if (!json.trim()) {
+            alert("Por favor, insira um JSON válido.");
+            return;
+        }
+
+        var requestData = {
+            'json': json,
+            'csrfmiddlewaretoken': csrfToken
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "import_componente_json" %}',
+            data: requestData,
+            success: function (response) {
+                alert(response);
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+</script>
+
+<script src="{% static 'assets/js/lib/jquery.min.js'%}"></script>
+
+<script src="{% static 'assets/js/plugins/simplemde/simplemde.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/ckeditor/ckeditor.js'%}"></script>
+
+<script>Dashmix.helpersOnLoad(['js-ckeditor', 'js-simplemde']);</script>
+
+<script src="{% static 'assets/js/plugins/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/dataTables.buttons.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-jszip/jszip.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/pdfmake.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/vfs_fonts.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.print.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.html5.min.js'%}"></script>
+
+<script src="{% static 'assets/js/pages/be_tables_datatables.min.js'%}"></script>
+
+
+
+{% endblock %}

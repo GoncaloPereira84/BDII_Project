@@ -63,7 +63,6 @@ def login_utilizador(request):
 
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
-
 @csrf_exempt
 def logout_utilizador(request):
             try:
@@ -74,7 +73,6 @@ def logout_utilizador(request):
             except KeyError:
                 pass
             return HttpResponse("You're logged out.")
-
 
 # view login
 def fulllogin(request):
@@ -95,20 +93,19 @@ def fulllogin(request):
             request.session["id_utilizador"] = id_utilizador
             request.session["nome"] = nome
             request.session["email"] = email    
+            request.session["id_perfil"] = id_perfil    
             request.session["nivel_acesso"] = nivel_acesso                        
 
-            # Redirecionar para uma página após o login bem-sucedido
-            return HttpResponseRedirect('/dashboard/')
+            if id_perfil == 2:
+                return HttpResponseRedirect('/dashboard/')
+            else:
+                return HttpResponseRedirect('/')
         
         else:
-            # Credenciais inválidas
             return render(request, 'login.html', {'erro': True})
         
     else:
         return render(request, 'login.html')
-    
-
-     
 
 def equipamento_type(request, tipo):
     if tipo:

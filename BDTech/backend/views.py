@@ -8,6 +8,7 @@ from .models import (
 )
 from django.utils import timezone
 import json
+
 from core.utils import (
     fn_compra_inserir,
     fn_compra_componente_inserir,
@@ -25,6 +26,8 @@ from core.utils import (
     fn_producao_equip_existente_inserir,
     fn_check_stock_producao,
     get_for_equipamento_comp_atrib,
+    atualizar_encomenda_tpdoc,
+    inserir_componentes_atributos,
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -36,6 +39,9 @@ from core.utilsMongo import (
 
 def masterPage(request):
     return render(request, "masterPage.html")
+
+def import_componente_html(request):
+    return render(request, "import_componente.html")
 
 
 def new_order(request):
@@ -133,6 +139,7 @@ def generic_list(request, table_name):
         "imagem_column_present": imagem_column_present,
         "row_id": row_id,
     }
+    
 
     return render(request, "list.html", context)
 
@@ -422,8 +429,53 @@ def create_producao_equip_existente(request):
         return HttpResponse("Método não permitido.")
 
 
-def fn_populate_equipamento_comp_atrib(request, id_equipamento):    
-    result = get_for_equipamento_comp_atrib(request.session["id_utilizador"], id_equipamento)
+def fn_populate_equipamento_comp_atrib(request):    
+    result = get_for_equipamento_comp_atrib(request.session["id_utilizador"], 62)
+    
+    print("result:",result)
     
     resultado = insert_batch_into_equipamento_comp_atrib(request, result)
-      
+    
+    
+def list_compra_FR_doc(request):    
+    with connection.cursor() as c:
+        query = "SELECT * FROM compra_fr_get_list(1)"
+        c.execute(query)
+        rows = c.fetchall()
+        columns = [desc[0] for desc in c.description]
+
+    rows_as_dicts = [dict(zip(columns, row)) for row in rows]
+
+    for row in rows_as_dicts:
+        row["id_field"] = row["n_compra"]
+
+    imagem_column_present = "imagem" in columns
+    row_id = 0 if not imagem_column_present else 1
+
+    context = {
+        "table_data": rows,
+        "columns": columns,
+        "table_name": "Encomendas recebidas",
+        "imagem_column_present": imagem_column_present,
+        "row_id": row_id,
+    }
+
+    return render(request, "list.html", context)
+
+def receber_encomenda(request,record_id):    
+    result = atualizar_encomenda_tpdoc(request.session["id_utilizador"], record_id)
+    
+    print("result:",result)
+    if result == 1:
+        return redirect("/compra/list/fr")
+    
+    
+    return redirect("/compra/list/fr")
+
+def import_componente_json(request):
+    if request.method == 'POST':
+        json_data = request.POST.get('json', '')
+        
+        resultado = inserir_componentes_atributos(json_data)
+        
+        return HttpResponse(resultado) 

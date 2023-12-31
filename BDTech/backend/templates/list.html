@@ -31,7 +31,7 @@ Listar
             {% for column in columns %}
             <th class="d-none d-sm-table-cell">{{ column }}</th>
             {% endfor %}
-            <th class="d-none d-sm-table-cell">actions</th>
+            <th class="d-none d-sm-table-cell">ações</th>
           </tr>
         </thead>
         <tbody>
@@ -55,22 +55,30 @@ Listar
                   <i class="fa fa-pencil-alt"></i>
                 </button>
               </form>
-              <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Delete"
-                onclick="confirmDelete('{{ table_name }}', '{{ row.1 }}')">
-                <i class="fa fa-times"></i>
+              {% elif table_name == "compra"%}
+              <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip"
+                  title="Detalhes encomenda">
+                  <i class="text-primary fa fa-eye"></i>
+                </button>
+              </form>
+              <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip"
+                title="Receber encomenda" onclick="receberEncomenda('{{ row.0 }}')">
+                <i class="text-success fa fa-cart-arrow-down"></i>
               </button>
-              {% else %}
+              {% else%}
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
                   <i class="fa fa-pencil-alt"></i>
                 </button>
               </form>
-              <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Delete"
+              {% endif %}
+              <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Eliminar"
                 onclick="confirmDelete('{{ table_name }}', '{{ row.0 }}')">
                 <i class="fa fa-times"></i>
               </button>
-              {% endif %}
             </td>
           </tr>
           {% endfor %}
@@ -86,6 +94,12 @@ Listar
   function confirmDelete(tableName, recordId) {
     if (confirm('Tem certeza de que deseja excluir este registro?')) {
       window.location.href = `/delete_record/${tableName}/${recordId}/`;
+    }
+  }
+
+  function receberEncomenda(recordId) {
+    if (confirm('Tem certeza de que deseja receber a encomenda?')) {
+      window.location.href = `/receive_order/${recordId}/`;
     }
   }
 </script>
