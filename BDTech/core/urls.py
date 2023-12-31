@@ -1,6 +1,6 @@
 from django.urls import path
 from backend.views import  dashboard, generic_list, error404, delete_record, edit_record, edit_componente, new_order, save_encomenda, new_prod, criar_mao_obra, mango
-from frontend.views import  index, kanban, login_utilizador, logout_utilizador, equipamento_type, detalhes_equipamento, pesquisa_equipamento, usercompras
+from frontend.views import  index, kanban, login_utilizador, logout_utilizador, equipamento_type, detalhes_equipamento, pesquisa_equipamento, usercompras, detalhes_venda
 
 urlpatterns = [
     path("dashboard/", dashboard),
@@ -21,6 +21,8 @@ urlpatterns = [
     path('pesquisa_equipamento/', pesquisa_equipamento, name='pesquisa_equipamento'),
     path('equipamento/<int:equipamento_id>/', detalhes_equipamento, name='detalhes_equipamento'),
     path('mango/', mango),
+    path('detalhes_venda/<int:venda_id>/', detalhes_venda, name='detalhes_venda'),
     path('usercompras/', usercompras, name='usercompras'),
+    
     
 ]

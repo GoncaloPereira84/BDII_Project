@@ -109,6 +109,19 @@ def obter_compras_usuario(id_utilizador):
 
     return result
 
+def detalhes_equipamentos_venda(id_venda):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM detalhes_equipamentos_venda(%s);
+            """,
+            [id_venda],
+        )
+        result = cursor.fetchall()
+        
+        return result
+
+
 def get_all_componente(id_utilizador, id_componente):
     with connection.cursor() as cursor:
         cursor.execute(
@@ -217,6 +230,7 @@ def fn_update_stock_componente(id_utilizador, id_componente, quantidade_stock):
         result = cursor.fetchone()
 
     return resultado(result)
+
 
 #################
 ## single gets ##

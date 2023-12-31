@@ -1,0 +1,53 @@
+{% extends "masterPageFront.html" %}
+
+{% block title %}
+Página Inicial
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<div class="container mt-5 ">
+    <h1 class="mb-6">Minhas Compras</h1>
+    {% if detalhes %}
+    <ul>
+        {% for detalhe in detalhes %}
+        <div class="card mb-4 mx-auto" style="max-width: 75%;">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2>Compra #{{ detalhe.id_venda }}</h2>
+                    </div>
+                    <div>
+                        <h3>Data: {{detalhe.data_venda|date:"d/m/Y" }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% for item in detalhe.itens %}
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p><strong>Equipamento:</strong> {{ item.nome }}</p>
+                        <p><strong>Quantidade:</strong> {{ item.quantidade }}</p>
+                    </div>
+                    <div>
+                        
+                        <p><strong>Preço :</strong> {{ item.precounitario }}</p>
+                    </div>
+                </div>
+                <hr>
+                {% endfor %}
+                <div style="text-align: right;">
+                    <p><strong>Total da Compra:</strong> {{ detalhe.valortotal }}</p>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Não há compras disponíveis.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
