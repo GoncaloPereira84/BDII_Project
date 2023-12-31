@@ -31,7 +31,10 @@ from frontend.views import(
     detalhes_equipamento, 
     fulllogin,
     aplicarfiltros, 
-    aplicarpreco
+    aplicarpreco,
+    pesquisa_equipamento, 
+    usercompras, 
+    detalhes_venda,
 )
 
 urlpatterns = [
@@ -52,6 +55,7 @@ urlpatterns = [
     path('componente/edit/<int:record_id>/', edit_componente, name='edit_componente'),
     path('save_encomenda/', save_encomenda, name='save_encomenda'),
     path('criar_mao_obra/', criar_mao_obra, name='criar_mao_obra'),
+    path('pesquisa_equipamento/', pesquisa_equipamento, name='pesquisa_equipamento'),
     path('equipamento/<int:equipamento_id>/', detalhes_equipamento, name='detalhes_equipamento'),
     path('mango/', fn_populate_equipamento_comp_atrib),
     path("componente/create", form_create_componente),
@@ -64,5 +68,9 @@ urlpatterns = [
     path('receive_order/<int:record_id>/', receber_encomenda, name='receber_encomenda'),
     path("import_componente_json/", import_componente_json, name='import_componente_json'),
     path('aplicarfiltros/', aplicarfiltros, name='aplicarfiltros'),
-    path('aplicarpreco/', aplicarpreco, name='aplicarpreco')
+    path('aplicarpreco/', aplicarpreco, name='aplicarpreco'),
+    path('detalhes_venda/<int:venda_id>/', detalhes_venda, name='detalhes_venda'),
+    path('usercompras/', usercompras, name='usercompras'),
+    
+    
 ]
