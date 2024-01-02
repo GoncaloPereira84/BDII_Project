@@ -113,8 +113,15 @@ def error404(request):
     return render(request, "404.html")
 
 def new_utilizador(request):
-    html = "<html><body><h1>Criação de Novo Utilizador</h1></html>"
-    return HttpResponse(html)
+    #html = "<html><body><h1>Criação de Novo Utilizador</h1></html>"
+    #return HttpResponse(html)
+    resultado_marca = get_marca_atributo(request)
+
+    context = {
+        'id_atributo_marca': resultado_marca.get("id_atributo"),
+        'marca_valorlista': resultado_marca.get("resultados")
+    }
+    return render(request, "create_utilizador.html", context)    
 
 
 def function_exists(table_name):
