@@ -169,6 +169,18 @@ def get_all_tipoequipamento(id_utilizador, id_tipoequipamento):
 
     return result
 
+def venda_get_list(id_utilizador):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM venda_get_list(%s,0);
+            """,
+            [id_utilizador],
+        )
+        result = cursor.fetchall()
+
+    return result
+
 #################
 ##   inserts   ##
 #################
@@ -348,6 +360,17 @@ def fn_get_max_ndoc_by_tpdoc(id_utilizador, tpdoc):
         result = cursor.fetchone()
 
     return result[0]
+
+def get_user_and_sales_counts(id_utilizador):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM get_user_and_sales_counts(%s);
+            """,
+            [id_utilizador],
+        )
+        result = cursor.fetchone()
+    return result
 
 
 

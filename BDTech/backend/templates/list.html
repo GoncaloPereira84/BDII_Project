@@ -23,6 +23,31 @@ Listar
     {% endif %}
     <div class="block-header block-header-default">
       <h3 class="block-title">{{ table_name }}</small></h3>
+      <div class="block-options">
+        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
+          <i class="si si-refresh"></i>
+        </button>
+        <div class="dropdown">
+          <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="si si-chemistry"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end">
+            <a class="dropdown-item" href="javascript:void(0)">
+              <i class="far fa-fw fa-dot-circle opacity-50 me-1"></i> Pending
+            </a>
+            <a class="dropdown-item" href="javascript:void(0)">
+              <i class="far fa-fw fa-times-circle opacity-50 me-1"></i> Canceled
+            </a>
+            <a class="dropdown-item" href="javascript:void(0)">
+              <i class="far fa-fw fa-check-circle opacity-50 me-1"></i> Completed
+            </a>
+            <div role="separator" class="dropdown-divider"></div>
+            <a class="dropdown-item" href="javascript:void(0)">
+              <i class="fa fa-fw fa-eye opacity-50 me-1"></i> View All
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="block-content block-content-full">
       <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
