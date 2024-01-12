@@ -28,6 +28,8 @@ from core.utils import (
     get_for_equipamento_comp_atrib,
     atualizar_encomenda_tpdoc,
     inserir_componentes_atributos,
+    get_user_and_sales_counts,
+    venda_get_list,
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -84,17 +86,19 @@ def new_prod_existente(request):
 
 
 def dashboard(request):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM get_user_and_sales_counts();")
-        result = cursor.fetchone()
-
-    total_users, client_users_count, total_sales, total_orders = result
+    result = get_user_and_sales_counts(request.session["id_utilizador"])
+    result_table_venda = venda_get_list(request.session["id_utilizador"])
+    result_dict = result[0]
 
     context = {
-        "total_users": total_users,
-        "client_users_count": client_users_count,
-        "total_sales": total_sales,
-        "total_orders": total_orders,
+        "total_users": result_dict['total_users'],
+        "client_users_count": result_dict['client_users_count'],
+        "total_sales": result_dict['total_sales'],
+        "total_orders": result_dict['total_orders'],
+        "total_value_orders": result_dict['total_value_orders'],
+        "low_stock_components": result_dict['low_stock_components'],
+        "result_table_venda": result_table_venda,
+
     }
 
     return render(request, "dashboard.html", context)
