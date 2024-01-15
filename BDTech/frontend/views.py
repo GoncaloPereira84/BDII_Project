@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.db import connection
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Utilizador
@@ -83,6 +83,7 @@ def logout_utilizador(request):
                 del request.session["id_utilizador"]
                 del request.session["nome"]
                 del request.session["email"]
+                del request.session["carrinho"]
                 return redirect("/")
             except KeyError:
                 pass
@@ -175,6 +176,7 @@ def usercompras(request):
     
     utilizador = request.session["id_utilizador"]
     vendas = obter_compras_usuario(utilizador)
+    print(vendas)
     resultado = [{'nome_utilizador': row[0],
                 'id_venda': row[1],
                 'data_venda': row[2],
@@ -368,3 +370,85 @@ def aplicarfiltros(request):
         return JsonResponse({
             'error': 'Método não permitido. Use POST para esta rota.',
         }, status=405)
+
+
+def adicionar_ao_carrinho(request):
+    if request.method == "POST":
+        carrinho = request.session.get('carrinho', [])
+
+        id_equipamento = request.POST.get("id_equipamento")
+        nome = request.POST.get("nome")
+        imagem = request.POST.get("imagem")
+        preco = request.POST.get("preco")
+
+        equipamento_existente = None
+
+        for equipamento in carrinho:
+            if equipamento['id_equipamento'] == id_equipamento:
+                equipamento_existente = equipamento
+                break
+
+        if equipamento_existente:
+            equipamento_existente['quantidade'] = equipamento_existente.get('quantidade', 1) + 1
+        else:
+            equipamento = {'id_equipamento': id_equipamento, 'nome': nome, 'imagem': imagem, 'preco': preco.replace('$', ''), 'quantidade': 1}
+            carrinho.append(equipamento)
+
+        request.session['carrinho'] = carrinho
+        return JsonResponse({'carrinho': carrinho})
+    else:
+        return HttpResponse("Método não permitido.")
+    
+def get_carrinho_data(request):
+    carrinho_data = request.session.get('carrinho', [])
+    total_preco = 0.0
+
+    for item in carrinho_data:
+        preco_str = item.get('preco', '0.00').replace('$', '').replace(',', '')
+        total_preco += float(preco_str)* float(item.get('quantidade'))
+
+    carrinho_data.append({'total_preco': '{:.2f}'.format(total_preco)})
+    return JsonResponse(carrinho_data, safe=False)
+
+def remover_do_carrinho(request):
+    try:
+        id_equipamento = request.POST.get('id_equipamento')
+        carrinho = request.session.get('carrinho', [])
+        carrinho = [item for item in carrinho if item['id_equipamento'] != id_equipamento]
+        
+        request.session['carrinho'] = carrinho
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+    
+    
+def mudar_quantidade_carrinho(request):
+    try:
+        id_equipamento = request.POST.get('id_equipamento')
+        tipo = request.POST.get('tipo')
+        carrinho = request.session.get('carrinho', [])
+
+        for item in carrinho:
+            if item['id_equipamento'] == id_equipamento:
+                if tipo == '1':
+                    item['quantidade'] += 1
+                elif tipo == '0':
+                    if item['quantidade'] == 1:
+                        return remover_do_carrinho(request)
+                    else:
+                        item['quantidade'] -= 1
+                break
+
+        request.session['carrinho'] = carrinho
+        request.session.save()
+
+        return JsonResponse({'success': True, 'carrinho': carrinho})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+def finalizarCarrinho(request):
+    carrinho = request.session['carrinho']
+    
+    return render(request, 'finalizarCompra.html', {'carrinhodata': carrinho})

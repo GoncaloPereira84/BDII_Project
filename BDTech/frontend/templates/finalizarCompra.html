@@ -1,0 +1,83 @@
+{% extends "masterPageFront.html" %}
+
+{% block title %}
+Página Inicial
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Carrinho</h1>
+    {% if carrinhodata %}
+    <div class="row">
+        <div class="col-md-8" id="carrinho_col-md-8">
+            <ul class="list-group">
+                {% csrf_token %}
+                {% for data in carrinhodata %}
+                <li class="list-group-item border mb-2" id="cardid_{{ data.id_equipamento }}">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="m-0">{{ data.nome }}</h4>
+                            <h6 class="m-0">{{ data.preco }}€</h6>
+                        </div>
+
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <img src="{{ data.imagem }}" alt="{{ data.nome }}" class="img-fluid rounded"
+                                style="max-width: 50px;">
+                            <div class="d-flex align-items-center mx-3">
+                                <button class="btn btn-sm btn-secondary"
+                                    onclick="mudarQuantidade('{{ data.id_equipamento }}', 0, '{{ data.quantidade }}')">-</button>
+                                <span class="mx-2" id="quant_id_{{ data.id_equipamento }}">{{ data.quantidade }}</span>
+                                <button class="btn btn-sm btn-secondary"
+                                    onclick="mudarQuantidade('{{ data.id_equipamento }}', 1, '{{ data.quantidade }}')">+</button>
+                            </div>
+                            <button class="btn btn-sm btn-danger"
+                                onclick="eliminarCarrinho('{{ data.id_equipamento }}')">Remover</button>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Detalhes Adicionais</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Total Geral:</strong> {{ carrinhodata }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p class="text-center">Carrinho Vazio!</p>
+    {% endif %}
+</div>
+
+
+<script>
+    function mudarQuantidade(id_equipamento, tipo, quantidade) {
+        var quantidadeAtual = parseInt($('#quant_id_' + id_equipamento).text().trim()) || 0;
+
+        if (tipo == 0) {
+            if (quantidadeAtual == 1) {
+                $('#cardid_' + id_equipamento).remove();
+                $('#carrinho_col-md-8').append(`<p class="text-center">Carrinho Vazio!</p>`);
+            } else {
+                $('#quant_id_' + id_equipamento).text(quantidadeAtual - 1);
+            }
+        } else {
+            $('#quant_id_' + id_equipamento).text(quantidadeAtual + 1);
+        }
+        changeQuantidade(id_equipamento, tipo, 0);
+    }
+
+    function eliminarCarrinho(id_equipamento) {
+        $('#cardid_' + id_equipamento).remove();
+        $('#carrinho_col-md-8').append(`<p class="text-center">Carrinho Vazio!</p>`);
+        removerDoCarrinho(id_equipamento,0);
+    }
+</script>
+{% endblock %}

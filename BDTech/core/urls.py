@@ -35,6 +35,11 @@ from frontend.views import(
     pesquisa_equipamento, 
     usercompras, 
     detalhes_venda,
+    adicionar_ao_carrinho,
+    get_carrinho_data,
+    remover_do_carrinho,
+    mudar_quantidade_carrinho,
+    finalizarCarrinho,
 )
 
 urlpatterns = [
@@ -71,6 +76,10 @@ urlpatterns = [
     path('aplicarpreco/', aplicarpreco, name='aplicarpreco'),
     path('detalhes_venda/<int:venda_id>/', detalhes_venda, name='detalhes_venda'),
     path('usercompras/', usercompras, name='usercompras'),
-    
-    
+    path('adicionar_ao_carrinho/', adicionar_ao_carrinho, name='adicionar_ao_carrinho'),
+    path('get_carrinho_data/', get_carrinho_data, name='get_carrinho_data'),
+    path('remover_do_carrinho/', remover_do_carrinho, name='remover_do_carrinho'),
+    path('mudar_quantidade_carrinho/', mudar_quantidade_carrinho, name='mudar_quantidade_carrinho'),
+    path('finalizarCarrinho/', finalizarCarrinho, name='finalizarCarrinho'),
+
 ]

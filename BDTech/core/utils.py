@@ -306,17 +306,20 @@ def fn_producao_equip_existente_inserir(id_utilizador, producao_json, equipament
         return resultado(result)
     
 def inserir_componentes_atributos(compra_json):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT * FROM inserir_componentes_atributos(%s);
+                """,
+                [compra_json],
+            )
+            result = cursor.fetchone()
 
-    with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT * FROM inserir_componentes_atributos(%s);
-            """,
-            [compra_json],
-        )
-        result = cursor.fetchone()
-
-        return result
+            return result
+    except Exception as e:
+        print(f"Ocorreu um erro: {e}")
+        return None
 
 #################
 ##   updates   ##
