@@ -12,14 +12,14 @@ Novo utilizador
 
 {% block content %}
 <div class="content">
-    <form id="utilizadorForm" class="js-validation" method="POST" action="{% url 'create_componente' %}">
+    <form id="utilizadorForm" class="js-validation" method="POST" action="{% url 'save_utilizador' %}">
         {% csrf_token %}
         <div class="block block-rounded">
             <div class="block-header block-header-default">
                 <h3 class="block-title">Novo utilizador</h3>
                 <div class="block-options">
                     <input type="hidden" id="id_fornecedor" name="id_fornecedor" value="">
-                    <button type="button" class="btn btn-sm btn-success" onclick="createComponente()">
+                    <button type="button" class="btn btn-sm btn-success" onclick="createUtilizador()">
                         <i class="fa fa-fw fa-check"></i> Guardar
                     </button>
                 </div>
@@ -35,16 +35,16 @@ Novo utilizador
                     </div>
                     <div class="col-lg-8 col-xl-5">
                       <div class="mb-4">
-                        <label class="form-label" for="example-text-input">Nome</label>
-                        <input type="text" class="form-control" id="example-text-input" name="example-text-input" placeholder="(Nome)">
+                        <label class="form-label" for="nome-input">Nome</label>
+                        <input type="text" class="form-control" id="nome-input" name="nome-input" placeholder="(Nome)">
                       </div>
                       <div class="mb-4">
-                        <label class="form-label" for="example-email-input">Email</label>
-                        <input type="email" class="form-control" id="example-email-input" name="example-email-input" placeholder="(Email)">
+                        <label class="form-label" for="email-input">Email</label>
+                        <input type="email" class="form-control" id="email-input" name="email-input" placeholder="(Email)">
                       </div>
                       <div class="mb-4">
-                        <label class="form-label" for="example-password-input">Password</label>
-                        <input type="password" class="form-control" id="example-password-input" name="example-password-input" placeholder="(Password)">
+                        <label class="form-label" for="password-input">Password</label>
+                        <input type="password" class="form-control" id="password-input" name="password-input" placeholder="(Password)">
                       </div>
 
                     </div>
@@ -55,18 +55,18 @@ Novo utilizador
                     <div class="col-lg-6">
 
                         <div class="mb-4">
-                        <label class="form-label" for="example-text-input-normal">Morada</label>
-                        <input type="text" class="form-control" id="endereco1" name="endereco1" placeholder="(Morada)">
+                        <label class="form-label" for="morada-input">Morada</label>
+                        <input type="text" class="form-control" id="morada-input" name="morada-input" placeholder="(Morada)">
                       </div> 
                       
                       <div class="mb-4">
-                        <label class="form-label" for="example-text-input-normal">Localidade</label>
-                        <input type="text" class="form-control" id="Localidade" name="Localidade" placeholder="(Localidade)">
+                        <label class="form-label" for="localidade-input">Localidade</label>
+                        <input type="text" class="form-control" id="localidade-input" name="localidade-input" placeholder="(Localidade)">
                       </div> 
 
                       <div class="mb-4">
-                        <label class="form-label" for="example-text-input-normal">Perfil</label>
-                        <select class="js-select2 form-select" id="tpcomponente" name="tpcomponente"
+                        <label class="form-label" for="perfil-input">Perfil</label>
+                        <select class="js-select2 form-select" id="perfil-input" name="perfil-input"
                             style="width: 100%;">
                             <option value=""></option>
                             <option value="1">Visitante</option>
@@ -80,8 +80,8 @@ Novo utilizador
 
                       <div class="mb-4">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" value="" id="example-checkbox-inline1" name="example-checkbox-inline1" checked="">
-                            <label class="form-check-label" for="example-checkbox-inline1">É Cliente ?</label>
+                            <input class="form-check-input" type="checkbox" value="" id="cliente-input" name="cliente-input" checked="">
+                            <label class="form-check-label" for="cliente-input">É Cliente ?</label>
                           </div>
                       </div>                      
 
@@ -89,43 +89,16 @@ Novo utilizador
 
                     <div class="col-lg-6 col-xl-5">
                       <div class="mb-4">
-                        <label class="form-label" for="example-text-input">Contato</label>
-                        <input type="text" class="form-control" id="example-text-input" name="example-text-input" placeholder="(Contato)">
+                        <label class="form-label" for="contato-input">Contato</label>
+                        <input type="text" class="form-control" id="contato-input" name="contato-input" placeholder="(Contato)">
                       </div>
                       <div class="mb-4">
-                        <label class="form-label" for="example-email-input">CodPostal</label>
-                        <input type="email" class="form-control" id="example-email-input" name="example-email-input" placeholder="(CodPostal)">
+                        <label class="form-label" for="cpostal-input">CodPostal</label>
+                        <input type="email" class="form-control" id="cpostal-input" name="cpostal-input" placeholder="(CodPostal)">
                       </div>
 
                     </div>
                 </div>                
-                <!--
-                <div class="row items-push">
-
-                    <div class="col-lg-6 col-xl-5 mx-auto mb-4">
-                        <label class="form-label" for="tpcomponente">Tipo Componente<span
-                                class="text-danger">*</span></label>
-                        <select class="js-select2 form-select" id="tpcomponente" name="tpcomponente"
-                            style="width: 100%;">
-                            <option value=""></option>
-                            <option value="RAM">Memória RAM</option>
-                            <option value="CPU">CPU</option>
-                            <option value="Disco">Disco Rigido</option>
-                            <option value="Grafica">Placa gráfica</option>
-                            <option value="motherboard">Motherboard</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-6 col-xl-5 mx-auto mb-4">
-                        <label class="form-label" for="marca">Marca<span class="text-danger">*</span></label>
-                        <select class="js-select2 form-select" id="marca" name="marca" style="width: 100%;">
-                            <option value=""></option>
-                            {% for chave, valor in marca_valorlista.items %}
-                            <option value="{{ valor }}">{{ valor }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                -->
 
             </div>
         </div>
@@ -165,67 +138,48 @@ Novo utilizador
 </script>
 
 <script>
-    var encomendaResponse;
+    var utilizadorResponse;
 
-    $("#tpcomponente").change(function () {
-        var tpcomponenteValue = $(this).val();
-        $.ajax({
-            url: "{% url 'get_atributo_options' %}",
-            type: "GET",
-            data: { tpcomponente: tpcomponenteValue },
-            success: function (response) {
-                $("#atributo1").empty();
-                $("#atributo2").empty();
-
-                $.each(response.tipo_valorlista_options, function (index, option) {
-                    $("#atributo1").append($("<option></option>").attr("value", option.text).text(option.text));
-                });
-
-                $.each(response.tamanho_valorlista_options, function (index, option) {
-                    $("#atributo2").append($("<option></option>").attr("value", option.text).text(option.text));
-                });
-                encomendaResponse = response;
-            },
-            error: function (error) {
-                console.error("Erro na solicitação AJAX:", error);
-            }
-        });
-    });
-
-    function createComponente() {
+    function createUtilizador() {
         var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
-        var tpcomponenteValue = $("#tpcomponente").val();
-        var marcaValue = $("#marca").val();
-        var atributo1Value = $("#atributo1").val();
-        var atributo2Value = $("#atributo2").val();
-        var descricaoValue = $("#descricao").val();
-        var preco = $("#preco").val();
+
+        var nome_input = $("#nome-input").val();
+        var email_input = $("#email-input").val();
+        var password_input = $("#password-input").val();
+
+        var morada_input = $("#morada-input").val();
+        var localidade_input = $("#localidade-input").val();
+        var perfil_input = $("#perfil-input").val();
+        var cliente_input = $("#cliente-input").val();   
+
+        var contato_input = $("#contato-input").val();   
+        var cpostal_input = $("#cpostal-input").val();   
 
         var data = {
-            "id_atributo_tipo": encomendaResponse.id_atributo_tipo,
-            "tipo_valorlista_options": atributo1Value,
-            "id_atributo_tamanho": encomendaResponse.id_atributo_tamanho,
-            "tamanho_valorlista_options": atributo2Value,
-            "descricao": descricaoValue,
-            "id_atributo_marca": parseInt("{{ id_atributo_marca }}"),
-            "marca_valorlista": marcaValue,
-            "preco": preco,
+            "nome_input"    : nome_input,
+            "email_input"   : email_input,
+            "password_input": password_input,
+
+            "morada_input":morada_input,
+            "localidade_input": localidade_input,
+            "perfil_input" : perfil_input,
+            "cliente_input": cliente_input,
             'csrfmiddlewaretoken': csrfToken
         };
 
         $.ajax({
-            url: '{% url "create_componente" %}',
+            url: '{% url "save_utilizador" %}',
             type: "POST",
             data: data,
             success: function (response) {
                 console.log("Resposta do servidor:", response);
-                window.location.href = "/componente/list";
+                window.location.href = "/utilizador/list";
             },
             error: function (error) {
                 console.error("Erro na solicitação AJAX:", error);
             }
         });
-        console.log("Resposta da Encomenda:", data);
+        console.log("Resposta do Pedido:", data);
     }
 </script>
 

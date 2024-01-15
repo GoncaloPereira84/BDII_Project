@@ -1,4 +1,4 @@
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.db import connection, ProgrammingError
 from django.http import JsonResponse
 from psycopg2.extras import Json
@@ -91,27 +91,64 @@ def dashboard(request):
     else:
         # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
         return redirect('/fulllogin/')
+        exit
+    
     # --------------------------
 
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM get_user_and_sales_counts();")
-        result = cursor.fetchone()
+#    with connection.cursor() as cursor:
+#        cursor.execute("SELECT * FROM get_user_and_sales_counts();")
+#        result = cursor.fetchone()
+#
+#    total_users, client_users_count, total_sales, total_orders = result
+#
+#    context = {
+#        "total_users": total_users,
+#        "client_users_count": client_users_count,
+#        "total_sales": total_sales,
+#        "total_orders": total_orders,
+#    }
 
-    total_users, client_users_count, total_sales, total_orders = result
-
-    context = {
-        "total_users": total_users,
-        "client_users_count": client_users_count,
-        "total_sales": total_sales,
-        "total_orders": total_orders,
-    }
-
-    return render(request, "dashboard.html", context)
-
+    #return render(request, "dashboard.html", context)
+    return render(request, "dashboard.html")
 
 def error404(request):
     return render(request, "404.html")
 
+
+#####################################
+
+def save_utilizador(request):
+    if request.method == 'POST':
+
+        # Obter os dados do formulário
+        nome  = request.POST.get('nome_input')
+        email = request.POST.get('email_input')
+        passw = request.POST.get('password_input')
+
+        morada     = request.POST.get('morada_input')
+        localidade = request.POST.get('localidade_input')
+        perfil     = request.POST.get('perfil_input')
+        cliente_ch = request.POST.get('cliente_input')
+        cliente    = 1 if cliente_ch else 0  # Se marcado, cliente será 1, caso contrário, será 0
+        contato    = request.POST.get('contato_input')
+        cpostal    = request.POST.get('cpostal_input')
+
+        # Executar a função no PostgreSQL
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM fn_utilizador_criar(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [nome, morada, localidade, cpostal, contato, email, passw, perfil, 1, cliente])
+            result = cursor.fetchone()
+
+        ####################
+        if result and result[0] > 0:  # Verifica se há um resultado e se o id_utilizador não é 0
+            return HttpResponseRedirect('/utilizador/list/')
+        else:
+            # Se não sucedida
+            return render(request, 'create_utilizador.html', {'erro': True})
+
+    else:
+        return render(request, 'create_utilizador.html')
+
+#####################################
 def new_utilizador(request):
     #html = "<html><body><h1>Criação de Novo Utilizador</h1></html>"
     #return HttpResponse(html)
@@ -123,6 +160,9 @@ def new_utilizador(request):
     }
     return render(request, "create_utilizador.html", context)    
 
+#####################################
+   
+    
 
 def function_exists(table_name):
     try:
@@ -134,6 +174,15 @@ def function_exists(table_name):
 
 
 def generic_list(request, table_name):
+
+    # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
+        pass
+    else:
+        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
+        return redirect('/fulllogin/')
+        exit
+
     function_table_name = f"{table_name}_get_list(1,0)"
     if not function_exists(function_table_name):
         return redirect("/404")

@@ -10,6 +10,7 @@ from backend.views import(
     save_encomenda, 
     new_prod,
     new_utilizador, 
+    save_utilizador,     
     criar_mao_obra, 
     form_create_componente, 
     get_atributo_options, 
@@ -45,6 +46,8 @@ urlpatterns = [
     path("equipamento/create/", new_prod),
     path("producao/create/", new_prod_existente),
     path("utilizador/create/", new_utilizador),
+    path("utilizador/save/", save_utilizador), 
+    path('save_utilizador/', save_utilizador, name='save_utilizador'),       
     path("404/", error404),
     path("<str:table_name>/list/", generic_list, name='generic_list'),
     path("<str:table_name>/editar/<int:record_id>/", edit_record, name='edit_record'),
@@ -72,7 +75,6 @@ urlpatterns = [
     path('aplicarfiltros/', aplicarfiltros, name='aplicarfiltros'),
     path('aplicarpreco/', aplicarpreco, name='aplicarpreco'),
     path('detalhes_venda/<int:venda_id>/', detalhes_venda, name='detalhes_venda'),
-    path('usercompras/', usercompras, name='usercompras'),
-    
+    path('usercompras/', usercompras, name='usercompras'),   
     
 ]
