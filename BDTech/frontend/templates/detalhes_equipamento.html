@@ -11,7 +11,6 @@ Página Inicial
     <div class="row">
         <h1>{{ equipamento.nome }}</h1>
         <div class="col-md-6">
-
             <img src="{{ equipamento.imagem }}" class="img-fluid" alt="{{ equipamento.nome }}">
         </div>
         <div class="col-md-6">
@@ -23,7 +22,11 @@ Página Inicial
                 <input type="hidden" name="equipamento_nome" value="{{ equipamento.nome }}">
                 <input type="hidden" name="equipamento_imagem" value="{{ equipamento.imagem }}">
                 <input type="hidden" name="equipamento_preco" value="{{ equipamento.preco }}">
+                {% if request.session.id_utilizador %}
                 <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
+                {% else %}
+                <h5 class="text-warning">Efetue o login para puder efetuar uma compra</h5>
+                {% endif %}
             </form>
         </div>
     </div>

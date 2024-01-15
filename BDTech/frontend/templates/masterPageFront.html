@@ -112,7 +112,9 @@
               BDTech
             </a>
           </div>
-          <div>
+
+          <div id="Cartbutton">
+            {% if request.session.id_utilizador %}
             <button type="button" class="btn btn-sm btn-alt-secondary" id="page-header-cart-dropdown"
               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             </button>
@@ -126,11 +128,13 @@
               <div id="finalizar-container" class="text-center">
               </div>
             </div>
+            {% endif %}
             <button type="button" class="btn btn-sm btn-alt-secondary" data-toggle="layout"
               data-action="side_overlay_toggle">
               <i class="fa fa-fw fa-bars"></i>
             </button>
           </div>
+
         </div>
         <div id="page-header-search" class="overlay-header bg-header-dark">
           <div class="content-header">
@@ -234,31 +238,31 @@
 
                   var novaLinha = document.createElement('tr');
                   novaLinha.innerHTML = `
-                              <td class="text-center">
-                                <img src="${item.imagem}" alt="${item.nome}" class="img-fluid rounded" style="max-width: 75px;">
-                              </td>
-                              <td class="text-center">
-                                <a class="mt-4" href="/equipamento/${item.id_equipamento}">${textoFormatado} </a>
-                              </td>
-                              <td class="text-center">
-                                <p class="mt-4">${item.quantidade}</p>
-                              </td>
-                              <td class="text-center">
-                                {% csrf_token %}
-                                <button class="btn btn-sm" style="color:gray; background-color: transparent; border: none;" onclick="changeQuantidade(${item.id_equipamento},0,1)"><i class="fa fa-minus"></i></button>
-                              </td>
-                              <td class="text-center">
-                                {% csrf_token %}
-                                <button class="btn btn-sm" style="color:gray; background-color: transparent; border: none;" onclick="changeQuantidade(${item.id_equipamento},1,1)"><i class="fa fa-plus"></i></button>
-                              </td>
-                              <td class="text-center">
-                                <p class="mt-4">${item.preco}€</p>
-                              </td>
-                              <td class="text-center">
-                                {% csrf_token %}
-                                <button class="btn btn-sm" style="color:red; background-color: transparent; border: none;" onclick="removerDoCarrinho(${item.id_equipamento},1)"><i class="fa fa-trash"></i></button>
-                              </td>
-                              `;
+                                <td class="text-center">
+                                  <img src="${item.imagem}" alt="${item.nome}" class="img-fluid rounded" style="max-width: 75px;">
+                                </td>
+                                <td class="text-center">
+                                  <a class="mt-4" href="/equipamento/${item.id_equipamento}">${textoFormatado} </a>
+                                </td>
+                                <td class="text-center">
+                                  <p class="mt-4">${item.quantidade}</p>
+                                </td>
+                                <td class="text-center">
+                                  {% csrf_token %}
+                                  <button class="btn btn-sm" style="color:gray; background-color: transparent; border: none;" onclick="changeQuantidade(${item.id_equipamento},0,1)"><i class="fa fa-minus"></i></button>
+                                </td>
+                                <td class="text-center">
+                                  {% csrf_token %}
+                                  <button class="btn btn-sm" style="color:gray; background-color: transparent; border: none;" onclick="changeQuantidade(${item.id_equipamento},1,1)"><i class="fa fa-plus"></i></button>
+                                </td>
+                                <td class="text-center">
+                                  <p class="mt-4">${item.preco}€</p>
+                                </td>
+                                <td class="text-center">
+                                  {% csrf_token %}
+                                  <button class="btn btn-sm" style="color:red; background-color: transparent; border: none;" onclick="removerDoCarrinho(${item.id_equipamento},1)"><i class="fa fa-trash"></i></button>
+                                </td>
+                                `;
                   tabela.appendChild(novaLinha);
                 }
 
@@ -295,17 +299,17 @@
         },
         error: function () {
           Swal.fire({
-              icon: 'error',
-              title: 'Erro',
-              text: 'Erro ao obter os dados do carrinho.',
-            });
+            icon: 'error',
+            title: 'Erro',
+            text: 'Erro ao obter os dados do carrinho.',
+          });
         }
       });
 
     }
 
     $(document).ready(function () {
-      $('#page-header').ready(function () {
+      $('#Cartbutton').ready(function () {
         $.ajax({
           type: 'GET',
           url: '/get_carrinho_data/',
@@ -349,10 +353,10 @@
         },
         error: function () {
           Swal.fire({
-              icon: 'error',
-              title: 'Erro',
-              text: 'Erro ao remover o item do carrinho.',
-            });
+            icon: 'error',
+            title: 'Erro',
+            text: 'Erro ao remover o item do carrinho.',
+          });
         }
       });
     }
@@ -378,10 +382,10 @@
         },
         error: function () {
           Swal.fire({
-              icon: 'error',
-              title: 'Erro',
-              text: 'Erro a mudar quantidade no carrinho.',
-            });
+            icon: 'error',
+            title: 'Erro',
+            text: 'Erro a mudar quantidade no carrinho.',
+          });
         }
       });
     }

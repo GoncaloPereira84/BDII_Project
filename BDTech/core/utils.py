@@ -375,6 +375,17 @@ def get_user_and_sales_counts(id_utilizador):
         result = cursor.fetchone()
     return result
 
+def carrinho_get_info(id_utilizador):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM carrinho_get_info(%s);
+            """,
+            [id_utilizador],
+        )
+        result = cursor.fetchall()
+    return result
+
 
 
 def obter_maximo_preco_por_tipo(tipo_id):
