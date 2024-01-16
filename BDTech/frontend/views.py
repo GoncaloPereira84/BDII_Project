@@ -14,7 +14,9 @@ from core.utils import (
     get_equipamentos_by_id,
     filtrar_equipamentos_por_preco,
     get_equipamentos_by_preco,
-    carrinho_get_info
+    carrinho_get_info,
+    check_stock_carrinho,
+    criar_venda,
 )
 from core.utilsMongo import get_marcas, get_ram, get_rom, aplicar_filtros
 
@@ -206,7 +208,6 @@ def pesquisa_equipamento(request):
 def usercompras(request):
     utilizador = request.session["id_utilizador"]
     vendas = obter_compras_usuario(utilizador)
-    print(vendas)
     resultado = [
         {
             "nome_utilizador": row[0],
@@ -516,10 +517,44 @@ def mudar_quantidade_carrinho(request):
 
 def finalizarCarrinho(request):
     carrinho = request.session["carrinho"]
-    print(carrinho)
-    utilizador_data = carrinho_get_info(request.session["id_utilizador"])
+    utilizador_data_table = carrinho_get_info(request.session["id_utilizador"])
 
-    print(utilizador_data)
-
-
+    utilizador_data = [
+        {
+            "nome": row[0],
+            "endereco": row[1],
+            "localidade": row[2],
+            "codpostal": row[3],
+            "contacto": row[4],
+            "email": row[5],
+        }
+        for row in utilizador_data_table
+    ]
     return render(request, "finalizarCompra.html", {"carrinhodata": carrinho, "utilizador_data": utilizador_data})
+
+def completeCarrinho(request):
+    carrinho = request.session["carrinho"]
+    
+    # Convert carrinho to the desired JSON format
+    carrinho_json = json.dumps([{'id_equipamento': item['id_equipamento'], 'quantidade': item['quantidade']} for item in carrinho])
+    
+    resultado = check_stock_carrinho(carrinho_json)
+    
+    if resultado:
+        response_data = {"error": True, "resultado": resultado}
+        return JsonResponse(response_data)
+    
+    
+    insert_result = criar_venda(request.session["id_utilizador"], json.dumps(carrinho))
+    if insert_result[0] == 1:
+        request.session["carrinho"] = []
+        response_data = {"success": True, "resultado": resultado}
+    else:
+        response_data = {"errorInPostgresql": True, "resultado": "Erro no servidor"};
+    return JsonResponse(response_data)
+
+    
+    
+    
+
+    

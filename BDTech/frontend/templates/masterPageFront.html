@@ -204,6 +204,7 @@
   </footer>
   <!-- END Footer -->
   </div>
+
   <script src="{% static 'assets/js/dashmix.app.min.js'%}"></script>
 
   <!-- jQuery (required for jQuery Sparkline plugin) -->
@@ -305,7 +306,6 @@
           });
         }
       });
-
     }
 
     $(document).ready(function () {
@@ -350,6 +350,7 @@
             $('#page-header-cart-dropdown').click();
           }
           atualizarNumeroCarrinho();
+          atualizarTotalCarrinho();
         },
         error: function () {
           Swal.fire({
@@ -362,7 +363,6 @@
     }
 
     function changeQuantidade(itemId, tipo, tipo_click) {
-      console.log(itemId, tipo, tipo_click)
       var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
       var requestData = {
         'id_equipamento': itemId,
@@ -379,6 +379,7 @@
             $('#page-header-cart-dropdown').click();
           }
           atualizarNumeroCarrinho();
+          atualizarTotalCarrinho();
         },
         error: function () {
           Swal.fire({

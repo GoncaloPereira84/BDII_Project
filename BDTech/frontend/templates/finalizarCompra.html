@@ -9,8 +9,8 @@ Página Inicial
 
 <div class="container mt-5">
     <h1 class="mb-4">Carrinho</h1>
-    {% if carrinhodata %}
-    <div class="row">
+    {% if carrinhodata and utilizador_data %}
+    <div class="row" id="carrinhoFinalizarCompra">
         <div class="col-md-8" id="carrinho_col-md-8">
             <ul class="list-group">
                 {% csrf_token %}
@@ -41,21 +41,43 @@ Página Inicial
             </ul>
         </div>
         <div class="col-md-4">
+            {% for data in utilizador_data %}
             <div class="card">
                 <div class="card-header">
                     <h4 class="mb-0">Detalhes Adicionais</h4>
                 </div>
                 <div class="card-body">
-                    <p class="mb-1"><strong>Total Geral:</strong> {{ utilizador_data.0 }}</p>
+                    <p class="mb-1"><strong>Informações Pessoais</strong></p>
+                    <div class="text-end">
+                        <p class="mb-1"><i class="fa fa-user"></i> {{ data.nome }}</i></p>
+                        <p class="mb-1"><i class="fa fa-phone"></i> {{ data.contacto }}</p>
+                        <p class="mb-1"><i class="fa fa-inbox"></i> {{ data.email }}</p>
+                    </div>
+                    <hr>
+                    <p class="mb-1"><strong>Morada</strong></p>
+                    <div class="text-end">
+                        <p class="mb-1"><i class="fa fa-map-pin"></i> {{ data.endereco }}</p>
+                        <p class="mb-1">{{ data.codpostal }}, {{ data.localidade }}</p>
+                    </div>
+                    <hr>
+                    </hr>
+                    <p class="mb-1 text-end" id="finalizarTotalID"></p>
+
                 </div>
             </div>
+            <div class="card">
+                <button class="btn-sm btn-success" onclick="CompleteCarrinho()">Concluir Compra</button>
+            </div>
+            {% endfor %}
         </div>
+
     </div>
     {% else %}
     <p class="text-center">Carrinho Vazio!</p>
     {% endif %}
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <script>
     function mudarQuantidade(id_equipamento, tipo, quantidade) {
@@ -77,7 +99,85 @@ Página Inicial
     function eliminarCarrinho(id_equipamento) {
         $('#cardid_' + id_equipamento).remove();
         $('#carrinho_col-md-8').append(`<p class="text-center">Carrinho Vazio!</p>`);
-        removerDoCarrinho(id_equipamento,0);
+        removerDoCarrinho(id_equipamento, 0);
     }
+
+
+    function atualizarTotalCarrinho() {
+        $.ajax({
+            type: 'GET',
+            url: '/get_carrinho_data/',
+            success: function (data) {
+                if (data) {
+                    $('#finalizarTotalID').html(`<strong>Total:</strong>   ${data[data.length - 1].total_preco}€`);
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Erro ao obter os dados do carrinho.',
+                });
+            }
+        });
+
+    }
+
+    $(document).ready(function () {
+        $('#carrinhoFinalizarCompra').ready(function () {
+            atualizarTotalCarrinho();
+        });
+    });
+
+    function CompleteCarrinho() {
+        $.ajax({
+            type: 'GET',
+            url: '/completeCarrinho/',
+            success: function (response) {
+                if (response.error) {
+
+                    var resultadoData = response.resultado;
+
+                    var resultadoSentence = '';
+                    resultadoData.forEach(function (record) {
+                        if (record.length >= 3) {
+                            resultadoSentence += 'O Equipamento ' + record[1] + ', apenas tem stock de ' + record[2] + ' unidade!\n\n';
+                        }
+                    });
+
+                    resultadoSentence = resultadoSentence.slice(0, -2);
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção',
+                        text: resultadoSentence,
+                    });
+
+
+
+                } else if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sucesso',
+                        text: 'Compra efetuada com sucesso!',
+                    });
+                    window.location = "/usercompras";
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: 'Erro a Concluir a compra.',
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Erro a Concluir a compra.',
+                });
+            }
+        });
+    }
+
 </script>
 {% endblock %}

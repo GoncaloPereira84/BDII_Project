@@ -40,6 +40,7 @@ from frontend.views import(
     remover_do_carrinho,
     mudar_quantidade_carrinho,
     finalizarCarrinho,
+    completeCarrinho
 )
 
 urlpatterns = [
@@ -81,5 +82,6 @@ urlpatterns = [
     path('remover_do_carrinho/', remover_do_carrinho, name='remover_do_carrinho'),
     path('mudar_quantidade_carrinho/', mudar_quantidade_carrinho, name='mudar_quantidade_carrinho'),
     path('finalizarCarrinho/', finalizarCarrinho, name='finalizarCarrinho'),
+    path('completeCarrinho/', completeCarrinho, name='completeCarrinho'),
 
 ]

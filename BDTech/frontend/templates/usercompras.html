@@ -10,38 +10,37 @@ Página Inicial
 
 <!-- minhas_compras.html -->
 <div class="container mt-5">
-    <h1 class="mb-4">Minhas Compras</h1>
-    {% if vendas %}
-        <ul>
-            {% for venda in vendas %}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div>
-                        <h2>Compra Nº{{ venda.id_venda }}</h2>
-                      </div>
-                      <div>
-                        <h3>Data: {{ venda.data_venda|date:"d/m/Y" }}</h3>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p><strong>Total da Compra:</strong> {{ venda.valortotal }}</p>
-                        <p><strong>Documento:</strong> {{ venda.tpdoc }}</p>
-                      </div>
-                      <div>
-                        <a href="{% url 'detalhes_venda' venda.id_venda %}" class="btn btn-primary">Ver Detalhes</a>
-                      </div>
-                    </div>
-                  </div>
-                  
-                
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Não há compras disponíveis.</p>
-    {% endif %}
+  <h1 class="mb-4">Minhas Compras</h1>
+  {% if vendas %}
+  <ul>
+    {% for venda in vendas %}
+    <div class="card mb-4">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h2>Compra Nº{{ venda.id_venda }}</h2>
+          </div>
+          <div>
+            <h3>Data: {{ venda.data_venda|date:"d/m/Y" }}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <p><strong>Total da Compra:</strong> {{ venda.valortotal }}</p>
+            <p><strong>Documento:</strong> {{ venda.tpdoc }}</p>
+          </div>
+          <div>
+            <a href="{% url 'detalhes_venda' venda.id_venda %}" class="btn btn-primary">Ver Detalhes</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>Não há compras disponíveis.</p>
+  {% endif %}
 </div>
 {% endblock %}
