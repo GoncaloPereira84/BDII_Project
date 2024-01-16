@@ -24,29 +24,39 @@ Listar
     <div class="block-header block-header-default">
       <h3 class="block-title">{{ table_name }}</small></h3>
       <div class="block-options">
-        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
+        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle"
+          data-action-mode="demo">
           <i class="si si-refresh"></i>
         </button>
+        {% if table_name == "equipamento" or table_name == "fornecedor" or table_name == "venda" or table_name == "equipamento"%}
         <div class="dropdown">
-          <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
             <i class="si si-chemistry"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-end">
-            <a class="dropdown-item" href="javascript:void(0)">
-              <i class="far fa-fw fa-dot-circle opacity-50 me-1"></i> Pending
+            {% if table_name == "equipamento" or table_name == "fornecedor" or table_name == "venda"%}
+            <a class="dropdown-item filter-option-state" href="javascript:void(0)" data-state="ativo">
+              <i class="far fa-fw fa-dot-circle opacity-50 me-1"></i> Ativo
             </a>
-            <a class="dropdown-item" href="javascript:void(0)">
-              <i class="far fa-fw fa-times-circle opacity-50 me-1"></i> Canceled
+            <a class="dropdown-item filter-option-state" href="javascript:void(0)" data-state="inativo">
+              <i class="far fa-fw fa-times-circle opacity-50 me-1"></i> Inativo
             </a>
-            <a class="dropdown-item" href="javascript:void(0)">
-              <i class="far fa-fw fa-check-circle opacity-50 me-1"></i> Completed
+            <a class="dropdown-item filter-option-state" href="javascript:void(0)" data-state="todos">
+              <i class="fa fa-fw fa-eye opacity-50 me-1"></i> Todos
             </a>
-            <div role="separator" class="dropdown-divider"></div>
-            <a class="dropdown-item" href="javascript:void(0)">
-              <i class="fa fa-fw fa-eye opacity-50 me-1"></i> View All
+            {% endif %}
+            {% if table_name == "equipamento" %}
+            <a class="dropdown-item filter-option-tipo" href="javascript:void(0)" data-tipo="portatil">
+              <i class="far fa-fw fa-laptop opacity-50 me-1"></i> Portátil
             </a>
+            <a class="dropdown-item filter-option-tipo" href="javascript:void(0)" data-tipo="desktop">
+              <i class="far fa-fw fa-desktop opacity-50 me-1"></i> Desktop
+            </a>
+            {% endif %}
           </div>
         </div>
+        {% endif %}
       </div>
     </div>
     <div class="block-content block-content-full">
@@ -93,7 +103,8 @@ Listar
                 <i class="text-success fa fa-cart-arrow-down"></i>
               </button>
               {% else%}
-              <button type="button" class="btn btn-sm btn-alt-secondary" onclick="abrirModalDetalhes('{{ row.0 }}', '{{ row.1 }}', '{{ row.2 }}', '{{ row.3 }}', '{{ row.4 }}', '{{ row.5 }}', '{{ row.6 }}')">
+              <button type="button" class="btn btn-sm btn-alt-secondary"
+                onclick="abrirModalDetalhes('{{ row.0 }}', '{{ row.1 }}', '{{ row.2 }}', '{{ row.3 }}', '{{ row.4 }}', '{{ row.5 }}', '{{ row.6 }}')">
                 <i class="fa fa-eye"></i>
               </button>
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
@@ -102,7 +113,7 @@ Listar
                   <i class="fa fa-pencil-alt"></i>
                 </button>
               </form>
-              
+
               {% endif %}
               <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Eliminar"
                 onclick="confirmDelete('{{ table_name }}', '{{ row.0 }}')">
@@ -173,10 +184,10 @@ Listar
     $.ajax({
       url: `/detalhes_fornecedor/${id}/`,  // Substitua pelo URL correto da sua view
       method: 'GET',
-      success: function(response) {
+      success: function (response) {
         console.log(response);
         const corEstado = response.estado === 'Ativo' ? 'green' : 'red';
-   
+
         Swal.fire({
           title: `Detalhes do Fornecedor`,
           html: `
@@ -217,17 +228,17 @@ Listar
           showCancelButton: false,
           focusConfirm: false,
           width: '40%',
-          
+
         });
       },
-      error: function(error) {
+      error: function (error) {
         console.error('Erro ao obter detalhes do fornecedor:', error);
       }
     });
   }
 
   // Adicione um listener de evento ao botão de detalhes
-  
+
 </script>
 
 <!-- jQuery (required for DataTables plugin) -->
@@ -248,5 +259,62 @@ Listar
 <script src="{% static 'assets/js/plugins/sweetalert2/sweetalert2.all.js'%}"></script>
 
 <script src="{% static 'assets/js/pages/be_tables_datatables.min.js'%}"></script>
+
+<script>
+  // Função para aplicar o filtro com base no campo especificado (estado ou tipo)
+  function applyFilter(fieldName, fieldValue) {
+    // Encontre a posição da coluna específica
+    var columnIndex = -1;
+    document.querySelectorAll('.js-dataTable-full thead th').forEach(function (th, index) {
+      if (th.textContent.trim().toLowerCase() === fieldName) {
+        columnIndex = index;
+      }
+    });
+
+    if (columnIndex === -1) {
+      console.error('Coluna "' + fieldName + '" não encontrada na tabela.');
+      return;
+    }
+
+    // Array para armazenar os índices das linhas que correspondem ao valor filtrado
+    var filteredRows = [];
+
+    // Itera sobre todas as linhas da tabela para aplicar o filtro
+    document.querySelectorAll('.js-dataTable-full tbody tr').forEach(function (row, rowIndex) {
+      // Obtém o valor da célula na posição da coluna específica
+      var cellValue = row.querySelectorAll('td')[columnIndex].textContent.trim().toLowerCase();
+      var showRow = fieldValue === 'todos' || cellValue === fieldValue;
+
+      // Armazena o índice da linha se corresponder ao filtro
+      if (showRow) {
+        filteredRows.push(rowIndex);
+      }
+
+      // Mostra ou oculta a linha com base no valor filtrado
+      row.style.display = showRow ? '' : 'none';
+    });
+
+    // Atualiza a DataTable para garantir consistência
+    var dataTable = $('.js-dataTable-full').DataTable();
+    dataTable.rows().deselect();
+    dataTable.rows(filteredRows).select();
+  }
+
+  // Adicione um listener de evento para os links no dropdown (estado)
+  document.querySelectorAll('.filter-option-state').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var state = link.getAttribute('data-state');
+      applyFilter('estado', state);
+    });
+  });
+
+  // Adicione um listener de evento para os links no dropdown (tipo)
+  document.querySelectorAll('.filter-option-tipo').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var tipo = link.getAttribute('data-tipo');
+      applyFilter('tipo', tipo);
+    });
+  });
+</script>
 
 {% endblock %}

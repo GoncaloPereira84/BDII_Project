@@ -269,6 +269,11 @@ def delete_record(request, table_name, record_id):
 
 
 def edit_record(request, table_name, record_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] >= 4:
+        pass
+    else:
+        return redirect('/sem_acesso/')
+        exit
     if request.method == "POST":
         if table_name == "componente":
             return redirect("edit_componente", record_id=record_id)
@@ -279,6 +284,11 @@ def edit_record(request, table_name, record_id):
             return redirect("generic_list", table_name=table_name)
 
 def edit_fornecedor(request,record_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] >= 4:
+        pass
+    else:
+        return redirect('/sem_acesso/')
+        exit
     fornecedor = get_object_or_404(Fornecedor, id_fornecedor=record_id)
 
     if request.method == "POST":

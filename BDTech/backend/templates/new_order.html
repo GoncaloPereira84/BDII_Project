@@ -247,7 +247,11 @@ Nova encomenda
                 }
             });
         } else {
-            alert('Não contêm componentes no cesto ou total encomenda é zero!');
+            Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Não contêm componentes no cesto ou total encomenda é zero!',
+          });
         }
     }
 </script>

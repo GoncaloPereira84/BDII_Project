@@ -82,7 +82,7 @@
         <!-- Side Navigation -->
         <div class="content-side content-side-full">
           <ul class="nav-main">
-            {% if request.session.id_perfil != 1 %}
+            {% if request.session.id_utilizador and request.session.id_perfil != 1 %}
             <li class="nav-main-item">
               <a class="nav-main-link active" href="/dashboard/">
                 <i class="nav-main-link-icon fa fa-coffee"></i>
@@ -90,19 +90,20 @@
               </a>
             </li>
             {% endif %}
+            {% if request.session.id_utilizador %}
             <li class="nav-main-item">
               <a class="nav-main-link" href="/usercompras/">
                 <i class="nav-main-link-icon fa fa-rocket"></i>
                 <span class="nav-main-link-name">Minhas Compras</span>
               </a>
             </li>
-
             <li class="nav-main-item">
               <a class="nav-main-link" href="">
                 <i class="nav-main-link-icon fa fa-user"></i>
                 <span class="nav-main-link-name">Perfil</span>
               </a>
             </li>
+            {% endif %}
           </ul>
         </div>
         <!-- END Side Navigation -->
@@ -175,12 +176,14 @@
                   <i class="fa fa-desktop"></i> <span class="d-none d-md-inline ms-1">Desktops</span>
                 </a>
               </li>
+              {% if request.session.id_utilizador %}
               <li class="nav-item ms-md-auto">
                 <a class="nav-link" href="/usercompras/">
                   <i class="fa fa-star text-warning fa-fw"></i> <span class="d-none d-md-inline ms-1">Minhas
                     Compras</span>
                 </a>
               </li>
+              {% endif %}
             </ul>
           </div>
         </div>
@@ -193,10 +196,6 @@
   <footer id="page-footer" class="bg-body-light">
     <div class="content py-0">
       <div class="row fs-sm">
-        <!--  <div class="col-sm-6 order-sm-2 mb-1 mb-sm-0 text-center text-sm-end">
-          Crafted with <i class="fa fa-heart text-danger"></i> by <a class="fw-semibold"
-            href="https://1.envato.market/ydb" target="_blank">pixelcave</a>
-        </div>-->
         <div class="col-sm-6 order-sm-1 text-center text-sm-start">
           <a class="fw-semibold" href="https://1.envato.market/r6y" target="_blank">BDTech</a> &copy; <span
             data-toggle="year-copy"></span>
@@ -204,8 +203,6 @@
       </div>
     </div>
   </footer>
-  <!-- END Footer -->
-  </div>
 
   <script src="{% static 'assets/js/dashmix.app.min.js'%}"></script>
 
@@ -403,6 +400,7 @@
 
   <!--load scripts-->
   {% block scripts %}
+
   {% endblock %}
 
 </body>

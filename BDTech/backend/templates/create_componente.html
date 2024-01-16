@@ -128,7 +128,11 @@ Nova encomenda
 
                 descricaoInput.val(descricaoValue);
             } else {
-                alert("Por favor, selecione todos os valores necessários antes de alterar a descrição.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atenção',
+                    text: 'Por favor, selecione todos os valores necessários antes de alterar a descrição.',
+                });
             }
         });
     });
