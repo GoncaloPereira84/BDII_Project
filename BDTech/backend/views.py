@@ -92,7 +92,6 @@ def dashboard(request):
         # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
         return redirect('/fulllogin/')
         exit
-    
     # --------------------------
 
 #    with connection.cursor() as cursor:
@@ -129,14 +128,23 @@ def save_utilizador(request):
         localidade = request.POST.get('localidade_input')
         perfil     = request.POST.get('perfil_input')
         cliente_ch = request.POST.get('cliente_input')
-        cliente    = 1 if cliente_ch else 0  # Se marcado, cliente será 1, caso contrário, será 0
+        cliente    = 'TRUE' if cliente_ch else 'FALSE'  # Se marcado, cliente será 1, caso contrário, será 0
         contato    = request.POST.get('contato_input')
         cpostal    = request.POST.get('cpostal_input')
 
         # Executar a função no PostgreSQL
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM fn_utilizador_criar(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [nome, morada, localidade, cpostal, contato, email, passw, perfil, 1, cliente])
-            result = cursor.fetchone()
+            #cursor.execute("SELECT * FROM public.fn_utilizador_criar(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [nome, morada, localidade, cpostal, contato, email, passw, perfil, 1, cliente])
+            #result = cursor.fetchone()
+            # Montar a consulta SQL com os parâmetros
+            query = "SELECT * FROM public.fn_utilizador_criar(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            sql_with_values = cursor.mogrify(query, [nome, morada, localidade, cpostal, contato, email, passw, perfil, 1, cliente])  
+            print("Consulta SQL:", sql_with_values)   
+
+            # Executar a consulta
+            cursor.execute(sql_with_values)
+            result = cursor.fetchone()            
+
 
         ####################
         if result and result[0] > 0:  # Verifica se há um resultado e se o id_utilizador não é 0
@@ -152,6 +160,16 @@ def save_utilizador(request):
 def new_utilizador(request):
     #html = "<html><body><h1>Criação de Novo Utilizador</h1></html>"
     #return HttpResponse(html)
+
+     # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
+        pass
+    else:
+        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
+        return redirect('/fulllogin/')
+        exit
+    # --------------------------
+           
     resultado_marca = get_marca_atributo(request)
 
     context = {
@@ -161,8 +179,6 @@ def new_utilizador(request):
     return render(request, "create_utilizador.html", context)    
 
 #####################################
-   
-    
 
 def function_exists(table_name):
     try:
@@ -182,6 +198,7 @@ def generic_list(request, table_name):
         # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
         return redirect('/fulllogin/')
         exit
+    # ----------------------------------    
 
     function_table_name = f"{table_name}_get_list(1,0)"
     if not function_exists(function_table_name):
@@ -208,7 +225,6 @@ def generic_list(request, table_name):
         "imagem_column_present": imagem_column_present,
         "row_id": row_id,
     }
-    
 
     return render(request, "list.html", context)
 
@@ -340,6 +356,16 @@ def mango(request):
     return HttpResponse(resultados)
         
 def form_create_componente(request):
+
+    # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
+        pass
+    else:
+        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
+        return redirect('/fulllogin/')
+        exit
+    # --------------------------
+            
     resultado_marca = get_marca_atributo(request)
 
     context = {

@@ -7,6 +7,7 @@ Novo utilizador
 {% block links %}
 <link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css'%}">
 <link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.3/sweetalert2.css" integrity="sha512-n1PBkhxQLVIma0hnm731gu/40gByOeBjlm5Z/PgwNxhJnyW1wYG8v7gPJDT6jpk0cMHfL8vUGUVjz3t4gXyZYQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 {% endblock %}
 
@@ -107,6 +108,7 @@ Novo utilizador
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.3/sweetalert2.min.js" integrity="sha512-m+CXm5ZXGsw8CNy+DHQf8n3qpbIh/0d55dCh4xlLl7lLXsU1w0b4RL4gaxqlsOkJKqYMyHaAfUyHf2gRqf7AWA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
     function toggleDescricao() {
@@ -138,32 +140,63 @@ Novo utilizador
 </script>
 
 <script>
+
+    function showAlert(message) {
+        // Usar SweetAlert alertas
+        Swal.fire({
+            icon: 'error',
+            title: 'Atenção...',
+            text: message,
+        });
+    } 
+
     var utilizadorResponse;
 
     function createUtilizador() {
-        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
-
+        // Obter valores dos campos
         var nome_input = $("#nome-input").val();
         var email_input = $("#email-input").val();
         var password_input = $("#password-input").val();
-
         var morada_input = $("#morada-input").val();
         var localidade_input = $("#localidade-input").val();
         var perfil_input = $("#perfil-input").val();
-        var cliente_input = $("#cliente-input").val();   
+        //var cliente_input = $("#cliente-input").val();
+        var cliente_input = $("#cliente-input").is(":checked") ? 1 : 0; // Verificar se o checkbox está marcado
+        var contato_input = $("#contato-input").val();
+        var cpostal_input = $("#cpostal-input").val();
 
-        var contato_input = $("#contato-input").val();   
-        var cpostal_input = $("#cpostal-input").val();   
+        // Verificar se os campos obrigatórios estão preenchidos
+        if (!nome_input || !email_input || !password_input || !morada_input || !localidade_input || !perfil_input || !cliente_input || !contato_input || !cpostal_input) {
+            // Mostrar alerta SweetAlert se campos não preenchidos
+            //showAlert("Por favor, preencha todos os campos.");
+            if (!nome_input) showAlert("Por favor, preencha o campo Nome.");
+            if (!email_input) showAlert("Por favor, preencha o campo Email.");
+            if (!password_input) showAlert("Por favor, preencha o campo Password.");
+            if (!morada_input) showAlert("Por favor, preencha o campo Morada.");
+            if (!localidade_input) showAlert("Por favor, preencha o campo Localidade.");
+            if (!perfil_input) showAlert("Por favor, selecione um perfil.");
+            if (!cliente_input) showAlert("Por favor, selecione se é cliente ou não.");
+            if (!contato_input) showAlert("Por favor, preencha o campo Contato.");
+            if (!cpostal_input) showAlert("Por favor, preencha o campo Código Postal.");
+
+
+            // Abortar o envio se algum campo não estiver preenchido
+            return;
+        }
+
+        // Restante do código para o envio AJAX
+        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 
         var data = {
-            "nome_input"    : nome_input,
-            "email_input"   : email_input,
+            "nome_input": nome_input,
+            "email_input": email_input,
             "password_input": password_input,
-
-            "morada_input":morada_input,
+            "morada_input": morada_input,
             "localidade_input": localidade_input,
-            "perfil_input" : perfil_input,
+            "perfil_input": perfil_input,
             "cliente_input": cliente_input,
+            "contato_input": contato_input,  
+            "cpostal_input": cpostal_input,                        
             'csrfmiddlewaretoken': csrfToken
         };
 
@@ -177,10 +210,13 @@ Novo utilizador
             },
             error: function (error) {
                 console.error("Erro na solicitação AJAX:", error);
+                showAlert("ERRO a Gravar os Dados !")
             }
         });
+
         console.log("Resposta do Pedido:", data);
     }
+
 </script>
 
 <script src="{% static 'assets/js/lib/jquery.min.js'%}"></script>
