@@ -1,0 +1,135 @@
+{% extends "masterPage.html" %}
+
+{% block title %}
+Editar Componente
+{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+    <!-- Elements -->
+    <form action="{% url 'edit_fornecedor' record_id=fornecedor.id_fornecedor %}" method="POST"
+        enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">Editar Fornecedor</h4>
+                <div class="mb-2 mt-1" style="width: 20%;">
+                            <style>
+                                .text-success {
+                                    color: green !important;
+                                }
+
+                                .text-danger {
+                                    color: red !important;
+                                }
+                            </style>
+                            <select class="form-select custom-select" id="id_estado" name="id_estado">
+                                <option value="1" {% if fornecedor.id_estado == 1 %}selected{% endif %}>Ativo</option>
+                                <option value="2" {% if fornecedor.id_estado == 2 %}selected{% endif %}>Inativo</option>
+                            </select>
+                        </div>
+              </div>   
+
+            </div>
+            <div class="card-body">
+                
+                <div class="row">
+                    <!-- Card: Informações pessoais -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Informações pessoais
+                            </div>
+                            <div class="card-body">
+                                <!-- Nome -->
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control" id="id_nome" name="nome"
+                                        value="{{ fornecedor.nome }}" placeholder="Nome Fornecedor">
+                                    <label class="form-label" for="id_nome">Nome</label>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="form-floating mb-4">
+                                    <input type="email" class="form-control" id="id_email" name="email"
+                                        value="{{ fornecedor.email }}" placeholder="Email">
+                                    <label class="form-label" for="id_email">Email</label>
+                                </div>
+
+                                <!-- Contacto -->
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control" id="id_contacto" name="contacto"
+                                        value="{{ fornecedor.contacto }}" placeholder="Contacto">
+                                    <label class="form-label" for="id_contacto">Contacto</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card: Endereço -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Endereço
+                            </div>
+                            <div class="card-body">
+                                <!-- Localidade -->
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control" id="id_localidade" name="localidade"
+                                        value="{{ fornecedor.localidade }}" placeholder="Localidade">
+                                    <label class="form-label" for="id_localidade">Localidade</label>
+                                </div>
+
+                                <!-- Código Postal -->
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control" id="id_codpostal" name="codpostal"
+                                        value="{{ fornecedor.codpostal }}" placeholder="Código Postal">
+                                    <label class="form-label" for="id_codpostal">Código Postal</label>
+                                </div>
+
+                                <!-- Endereço -->
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control" id="id_endereco" name="endereco"
+                                        value="{{ fornecedor.endereco }}" placeholder="Endereço Fornecedor">
+                                    <label class="form-label" for="id_endereco">Endereço</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Guardar Alterações</button>
+                </div>
+    </form>
+</div>
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Ao carregar a página, verifica o estado atual e aplica a cor correspondente
+        toggleTextColor();
+
+        // Adiciona um ouvinte de evento para alterações no dropdown
+        $('#id_estado').change(function () {
+            toggleTextColor();
+        });
+
+        // Função para alterar a cor do texto com base no estado
+        function toggleTextColor() {
+            var selectedValue = $('#id_estado').val();
+            console.log('Selected Value:', selectedValue); // Adiciona esta linha para debugar
+            if (selectedValue == 1) {
+                // Estado Ativo
+                $('#id_estado').removeClass('text-danger').removeClass('border-danger').addClass('text-success').addClass('border-success');
+            } else {
+                // Estado Inativo
+                $('#id_estado').removeClass('text-success').removeClass('border-success').addClass('text-danger').addClass('border-danger');
+            }
+        }
+    });
+</script>
+{% endblock %}

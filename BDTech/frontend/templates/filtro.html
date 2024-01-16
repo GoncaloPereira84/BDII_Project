@@ -201,8 +201,9 @@ Página Inicial
 <script src="{% static 'assets/js/plugins/slick-carousel/slick.min.js'%}"></script>
 
 <script>
+    
     {% for equipamento in equipamentos %}
-    var tipo = "{{ equipamento.tipo_equipamento }}";
+        var tipo = "{{ equipamento.tipo_equipamento }}";
     {% endfor %}
 
     var tipo_equi;

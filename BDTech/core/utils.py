@@ -438,3 +438,33 @@ def get_equipamentos_by_preco(min_price, max_price, tipo):
         result = cursor.fetchall()
     print(result)
     return result
+
+###########################
+## UPDATES ##
+###########################
+
+def update_fornecedor(id,nome,endereco,codpostal,localidade,contacto,email,idestado):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM update_fornecedor(%s,%s,%s,%s,%s,%s,%s,%s)
+            """, 
+            [id,nome,endereco,codpostal,localidade,contacto,email,idestado]
+        )
+        result = cursor.fetchall()
+    print(result)
+    return result
+
+def get_fornecedor_details(fornecedor_id):
+    with connection.cursor() as cursor:
+        cursor.execute(
+             """
+            SELECT get_fornecedor_details(%s) AS fornecedor_details
+            """, 
+            [fornecedor_id]
+        )
+        result = cursor.fetchone()
+        
+        json_result = result[0]
+        details_dict = json.loads(json_result)
+    return details_dict
