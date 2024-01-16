@@ -113,6 +113,8 @@ def dashboard(request):
 def error404(request):
     return render(request, "404.html")
 
+def Sem_Acesso(request):
+    return render(request, "sem_acesso.html")
 
 #####################################
 
@@ -203,6 +205,14 @@ def generic_list(request, table_name):
     function_table_name = f"{table_name}_get_list(1,0)"
     if not function_exists(function_table_name):
         return redirect("/404")
+    
+    # se tabela producao
+    if table_name == 'producao' :
+        if request.session["nivel_acesso"] >= 3:
+            pass
+        else:
+            return redirect('/sem_acesso/')
+            exit
 
     with connection.cursor() as c:
         query = f"SELECT * FROM {function_table_name}"
@@ -230,6 +240,15 @@ def generic_list(request, table_name):
 
 
 def delete_record(request, table_name, record_id):
+    # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
+        pass
+    else:
+        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
+        return redirect('/fulllogin/')
+        exit
+    # ----------------------------------    
+
     try:
         with connection.cursor() as cursor:
             cursor.callproc("delete_record", [table_name, record_id])
