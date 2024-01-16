@@ -6,6 +6,24 @@ Dashboard
 
 
 {% block content %}
+<style>
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-20px);
+    }
+    60% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .icone-grande {
+    font-size: 2em;
+    animation: bounce 2s infinite;
+  }
+</style>
 <div class="content">
     <!-- Overview -->
     <div class="row items-push">
@@ -167,7 +185,7 @@ Dashboard
           <div class="block-content block-content-full d-flex align-items-center flex-grow-1">
             <div class="w-100">
               <div class="item rounded-3 bg-body mx-auto my-3">
-                <i class="fa fa-archive fa-lg text-primary"></i>
+                <i class="fa fa-exclamation text-warning icone-grande"></i>
               </div>
               <div class="fs-1 fw-bold">{{low_stock_components}}</div>
               <div class="text-muted mb-3">Componentes com stock inferior a 10 unidades</div>
