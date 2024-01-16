@@ -11,20 +11,63 @@ Página Inicial
     <div class="row">
         <h1>{{ equipamento.nome }}</h1>
         <div class="col-md-6">
-            
             <img src="{{ equipamento.imagem }}" class="img-fluid" alt="{{ equipamento.nome }}">
         </div>
         <div class="col-md-6">
-           <br></br><br></br>
+            <br></br><br></br>
             <p class="lead">Preço: {{ equipamento.preco }}</p>
-            <p>{{ equipamento.descricao }}</p> 
-            <form method="post" action="">
+            <p>{{ equipamento.descricao }}</p>
+            <form method="post" action="" id="form-adicionar-carrinho">
                 {% csrf_token %}
-                <!-- Adicione outros campos do formulário conforme necessário -->
+                <input type="hidden" name="equipamento_nome" value="{{ equipamento.nome }}">
+                <input type="hidden" name="equipamento_imagem" value="{{ equipamento.imagem }}">
+                <input type="hidden" name="equipamento_preco" value="{{ equipamento.preco }}">
+                {% if request.session.id_utilizador %}
                 <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
+                {% else %}
+                <h5 class="text-warning">Efetue o login para puder efetuar uma compra</h5>
+                {% endif %}
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnAdicionarCarrinho = document.querySelector('#form-adicionar-carrinho');
+
+        btnAdicionarCarrinho.addEventListener('submit', function (event) {
+            event.preventDefault();
+            var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+            const equipamentoId = '{{ equipamento.id_equipamento }}';
+            const equipamentoNome = '{{ equipamento.nome }}';
+            const imagem = '{{ equipamento.imagem }}';
+            const preco = '{{ equipamento.preco }}';
+
+            var requestData = {
+                'imagem': imagem,
+                'id_equipamento': equipamentoId,
+                'nome': equipamentoNome,
+                'preco': preco,
+                'csrfmiddlewaretoken': csrfToken
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "adicionar_ao_carrinho" %}',
+                data: requestData,
+                success: function (response) {
+                    console.log("sucess:  ", response);
+                    $('#page-header-cart-dropdown').click();
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
+
+
 
 {% endblock %}

@@ -623,5 +623,8 @@ def import_componente_json(request):
         json_data = request.POST.get('json', '')
         
         resultado = inserir_componentes_atributos(json_data)
+            
+        if(resultado == None):
+            return HttpResponse("Json contém erros!")
         
         return HttpResponse(resultado) 

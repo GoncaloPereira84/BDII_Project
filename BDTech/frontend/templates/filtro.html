@@ -365,7 +365,11 @@ Página Inicial
                         });
                     } else {
                         // Se não houver resultados, exibir uma mensagem ou realizar outra ação apropriada
-                        alert("Nenhum equipamento encontrado com os filtros selecionados.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro',
+                            text: 'Nenhum equipamento encontrado com os filtros selecionados.',
+                        });
                     }
                 },
                 error: function (error) {

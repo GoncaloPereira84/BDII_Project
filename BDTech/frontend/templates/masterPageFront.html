@@ -24,6 +24,7 @@
   <link rel="shortcut icon" href="{% static 'assets/media/favicons/favicon.png'%}">
   <link rel="icon" type="image/png" sizes="192x192" href="{% static 'assets/media/favicons/favicon-192x192.png'%}">
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/media/favicons/apple-touch-icon-180x180.png'%}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.3/dist/sweetalert2.min.css">
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
   <link rel="stylesheet" id="css-main" href="{% static 'assets/css/dashmix.min.css'%}">
@@ -50,32 +51,10 @@
               <i class="fa fa-fw fa-angle-down opacity-50 ms-1 d-none d-sm-inline-block"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="page-header-user-dropdown">
-              <div class="bg-primary-dark rounded-top fw-semibold text-white text-center p-3">
-                User Options
+              <div class="bg-primary-dark rounded-top fw-semibold text-white text-center p-2">
+                Opções
               </div>
               <div class="p-2">
-                <a class="dropdown-item" href="be_pages_generic_profile.html">
-                  <i class="far fa-fw fa-user me-1"></i> Profile
-                </a>
-                <a class="dropdown-item d-flex align-items-center justify-content-between"
-                  href="be_pages_generic_inbox.html">
-                  <span><i class="far fa-fw fa-envelope me-1"></i> Inbox</span>
-                  <span class="badge bg-primary rounded-pill">3</span>
-                </a>
-                <a class="dropdown-item" href="be_pages_generic_invoice.html">
-                  <i class="far fa-fw fa-file-alt me-1"></i> Invoices
-                </a>
-                <div role="separator" class="dropdown-divider"></div>
-
-                <!-- Toggle Side Overlay -->
-                <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
-                <a class="dropdown-item" href="javascript:void(0)" data-toggle="layout"
-                  data-action="side_overlay_toggle">
-                  <i class="far fa-fw fa-building me-1"></i> Settings
-                </a>
-                <!-- END Side Overlay -->
-
-                <div role="separator" class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/logout">
                   <i class="far fa-fw fa-arrow-alt-circle-left me-1"></i> Sign Out
                 </a>
@@ -103,61 +82,25 @@
         <!-- Side Navigation -->
         <div class="content-side content-side-full">
           <ul class="nav-main">
+            {% if request.session.id_perfil != 1 %}
             <li class="nav-main-item">
               <a class="nav-main-link active" href="/dashboard/">
                 <i class="nav-main-link-icon fa fa-coffee"></i>
                 <span class="nav-main-link-name">Dashboard</span>
               </a>
             </li>
-            <li class="nav-main-heading">Pages</li>
+            {% endif %}
             <li class="nav-main-item">
-              <a class="nav-main-link" href="">
+              <a class="nav-main-link" href="/usercompras/">
                 <i class="nav-main-link-icon fa fa-rocket"></i>
-                <span class="nav-main-link-name">Features</span>
+                <span class="nav-main-link-name">Minhas Compras</span>
               </a>
             </li>
-            <li class="nav-main-item">
-              <a class="nav-main-link" href="">
-                <i class="nav-main-link-icon fa fa-shopping-bag"></i>
-                <span class="nav-main-link-name">Pricing</span>
-              </a>
-            </li>
-            <li class="nav-main-item">
-              <a class="nav-main-link" href="">
-                <i class="nav-main-link-icon fa fa-check"></i>
-                <span class="nav-main-link-name">Plans</span>
-              </a>
-            </li>
-            <li class="nav-main-item">
-              <a class="nav-main-link" href="">
-                <i class="nav-main-link-icon fa fa-life-ring"></i>
-                <span class="nav-main-link-name">Support</span>
-              </a>
-            </li>
-            <li class="nav-main-item">
-              <a class="nav-main-link" href="">
-                <i class="nav-main-link-icon fa fa-envelope"></i>
-                <span class="nav-main-link-name">Contact</span>
-              </a>
-            </li>
-            <li class="nav-main-heading">More</li>
+
             <li class="nav-main-item">
               <a class="nav-main-link" href="">
                 <i class="nav-main-link-icon fa fa-user"></i>
-                <span class="nav-main-link-name">Account</span>
-              </a>
-            </li>
-            <li class="nav-main-item">
-              <a class="nav-main-link" href="">
-                <i class="nav-main-link-icon fa fa-cog"></i>
-                <span class="nav-main-link-name">Settings</span>
-              </a>
-            </li>
-            <li class="nav-main-heading">Dashboards</li>
-            <li class="nav-main-item">
-              <a class="nav-main-link" href="be_pages_dashboard_all.html">
-                <i class="nav-main-link-icon fa fa-arrow-left"></i>
-                <span class="nav-main-link-name">Go Back</span>
+                <span class="nav-main-link-name">Perfil</span>
               </a>
             </li>
           </ul>
@@ -171,16 +114,29 @@
               BDTech
             </a>
           </div>
-          <div>
-            <button type="button" class="btn btn-sm btn-alt-secondary" data-toggle="layout"
-              data-action="header_search_on">
-              <i class="fa fa-fw fa-search"></i>
+
+          <div id="Cartbutton">
+            {% if request.session.id_utilizador %}
+            <button type="button" class="btn btn-sm btn-alt-secondary" id="page-header-cart-dropdown"
+              data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             </button>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="page-header-cart-dropdown" id="carrinho_div">
+              <div class="bg-primary-dark rounded-top fw-semibold text-white text-center p-2">
+                Carrinho <span id="total-preco"></span>
+              </div>
+              <div id="carrinho-container">
+                <!-- linhas do carrinho -->
+              </div>
+              <div id="finalizar-container" class="text-center">
+              </div>
+            </div>
+            {% endif %}
             <button type="button" class="btn btn-sm btn-alt-secondary" data-toggle="layout"
               data-action="side_overlay_toggle">
               <i class="fa fa-fw fa-bars"></i>
             </button>
           </div>
+
         </div>
         <div id="page-header-search" class="overlay-header bg-header-dark">
           <div class="content-header">
@@ -213,15 +169,12 @@
                 <a class="nav-link" href="/tipo/1">
                   <i class="fa fa-laptop"></i> <span class="d-none d-md-inline ms-1">Portáteis</span>
                 </a>
-
               </li>
               <li class="nav-item me-3">
                 <a class="nav-link" href="/tipo/2">
                   <i class="fa fa-desktop"></i> <span class="d-none d-md-inline ms-1">Desktops</span>
                 </a>
-
               </li>
-
               <li class="nav-item ms-md-auto">
                 <a class="nav-link" href="/usercompras/">
                   <i class="fa fa-star text-warning fa-fw"></i> <span class="d-none d-md-inline ms-1">Minhas
@@ -253,6 +206,7 @@
   </footer>
   <!-- END Footer -->
   </div>
+
   <script src="{% static 'assets/js/dashmix.app.min.js'%}"></script>
 
   <!-- jQuery (required for jQuery Sparkline plugin) -->
@@ -266,30 +220,178 @@
 
   <script>
     $(document).ready(function () {
-      $('#loginForm').submit(function (e) {
-        e.preventDefault();
-
+      $('#page-header-cart-dropdown').click(function () {
         $.ajax({
-          type: 'POST',
-          url: '/login/',
-          data: $('#loginForm').serialize(),
+          type: 'GET',
+          url: '/get_carrinho_data/',
           success: function (data) {
-            if (data.success) {
-              // Credenciais corretas, redirecionar para a página desejada
-              window.location.href = data.redirect;
-            } else {
-              var errorMessage = '<strong>' + data.message + '</strong>';
-              $('#email-error-message').html(data.message);
-              $('#email-error-message').fadeIn().css('opacity', 1);
+            $('#carrinho-container').empty();
+            $('#finalizar-container').remove();
+            if (data) {
+              if (data.length - 1 == 0) {
+                $('#carrinho-container').append(`<p class="text-center">Vazio</p>`);
+                $('#total-preco').text('');
+              } else {
+                var tabela = document.createElement('table');
+                tabela.classList.add('table', 'table-bordered');
+
+                for (var i = 0; i < data.length - 1; i++) {
+                  var item = data[i];
+                  var textoFormatado = item.nome.length > 10 ? item.nome.substring(0, 10) + '...' : item.nome;
+
+                  var novaLinha = document.createElement('tr');
+                  novaLinha.innerHTML = `
+                                <td class="text-center">
+                                  <img src="${item.imagem}" alt="${item.nome}" class="img-fluid rounded" style="max-width: 75px;">
+                                </td>
+                                <td class="text-center">
+                                  <a class="mt-4" href="/equipamento/${item.id_equipamento}">${textoFormatado} </a>
+                                </td>
+                                <td class="text-center">
+                                  <p class="mt-4">${item.quantidade}</p>
+                                </td>
+                                <td class="text-center">
+                                  {% csrf_token %}
+                                  <button class="btn btn-sm" style="color:gray; background-color: transparent; border: none;" onclick="changeQuantidade(${item.id_equipamento},0,1)"><i class="fa fa-minus"></i></button>
+                                </td>
+                                <td class="text-center">
+                                  {% csrf_token %}
+                                  <button class="btn btn-sm" style="color:gray; background-color: transparent; border: none;" onclick="changeQuantidade(${item.id_equipamento},1,1)"><i class="fa fa-plus"></i></button>
+                                </td>
+                                <td class="text-center">
+                                  <p class="mt-4">${item.preco}€</p>
+                                </td>
+                                <td class="text-center">
+                                  {% csrf_token %}
+                                  <button class="btn btn-sm" style="color:red; background-color: transparent; border: none;" onclick="removerDoCarrinho(${item.id_equipamento},1)"><i class="fa fa-trash"></i></button>
+                                </td>
+                                `;
+                  tabela.appendChild(novaLinha);
+                }
+
+                $('#carrinho-container').append(tabela);
+                $('#total-preco').text('- Total: ' + data[data.length - 1].total_preco + '€');
+                $('#carrinho_div').append('<div id="finalizar-container" class="text-center"><a class="text-center" href="/finalizarCarrinho">Finalizar Compra</a></div>');
+                atualizarNumeroCarrinho();
+              }
             }
           },
           error: function () {
-            // Lidar com erros de requisição
-            alert('Error processing the request.');
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro',
+              text: 'Erro ao obter os dados do carrinho.',
+            });
           }
         });
       });
     });
+
+    function atualizarNumeroCarrinho() {
+      $.ajax({
+        type: 'GET',
+        url: '/get_carrinho_data/',
+        success: function (data) {
+          if (data) {
+            if (data.length - 1 == 0) {
+              $('#page-header-cart-dropdown').html(`<i class="fa fa-cart-plus"></i> ${data.length - 1}`);
+            } else {
+              $('#page-header-cart-dropdown').html(`<i class="fa fa-cart-plus"></i> ${data.length - 1}`);
+            }
+          }
+        },
+        error: function () {
+          Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Erro ao obter os dados do carrinho.',
+          });
+        }
+      });
+    }
+
+    $(document).ready(function () {
+      $('#Cartbutton').ready(function () {
+        $.ajax({
+          type: 'GET',
+          url: '/get_carrinho_data/',
+          success: function (data) {
+            if (data) {
+              if (data.length - 1 == 0) {
+                atualizarNumeroCarrinho();
+              } else {
+                atualizarNumeroCarrinho();
+              }
+            }
+          },
+          error: function () {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro',
+              text: 'Erro ao obter os dados do carrinho.',
+            });
+          }
+        });
+      });
+    });
+
+
+    function removerDoCarrinho(itemId, tipo_click) {
+      var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+      var requestData = {
+        'id_equipamento': itemId,
+        'csrfmiddlewaretoken': csrfToken
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/remover_do_carrinho/',
+        data: requestData,
+        success: function (response) {
+          if (tipo_click == 1) {
+            $('#page-header-cart-dropdown').click();
+          }
+          atualizarNumeroCarrinho();
+          atualizarTotalCarrinho();
+        },
+        error: function () {
+          Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Erro ao remover o item do carrinho.',
+          });
+        }
+      });
+    }
+
+    function changeQuantidade(itemId, tipo, tipo_click) {
+      var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+      var requestData = {
+        'id_equipamento': itemId,
+        'tipo': tipo,
+        'csrfmiddlewaretoken': csrfToken
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/mudar_quantidade_carrinho/',
+        data: requestData,
+        success: function (response) {
+          if (tipo_click == 1) {
+            $('#page-header-cart-dropdown').click();
+          }
+          atualizarNumeroCarrinho();
+          atualizarTotalCarrinho();
+        },
+        error: function () {
+          Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Erro a mudar quantidade no carrinho.',
+          });
+        }
+      });
+    }
   </script>
 
   <script>
@@ -297,7 +399,7 @@
       window.location.href = "/fulllogin";
     }
   </script>
-
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.3/dist/sweetalert2.all.min.js"></script>
 
   <!--load scripts-->
   {% block scripts %}

@@ -306,17 +306,36 @@ def fn_producao_equip_existente_inserir(id_utilizador, producao_json, equipament
         return resultado(result)
     
 def inserir_componentes_atributos(compra_json):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT * FROM inserir_componentes_atributos(%s);
+                """,
+                [compra_json],
+            )
+            result = cursor.fetchone()
 
-    with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT * FROM inserir_componentes_atributos(%s);
-            """,
-            [compra_json],
-        )
-        result = cursor.fetchone()
+            return result
+    except Exception as e:
+        print(f"Ocorreu um erro: {e}")
+        return None
 
-        return result
+def criar_venda(id_utilizador, json_data):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT * FROM criar_venda(%s,%s);
+                """,
+                [id_utilizador, json_data],
+            )
+            result = cursor.fetchone()
+
+            return result
+    except Exception as e:
+        print(f"Ocorreu um erro: {e}")
+        return None
 
 #################
 ##   updates   ##
@@ -372,6 +391,28 @@ def get_user_and_sales_counts(id_utilizador):
         result = cursor.fetchone()
     return result
 
+def carrinho_get_info(id_utilizador):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM carrinho_get_info(%s);
+            """,
+            [id_utilizador],
+        )
+        result = cursor.fetchall()
+    return result
+
+
+def check_stock_carrinho(json_data):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM check_stock_carrinho(%s);
+            """,
+            [json_data],
+        )
+        result = cursor.fetchall()
+    return result
 
 
 def obter_maximo_preco_por_tipo(tipo_id):
