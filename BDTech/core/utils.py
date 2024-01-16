@@ -169,6 +169,18 @@ def get_all_tipoequipamento(id_utilizador, id_tipoequipamento):
 
     return result
 
+def venda_get_list(id_utilizador):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM venda_get_list(%s,0);
+            """,
+            [id_utilizador],
+        )
+        result = cursor.fetchall()
+
+    return result
+
 #################
 ##   inserts   ##
 #################
@@ -349,6 +361,17 @@ def fn_get_max_ndoc_by_tpdoc(id_utilizador, tpdoc):
 
     return result[0]
 
+def get_user_and_sales_counts(id_utilizador):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM get_user_and_sales_counts(%s);
+            """,
+            [id_utilizador],
+        )
+        result = cursor.fetchone()
+    return result
+
 
 
 def obter_maximo_preco_por_tipo(tipo_id):
@@ -415,3 +438,33 @@ def get_equipamentos_by_preco(min_price, max_price, tipo):
         result = cursor.fetchall()
     print(result)
     return result
+
+###########################
+## UPDATES ##
+###########################
+
+def update_fornecedor(id,nome,endereco,codpostal,localidade,contacto,email,idestado):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM update_fornecedor(%s,%s,%s,%s,%s,%s,%s,%s)
+            """, 
+            [id,nome,endereco,codpostal,localidade,contacto,email,idestado]
+        )
+        result = cursor.fetchall()
+    print(result)
+    return result
+
+def get_fornecedor_details(fornecedor_id):
+    with connection.cursor() as cursor:
+        cursor.execute(
+             """
+            SELECT get_fornecedor_details(%s) AS fornecedor_details
+            """, 
+            [fornecedor_id]
+        )
+        result = cursor.fetchone()
+        
+        json_result = result[0]
+        details_dict = json.loads(json_result)
+    return details_dict

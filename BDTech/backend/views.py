@@ -5,6 +5,7 @@ from psycopg2.extras import Json
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import (
     Componente,
+    Fornecedor
 )
 from django.utils import timezone
 import json
@@ -28,6 +29,10 @@ from core.utils import (
     get_for_equipamento_comp_atrib,
     atualizar_encomenda_tpdoc,
     inserir_componentes_atributos,
+    get_user_and_sales_counts,
+    venda_get_list,
+    update_fornecedor,
+    get_fornecedor_details 
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -84,7 +89,6 @@ def new_prod_existente(request):
 
 
 def dashboard(request):
-
     # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
         pass
@@ -92,23 +96,23 @@ def dashboard(request):
         # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
         return redirect('/fulllogin/')
         exit
-    # --------------------------
+        
+    result = get_user_and_sales_counts(request.session["id_utilizador"])
+    result_table_venda = venda_get_list(request.session["id_utilizador"])
+    result_dict = result[0]
 
-#    with connection.cursor() as cursor:
-#        cursor.execute("SELECT * FROM get_user_and_sales_counts();")
-#        result = cursor.fetchone()
-#
-#    total_users, client_users_count, total_sales, total_orders = result
-#
-#    context = {
-#        "total_users": total_users,
-#        "client_users_count": client_users_count,
-#        "total_sales": total_sales,
-#        "total_orders": total_orders,
-#    }
+    context = {
+        "total_users": result_dict['total_users'],
+        "client_users_count": result_dict['client_users_count'],
+        "total_sales": result_dict['total_sales'],
+        "total_orders": result_dict['total_orders'],
+        "total_value_orders": result_dict['total_value_orders'],
+        "low_stock_components": result_dict['low_stock_components'],
+        "result_table_venda": result_table_venda,
 
-    #return render(request, "dashboard.html", context)
-    return render(request, "dashboard.html")
+    }
+
+    return render(request, "dashboard.html", context)
 
 def error404(request):
     return render(request, "404.html")
@@ -268,9 +272,37 @@ def edit_record(request, table_name, record_id):
     if request.method == "POST":
         if table_name == "componente":
             return redirect("edit_componente", record_id=record_id)
+        elif table_name == "fornecedor":
+             print("entrei aqui")
+             return redirect("edit_fornecedor", record_id=record_id)
         else:
             return redirect("generic_list", table_name=table_name)
 
+def edit_fornecedor(request,record_id):
+    fornecedor = get_object_or_404(Fornecedor, id_fornecedor=record_id)
+
+    if request.method == "POST":
+        nome = request.POST.get("nome", fornecedor.nome)
+        endereco = request.POST.get("endereco", fornecedor.endereco)
+        codpostal = request.POST.get("codpostal", fornecedor.codpostal)
+        localidade = request.POST.get("localidade", fornecedor.localidade)
+        contacto = request.POST.get("contacto", fornecedor.contacto)
+        email = request.POST.get("email", fornecedor.email)
+        id_estado = request.POST.get("id_estado", fornecedor.id_estado)
+
+        # Salve as alterações no banco de dados
+        update_fornecedor(record_id, nome, endereco, codpostal, localidade, contacto, email,id_estado)
+
+        # Redirecione para a página de detalhes ou qualquer outra página desejada
+        return redirect("/fornecedor/list")
+
+    # Se o método for GET, renderize o formulário com os dados existentes
+    return render(request, "edit_fornecedor.html", {"fornecedor": fornecedor})
+
+def detalhes_fornecedor(request, fornecedor_id):
+    fornecedor = get_object_or_404(Fornecedor, id_fornecedor=fornecedor_id)
+    fornecedor_details = get_fornecedor_details(fornecedor_id)
+    return JsonResponse(fornecedor_details)
 
 def edit_componente(request, record_id):
     componente = get_object_or_404(Componente, id_componente=record_id)
@@ -281,7 +313,7 @@ def edit_componente(request, record_id):
         componente.descricao = nova_descricao
         componente.save()
 
-        return redirect("/componente/list")
+       
 
     return render(request, "edit_componente.html", {"componente": componente})
 

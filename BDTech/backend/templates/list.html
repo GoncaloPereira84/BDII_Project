@@ -23,6 +23,31 @@ Listar
     {% endif %}
     <div class="block-header block-header-default">
       <h3 class="block-title">{{ table_name }}</small></h3>
+      <div class="block-options">
+        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
+          <i class="si si-refresh"></i>
+        </button>
+        <div class="dropdown">
+          <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="si si-chemistry"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end">
+            <a class="dropdown-item" href="javascript:void(0)">
+              <i class="far fa-fw fa-dot-circle opacity-50 me-1"></i> Pending
+            </a>
+            <a class="dropdown-item" href="javascript:void(0)">
+              <i class="far fa-fw fa-times-circle opacity-50 me-1"></i> Canceled
+            </a>
+            <a class="dropdown-item" href="javascript:void(0)">
+              <i class="far fa-fw fa-check-circle opacity-50 me-1"></i> Completed
+            </a>
+            <div role="separator" class="dropdown-divider"></div>
+            <a class="dropdown-item" href="javascript:void(0)">
+              <i class="fa fa-fw fa-eye opacity-50 me-1"></i> View All
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="block-content block-content-full">
       <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
@@ -68,12 +93,16 @@ Listar
                 <i class="text-success fa fa-cart-arrow-down"></i>
               </button>
               {% else%}
+              <button type="button" class="btn btn-sm btn-alt-secondary" onclick="abrirModalDetalhes('{{ row.0 }}', '{{ row.1 }}', '{{ row.2 }}', '{{ row.3 }}', '{{ row.4 }}', '{{ row.5 }}', '{{ row.6 }}')">
+                <i class="fa fa-eye"></i>
+              </button>
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
+                <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Editar">
                   <i class="fa fa-pencil-alt"></i>
                 </button>
               </form>
+              
               {% endif %}
               <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Eliminar"
                 onclick="confirmDelete('{{ table_name }}', '{{ row.0 }}')">
@@ -87,6 +116,43 @@ Listar
     </div>
   </div>
 </div>
+
+
+<!-- Modal para detalhes -->
+<div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detalhesModalLabel">Detalhes do Fornecedor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Nome:</strong> ${response.nome}</p>
+            <p><strong>Endereço:</strong> ${response.endereco}</p>
+            <p><strong>Código Postal:</strong> ${response.codigopostal}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Localidade:</strong> ${response.localidade}</p>
+            <p><strong>Contacto:</strong> ${response.contacto}</p>
+            <p><strong>Email:</strong> ${response.email}</p>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <p><strong>Estado:</strong> ${response.estado}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {% endblock %}
 
 {% block scripts %}
@@ -102,6 +168,66 @@ Listar
       window.location.href = `/receive_order/${recordId}/`;
     }
   }
+
+  function abrirModalDetalhes(id) {
+    $.ajax({
+      url: `/detalhes_fornecedor/${id}/`,  // Substitua pelo URL correto da sua view
+      method: 'GET',
+      success: function(response) {
+        console.log(response);
+        const corEstado = response.estado === 'Ativo' ? 'green' : 'red';
+   
+        Swal.fire({
+          title: `Detalhes do Fornecedor`,
+          html: `
+          <table class="table">
+                        <tbody>
+                            <tr>
+                                <th class="text-end">Nome:</th>
+                                <td class="text-start">${response.nome}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Email:</th>
+                                <td class="text-start">${response.email}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Contacto:</th>
+                                <td class="text-start">${response.contacto}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Endereço:</th>
+                                <td class="text-start">${response.endereco}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Código Postal:</th>
+                                <td class="text-start">${response.codigopostal}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Localidade:</th>
+                                <td class="text-start">${response.localidade}</td>
+                            </tr>                  
+                            <tr>
+                                <th class="text-end">Estado:</th>
+                                <td class="text-start"> <div style="color: ${corEstado};">${response.estado}</div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `,
+          showCloseButton: true,
+          showCancelButton: false,
+          focusConfirm: false,
+          width: '40%',
+          
+        });
+      },
+      error: function(error) {
+        console.error('Erro ao obter detalhes do fornecedor:', error);
+      }
+    });
+  }
+
+  // Adicione um listener de evento ao botão de detalhes
+  
 </script>
 
 <!-- jQuery (required for DataTables plugin) -->
@@ -117,6 +243,9 @@ Listar
 <script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/vfs_fonts.js'%}"></script>
 <script src="{% static 'assets/js/plugins/datatables-buttons/buttons.print.min.js'%}"></script>
 <script src="{% static 'assets/js/plugins/datatables-buttons/buttons.html5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/sweetalert2/sweetalert2.js'%}"></script>
+<script src="{% static 'assets/js/plugins/sweetalert2/sweetalert2.css'%}"></script>
+<script src="{% static 'assets/js/plugins/sweetalert2/sweetalert2.all.js'%}"></script>
 
 <script src="{% static 'assets/js/pages/be_tables_datatables.min.js'%}"></script>
 

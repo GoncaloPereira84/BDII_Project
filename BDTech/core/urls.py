@@ -24,6 +24,8 @@ from backend.views import(
     receber_encomenda,
     import_componente_json,
     import_componente_html,
+    edit_fornecedor,
+    detalhes_fornecedor
 )
 from frontend.views import(
     index, 
@@ -60,6 +62,7 @@ urlpatterns = [
     path('login/', login_utilizador, name='login'),
     path('logout/', logout_utilizador, name='logout'),
     path('componente/edit/<int:record_id>/', edit_componente, name='edit_componente'),
+    path('fornecedor/edit/<int:record_id>/', edit_fornecedor, name='edit_fornecedor'),
     path('save_encomenda/', save_encomenda, name='save_encomenda'),
     path('criar_mao_obra/', criar_mao_obra, name='criar_mao_obra'),
     path('pesquisa_equipamento/', pesquisa_equipamento, name='pesquisa_equipamento'),
@@ -77,6 +80,7 @@ urlpatterns = [
     path('aplicarfiltros/', aplicarfiltros, name='aplicarfiltros'),
     path('aplicarpreco/', aplicarpreco, name='aplicarpreco'),
     path('detalhes_venda/<int:venda_id>/', detalhes_venda, name='detalhes_venda'),
+    path('detalhes_fornecedor/<int:fornecedor_id>/', detalhes_fornecedor, name='detalhes_fornecedor'),
     path('usercompras/', usercompras, name='usercompras'),   
     
 ]
