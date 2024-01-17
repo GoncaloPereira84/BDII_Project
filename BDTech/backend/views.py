@@ -646,16 +646,17 @@ def imprimir_export_encomendas(request):
     if request.method == "POST":
         tipo = json.loads(request.POST.get("tipo"))
         if tipo == 0:
-            resultado = get_export_encomendas(request.session["id_utilizador"], 0, 0)
-            json_data = json.dumps(resultado, indent=2)
+            resultado = get_export_encomendas(request.session["id_utilizador"], tipo, 0)
             print(resultado)
         elif tipo == 1:
-            # Documentos sem faturar
-            print(tipo)
+            resultado = get_export_encomendas(request.session["id_utilizador"], tipo, json.loads(request.POST.get("id_fornecedor")))
         elif tipo == 2:
-            print(tipo)
+            resultado = get_export_encomendas(request.session["id_utilizador"], tipo, json.loads(request.POST.get("id_fornecedor")))
         else:
            return HttpResponse("Método não permitido.")
+        
+        json_data = json.dumps(resultado, indent=2)
+        print(json_data)
         return HttpResponse("Método não permitido.")
     else:
         return HttpResponse("Método não permitido.")
