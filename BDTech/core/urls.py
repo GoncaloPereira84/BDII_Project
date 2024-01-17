@@ -25,7 +25,9 @@ from backend.views import(
     import_componente_json,
     import_componente_html,
     edit_fornecedor,
-    detalhes_fornecedor
+    detalhes_fornecedor,
+    export_encomendas,
+    imprimir_export_encomendas,
 )
 from frontend.views import(
     index, 
@@ -94,5 +96,6 @@ urlpatterns = [
     path('completeCarrinho/', completeCarrinho, name='completeCarrinho'),
     path('detalhes_fornecedor/<int:fornecedor_id>/', detalhes_fornecedor, name='detalhes_fornecedor'),
     path('usercompras/', usercompras, name='usercompras'),   
-    
+    path('export_encomendas/', export_encomendas, name='export_encomendas'),   
+    path('imprimir_export_encomendas/', imprimir_export_encomendas, name='imprimir_export_encomendas'),
 ]

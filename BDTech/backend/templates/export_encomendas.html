@@ -1,0 +1,160 @@
+{% extends "masterPage.html" %}
+
+{% block title %}
+Nova encomenda
+{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+    <!-- Elements -->
+    <form id="encomendaForm" class="js-validation" method="POST" action="{% url 'imprimir_export_encomendas' %}">
+        {% csrf_token %}
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Exportar encomenda(s)</h3>
+                <div class="block-options" id="buttonid">
+                    <input type="hidden" id="id_fornecedor" name="id_fornecedor" value="">
+                    <button type="button" id="buttonid" class="btn btn-primary" onclick="exportEncomenda()">
+                        <i class="fa fa-fw fa-check"></i> Exportar
+                    </button>
+                </div>
+            </div>
+            <div class="block-content block-content-full">
+                <div class="row items-push">
+                    <div class="space-x-2">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="radio-none" name="example-radios-inline"
+                                value="option1" onchange="mostrarOcultarFornecedor()" checked>
+                            <label class="form-check-label" for="radio-none">Exportar todas as
+                                encomendas</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="radio-fornecedor"
+                                name="example-radios-inline" value="option2" onchange="mostrarOcultarFornecedor()">
+                            <label class="form-check-label" for="radio-fornecedor">Exportar encomendas apenas de 1
+                                fornecedor</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="radio-encomenda"
+                                name="example-radios-inline" value="option3" onchange="mostrarOcultarFornecedor()">
+                            <label class="form-check-label" for="radio-encomenda">Exportar encomenda
+                                especifica</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row items-push mt-4" id="divSelecionarFornecedor" style="display: none;">
+                    <div class="col-lg-4">
+                        <p class="text-muted">
+                            Escolha o fornecedor
+                        </p>
+                    </div>
+                    <div class="col-lg-8 col-xl-5">
+                        <div class="mb-4">
+                            <label class="form-label" for="val-select2">Fornecedor<span
+                                    class="text-danger">*</span></label>
+                            <select class="js-select2 form-select" id="val-select2" name="val-select2"
+                                style="width: 100%;" data-placeholder="Escolha um fornecedor...">
+                                {% for fornecedor in fornecedores %}
+                                <option value="{{ fornecedor.0 }}">{{ fornecedor.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row items-push mt-4" id="divSelecionarEncomenda" style="display: none;">
+                    <div class="col-lg-4">
+                        <p class="text-muted">
+                            Selecione a encomenda
+                        </p>
+                    </div>
+                    <div class="col-lg-8 col-xl-5">
+                        <div class="mb-4">
+                            <button type="button" class="btn btn-primary" onclick="encomendaslist()">
+                                Selecionar Encomenda
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block scripts %}
+
+<!-- jQuery (required for DataTables plugin) -->
+<script src="{% static 'assets/js/lib/jquery.min.js'%}"></script>
+
+<script>
+    function exportEncomenda() {
+        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+        var checkboxFornecedor = document.getElementById("radio-fornecedor");
+        var checkboxEncomenda = document.getElementById("radio-encomenda");
+        var checkboxnone = document.getElementById("radio-none");
+        var requestData = {};
+        var tipo = 0;
+        var idFornecedor = $('#val-select2').val();
+        $('#id_fornecedor').val(idFornecedor);
+
+        console.log(idFornecedor)
+        if (checkboxnone.checked) {
+            tipo = 0;
+        } else if (checkboxFornecedor.checked) {
+            tipo = 1;
+        }
+        requestData = {
+            'tipo': tipo,
+            'id_fornecedor': idFornecedor,
+            'csrfmiddlewaretoken': csrfToken
+        };
+        $.ajax({
+            type: 'POST',
+            url: '{% url "imprimir_export_encomendas" %}',
+            data: requestData,
+            success: function (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso',
+                    text: 'Encomendas exportadas com sucesso!',
+                });
+            },
+            error: function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Erro a exportar!',
+                });
+            }
+        });
+    }
+
+    function mostrarOcultarFornecedor() {
+        var divSelecionarFornecedor = document.getElementById("divSelecionarFornecedor");
+        var divSelecionarEncomenda = document.getElementById("divSelecionarEncomenda");
+        var checkboxFornecedor = document.getElementById("radio-fornecedor");
+        var checkboxEncomenda = document.getElementById("radio-encomenda");
+        var checkboxNone = document.getElementById("radio-none");
+        var buttonid = document.getElementById("buttonid");
+
+        if (checkboxFornecedor.checked) {
+            divSelecionarFornecedor.style.display = "block";
+            divSelecionarEncomenda.style.display = "none";
+            buttonid.style.display = "block";
+        } else if (checkboxEncomenda.checked) {
+            divSelecionarFornecedor.style.display = "none";
+            divSelecionarEncomenda.style.display = "block";
+            buttonid.style.display = "none";
+        } else if (checkboxNone.checked) {
+            divSelecionarFornecedor.style.display = "none";
+            divSelecionarEncomenda.style.display = "none";
+            buttonid.style.display = "block";
+        }
+    }
+
+    function encomendaslist() {
+        window.location.href = '/compra/list';
+    }
+</script>
+
+{% endblock %}

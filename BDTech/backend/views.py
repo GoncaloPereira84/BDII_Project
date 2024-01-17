@@ -32,7 +32,8 @@ from core.utils import (
     get_user_and_sales_counts,
     venda_get_list,
     update_fornecedor,
-    get_fornecedor_details 
+    get_fornecedor_details,
+    get_export_encomendas,
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -205,8 +206,7 @@ def generic_list(request, table_name):
         return redirect('/fulllogin/')
         exit
     # ----------------------------------    
-
-    function_table_name = f"{table_name}_get_list(1,0)"
+    function_table_name = f"{table_name}_get_list({request.session['id_utilizador']}, 0)"
     if not function_exists(function_table_name):
         return redirect("/404")
     
@@ -620,13 +620,8 @@ def list_compra_FR_doc(request):
 
 def receber_encomenda(request,record_id):    
     result = atualizar_encomenda_tpdoc(request.session["id_utilizador"], record_id)
-    
-    print("result:",result)
-    if result == 1:
-        return redirect("/compra/list/fr")
-    
-    
-    return redirect("/compra/list/fr")
+    return JsonResponse({'result': result})
+
 
 def import_componente_json(request):
     if request.method == 'POST':
@@ -638,3 +633,29 @@ def import_componente_json(request):
             return HttpResponse("Json contém erros!")
         
         return HttpResponse(resultado) 
+    
+def export_encomendas(request):
+    fornecedores = get_all_fornecedores(request.session["id_utilizador"], 0)
+    return render(
+        request,
+        "export_encomendas.html",
+        {"fornecedores": fornecedores},
+    )
+
+def imprimir_export_encomendas(request):
+    if request.method == "POST":
+        tipo = json.loads(request.POST.get("tipo"))
+        if tipo == 0:
+            resultado = get_export_encomendas(request.session["id_utilizador"], 0, 0)
+            json_data = json.dumps(resultado, indent=2)
+            print(resultado)
+        elif tipo == 1:
+            # Documentos sem faturar
+            print(tipo)
+        elif tipo == 2:
+            print(tipo)
+        else:
+           return HttpResponse("Método não permitido.")
+        return HttpResponse("Método não permitido.")
+    else:
+        return HttpResponse("Método não permitido.")

@@ -28,14 +28,14 @@ Listar
           data-action-mode="demo">
           <i class="si si-refresh"></i>
         </button>
-        {% if table_name == "equipamento" or table_name == "fornecedor" or table_name == "venda" or table_name == "equipamento"%}
+        {% if table_name == "equipamento" or table_name == "fornecedor" or table_name == "venda"%}
         <div class="dropdown">
           <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
             <i class="si si-chemistry"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-end">
-            {% if table_name == "equipamento" or table_name == "fornecedor" or table_name == "venda"%}
+            {% if table_name == "fornecedor" or table_name == "venda"%}
             <a class="dropdown-item filter-option-state" href="javascript:void(0)" data-state="ativo">
               <i class="far fa-fw fa-dot-circle opacity-50 me-1"></i> Ativo
             </a>
@@ -175,9 +175,61 @@ Listar
   }
 
   function receberEncomenda(recordId) {
-    if (confirm('Tem certeza de que deseja receber a encomenda?')) {
-      window.location.href = `/receive_order/${recordId}/`;
-    }
+    Swal.fire({
+      title: 'Quer receber esta encomenda?',
+      showDenyButton: true,
+      confirmButtonText: 'Sim',
+      denyButtonText: 'Não',
+      customClass: {
+        actions: 'my-actions',
+        confirmButton: 'order-2',
+        denyButton: 'order-3',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `/receive_order/${recordId}/`,
+          method: 'GET',
+          success: function (response) {
+            if (response.result === 2) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Essa encomenda já foi recebida',
+              });
+            }
+            else if (response.result === 1) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Sucesso',
+                text: 'Essa encomenda já foi recebida',
+              });
+              window.location.href = `/receive_order/${recordId}/`;
+            }
+            else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Não foi possivel receber a encomenda',
+              });
+            }
+          },
+          error: function (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro',
+              text: 'Não foi possivel receber a encomenda',
+            });
+          }
+        });
+      } else if (result.isDenied) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'Não foi possivel receber a encomenda',
+        });
+      }
+    })
   }
 
   function abrirModalDetalhes(id) {

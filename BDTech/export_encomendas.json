@@ -1,0 +1,279 @@
+[
+  [
+    {
+      "id_compra": 46,
+      "data_compra": "2023-12-21",
+      "num_doc": 12,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$25.00",
+      "componentes": [
+        {
+          "id_componente": 38,
+          "nome_componente": "RAM Asus DDR2 8GBwqdr3w",
+          "quantidade": 5,
+          "preco_unitario": 5
+        }
+      ]
+    },
+    {
+      "id_compra": 48,
+      "data_compra": "2023-12-22",
+      "num_doc": 13,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$150.00",
+      "componentes": [
+        {
+          "id_componente": 3,
+          "nome_componente": "Disco SSD 500GB",
+          "quantidade": 1,
+          "preco_unitario": 150
+        }
+      ]
+    },
+    {
+      "id_compra": 49,
+      "data_compra": "2023-12-22",
+      "num_doc": 14,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$50,730.00",
+      "componentes": [
+        {
+          "id_componente": 7,
+          "nome_componente": "Novo componente",
+          "quantidade": 60,
+          "preco_unitario": 30
+        },
+        {
+          "id_componente": 4,
+          "nome_componente": "Nvidia GTX 4090",
+          "quantidade": 33,
+          "preco_unitario": 960
+        },
+        {
+          "id_componente": 3,
+          "nome_componente": "Disco SSD 500GB",
+          "quantidade": 56,
+          "preco_unitario": 150
+        },
+        {
+          "id_componente": 2,
+          "nome_componente": "Placa grafica GTX",
+          "quantidade": 62,
+          "preco_unitario": 100
+        },
+        {
+          "id_componente": 1,
+          "nome_componente": "RAM DDR4 16GB",
+          "quantidade": 53,
+          "preco_unitario": 50
+        }
+      ]
+    },
+    {
+      "id_compra": 50,
+      "data_compra": "2023-12-22",
+      "num_doc": 15,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$38,400.00",
+      "componentes": [
+        {
+          "id_componente": 4,
+          "nome_componente": "Nvidia GTX 4090",
+          "quantidade": 40,
+          "preco_unitario": 960
+        }
+      ]
+    },
+    {
+      "id_compra": 36,
+      "data_compra": "2023-12-15",
+      "num_doc": 3,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$50.00",
+      "componentes": null
+    },
+    {
+      "id_compra": 37,
+      "data_compra": "2023-12-16",
+      "num_doc": 4,
+      "fornecedor": "Fornecedor de teste 2",
+      "valor_total": "$1,310.00",
+      "componentes": null
+    },
+    {
+      "id_compra": 38,
+      "data_compra": "2023-12-16",
+      "num_doc": 5,
+      "fornecedor": "Fornecedor de teste 2",
+      "valor_total": "$1,410.00",
+      "componentes": [
+        {
+          "id_componente": 1,
+          "nome_componente": "RAM DDR4 16GB",
+          "quantidade": 3,
+          "preco_unitario": 50
+        },
+        {
+          "id_componente": 2,
+          "nome_componente": "Placa grafica GTX",
+          "quantidade": 1,
+          "preco_unitario": 100
+        },
+        {
+          "id_componente": 3,
+          "nome_componente": "Disco SSD 500GB",
+          "quantidade": 1,
+          "preco_unitario": 150
+        },
+        {
+          "id_componente": 4,
+          "nome_componente": "Nvidia GTX 4090",
+          "quantidade": 1,
+          "preco_unitario": 960
+        },
+        {
+          "id_componente": 7,
+          "nome_componente": "Novo componente",
+          "quantidade": 1,
+          "preco_unitario": 50
+        }
+      ]
+    },
+    {
+      "id_compra": 39,
+      "data_compra": "2023-12-16",
+      "num_doc": 6,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$200.00",
+      "componentes": null
+    },
+    {
+      "id_compra": 51,
+      "data_compra": "2023-12-27",
+      "num_doc": 16,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$60.00",
+      "componentes": [
+        {
+          "id_componente": 42,
+          "nome_componente": "Disco Asus HDD 64GB",
+          "quantidade": 10,
+          "preco_unitario": 1
+        },
+        {
+          "id_componente": 38,
+          "nome_componente": "RAM Asus DDR2 8GBwqdr3w",
+          "quantidade": 10,
+          "preco_unitario": 5
+        }
+      ]
+    },
+    {
+      "id_compra": 2,
+      "data_compra": "2022-10-22",
+      "num_doc": 2,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$12,323.00",
+      "componentes": null
+    },
+    {
+      "id_compra": 43,
+      "data_compra": "2023-12-17",
+      "num_doc": 9,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$60.00",
+      "componentes": [
+        {
+          "id_componente": 7,
+          "nome_componente": "Novo componente",
+          "quantidade": 2,
+          "preco_unitario": 30
+        }
+      ]
+    },
+    {
+      "id_compra": 41,
+      "data_compra": "2023-12-16",
+      "num_doc": 8,
+      "fornecedor": "Fornecedor de teste 2",
+      "valor_total": "$1,310.00",
+      "componentes": [
+        {
+          "id_componente": 1,
+          "nome_componente": "RAM DDR4 16GB",
+          "quantidade": 1,
+          "preco_unitario": 50
+        },
+        {
+          "id_componente": 2,
+          "nome_componente": "Placa grafica GTX",
+          "quantidade": 1,
+          "preco_unitario": 100
+        },
+        {
+          "id_componente": 3,
+          "nome_componente": "Disco SSD 500GB",
+          "quantidade": 1,
+          "preco_unitario": 150
+        },
+        {
+          "id_componente": 4,
+          "nome_componente": "Nvidia GTX 4090",
+          "quantidade": 1,
+          "preco_unitario": 960
+        },
+        {
+          "id_componente": 7,
+          "nome_componente": "Novo componente",
+          "quantidade": 1,
+          "preco_unitario": 50
+        }
+      ]
+    },
+    {
+      "id_compra": 40,
+      "data_compra": "2023-12-16",
+      "num_doc": 7,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$200.00",
+      "componentes": [
+        {
+          "id_componente": 7,
+          "nome_componente": "Novo componente",
+          "quantidade": 4,
+          "preco_unitario": 50
+        }
+      ]
+    },
+    {
+      "id_compra": 44,
+      "data_compra": "2023-12-21",
+      "num_doc": 10,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$300.00",
+      "componentes": [
+        {
+          "id_componente": 3,
+          "nome_componente": "Disco SSD 500GB",
+          "quantidade": 2,
+          "preco_unitario": 150
+        }
+      ]
+    },
+    {
+      "id_compra": 45,
+      "data_compra": "2023-12-21",
+      "num_doc": 11,
+      "fornecedor": "Fornecedor de teste 1 ###",
+      "valor_total": "$50.00",
+      "componentes": [
+        {
+          "id_componente": 1,
+          "nome_componente": "RAM DDR4 16GB",
+          "quantidade": 1,
+          "preco_unitario": 50
+        }
+      ]
+    }
+  ]
+]
