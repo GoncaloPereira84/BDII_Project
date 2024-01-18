@@ -90,7 +90,7 @@ Listar
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.1 %}">
                 {% csrf_token %}
                 <button type="button" class="btn btn-sm btn-alt-secondary"
-                  onclick="abrirModalDetalhesComponente('{{ row.1 }}', 'detalhes_componente')">
+                  onclick="abrirModalDetalhesComponente('{{ row.1 }}', 'detalhes_componente')" data-bs-toggle="tooltip" title="Detalhes">
                   <i class="fa fa-eye"></i>
                 </button>
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
@@ -106,7 +106,7 @@ Listar
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip"
-                  title="Detalhes encomenda">
+                  title="Detalhes encomenda" data-bs-toggle="tooltip" title="Detalhes">
                   <i class="text-primary fa fa-eye"></i>
                 </button>
               </form>
@@ -118,7 +118,7 @@ Listar
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
                 <button type="button" class="btn btn-sm btn-alt-secondary"
-                  onclick="abrirModalDetalhesFornecedor('{{ row.0 }}', 'detalhes_fornecedor')">
+                  onclick="abrirModalDetalhesFornecedor('{{ row.0 }}', 'detalhes_fornecedor')" data-bs-toggle="tooltip" title="Detalhes">
                   <i class="fa fa-eye"></i>
                 </button>
 
