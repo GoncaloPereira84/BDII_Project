@@ -18,7 +18,6 @@ def get_all_atributos(request):
     mydoc = mycol.find()#mycol.find(myquery)
 
     for x in mydoc:
-        print("\nmongooos", x)
         return x    
 
  #filtros - get marcas
@@ -112,7 +111,6 @@ def aplicar_filtros(request, marcas=None, precos=None, ram=None, rom=None):
        for resultados in resultados_por_filtro[1:]:
             ids_equipamento.intersection_update(tuple(resultado.values())[0] for resultado in resultados)
 
-    print("IDs de Equipamento: ", ids_equipamento)
     return list(ids_equipamento)
 
 
@@ -176,7 +174,6 @@ def insert_batch_into_equipamento_comp_atrib(request, data):
     mycol = connection(request, "equipamento_comp_atrib")
 
     for tupla in data:
-        print("tupla:", tupla)
         id_equipamento, id_componente, id_atributo, valoratrib = tupla
 
         id_atributo_mongo = get_atributo_mongo_id(request, id_atributo)

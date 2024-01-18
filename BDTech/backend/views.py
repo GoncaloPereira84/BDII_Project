@@ -46,7 +46,7 @@ from core.utilsMongo import (
     get_marca_atributo,
     insert_batch_into_equipamento_comp_atrib,
 )
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_protect
 
 
@@ -56,7 +56,8 @@ def masterPage(request):
 def import_componente_html(request):
     return render(request, "import_componente.html")
 
-
+require_GET
+@csrf_protect
 def new_order(request):
     fornecedores = get_all_fornecedores(request.session["id_utilizador"], 0)
     componentes = get_all_componente(request.session["id_utilizador"], 0)

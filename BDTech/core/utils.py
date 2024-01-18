@@ -318,7 +318,6 @@ def inserir_componentes_atributos(compra_json):
 
             return result
     except Exception as e:
-        print(f"Ocorreu um erro: {e}")
         return None
 
 def criar_venda(id_utilizador, json_data):
@@ -334,7 +333,6 @@ def criar_venda(id_utilizador, json_data):
 
             return result
     except Exception as e:
-        print(f"Ocorreu um erro: {e}")
         return None
 
 #################
@@ -462,7 +460,6 @@ def get_for_equipamento_comp_atrib(id_utilizador, id_equipamento):
             [id_utilizador, id_equipamento],
         )
         result = cursor.fetchall()
-    print(result)
 
     return result
 
@@ -475,7 +472,6 @@ def filtrar_equipamentos_por_preco(id_equipamento, min_price, max_price):
             [id_equipamento, min_price, max_price],
         )
         result = cursor.fetchall()
-    print(result)
 
     return result
 
@@ -488,7 +484,6 @@ def get_equipamentos_by_preco(min_price, max_price, tipo):
             [min_price, max_price, tipo],
         )
         result = cursor.fetchall()
-    print(result)
     return result
 
 ###########################
