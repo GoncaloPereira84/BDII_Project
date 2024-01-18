@@ -57,7 +57,6 @@ Página Inicial
                 url: '{% url "adicionar_ao_carrinho" %}',
                 data: requestData,
                 success: function (response) {
-                    console.log("sucess:  ", response);
                     $('#page-header-cart-dropdown').click();
                 },
                 error: function (error) {

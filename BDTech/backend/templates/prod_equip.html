@@ -467,7 +467,6 @@ Nova encomenda
                 url: '{% url "criar_mao_obra" %}',
                 data: requestData,
                 success: function (response) {
-                    console.log(response);
                     if (response.hasOwnProperty('id_tipomaoobra')) {
                         var id_tipomaoobra = response.id_tipomaoobra;
                         var nome = response.nome;

@@ -544,3 +544,59 @@ def get_componente_details(componente_id):
         json_result = result[0]
         details_dict = json.loads(json_result)
     return details_dict
+
+def get_venda_details(utilizador, venda_id):
+    with connection.cursor() as cursor:
+        cursor.execute(
+             """
+            SELECT get_venda_details(%s,%s) AS venda_details
+            """, 
+            [utilizador, venda_id]
+        )
+        result = cursor.fetchone()
+        
+        json_result = result[0]
+        details_dict = json.loads(json_result)
+    return details_dict
+
+def get_compra_details(utilizador, compra_id):
+    with connection.cursor() as cursor:
+        cursor.execute(
+             """
+            SELECT get_compra_details(%s,%s) AS compra_details
+            """, 
+            [utilizador, compra_id]
+        )
+        result = cursor.fetchone()
+        
+        json_result = result[0]
+        details_dict = json.loads(json_result)
+    return details_dict
+
+def get_equipamento_details(utilizador, equipamento_id):
+    with connection.cursor() as cursor:
+        cursor.execute(
+             """
+            SELECT get_equipamento_details(%s,%s) AS equipamento_details
+            """, 
+            [utilizador, equipamento_id]
+        )
+        result = cursor.fetchone()
+        
+        json_result = result[0]
+        details_dict = json.loads(json_result)
+    return details_dict
+
+def get_producao_details(utilizador, producao_id):
+    with connection.cursor() as cursor:
+        cursor.execute(
+             """
+            SELECT get_producao_details(%s,%s) AS producao_details
+            """, 
+            [utilizador, producao_id]
+        )
+        result = cursor.fetchone()
+        
+        json_result = result[0]
+        details_dict = json.loads(json_result)
+    return details_dict

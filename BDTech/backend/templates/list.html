@@ -25,13 +25,13 @@ Listar
       <h3 class="block-title">{{ table_name }}</small></h3>
       <div class="block-options">
         <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle"
-          data-action-mode="demo"> 
+          data-action-mode="demo">
           <i class="si si-refresh"></i>
         </button>
         {% if table_name == "equipamento" or table_name == "fornecedor" or table_name == "venda"%}
         <div class="dropdown">
           <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false"> 
+            aria-expanded="false">
             <i class="si si-chemistry"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-end">
@@ -89,14 +89,24 @@ Listar
               {% if imagem_column_present %}
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.1 %}">
                 {% csrf_token %}
-                <button type="button" class="btn btn-sm btn-alt-secondary"
-                  onclick="abrirModalDetalhesComponente('{{ row.1 }}', 'detalhes_componente')" data-bs-toggle="tooltip" title="Detalhes">
-                  <i class="fa fa-eye"></i>
-                </button>
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
                   <i class="fa fa-pencil-alt"></i>
                 </button>
               </form>
+              {% if table_name == "equipamento"%}
+              <button type="button" class="btn btn-sm btn-alt-secondary"
+                onclick="abrirModalDetalhesEquipamento('{{ row.1 }}', 'detalhes_equipamento')" data-bs-toggle="tooltip"
+                title="Detalhes">
+                <i class="fa fa-eye"></i>
+              </button>
+              {% endif %}
+              {% if table_name == "componente" %}
+              <button type="button" class="btn btn-sm btn-alt-secondary"
+                onclick="abrirModalDetalhesComponente('{{ row.1 }}', 'detalhes_componente')" data-bs-toggle="tooltip"
+                title="Detalhes">
+                <i class="fa fa-eye"></i>
+              </button>
+              {% endif %}
               {% elif table_name == "compra"%}
               <a id="downloadLink" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip"
                 title="Exportar Encomenda" download="export_encomendas.json"
@@ -105,9 +115,10 @@ Listar
               </a>
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip"
-                  title="Detalhes encomenda" data-bs-toggle="tooltip" title="Detalhes">
-                  <i class="text-primary fa fa-eye"></i>
+                <button type="button" class="btn btn-sm btn-alt-secondary text-primary"
+                  onclick="abrirModalDetalhesCompra('{{ row.0 }}', 'detalhes_compra')" data-bs-toggle="tooltip"
+                  title="Detalhes">
+                  <i class="fa fa-eye"></i>
                 </button>
               </form>
               <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip"
@@ -117,14 +128,32 @@ Listar
               {% else%}
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
+                {% if table_name == "fornecedor"%}
                 <button type="button" class="btn btn-sm btn-alt-secondary"
-                  onclick="abrirModalDetalhesFornecedor('{{ row.0 }}', 'detalhes_fornecedor')" data-bs-toggle="tooltip" title="Detalhes">
+                  onclick="abrirModalDetalhesFornecedor('{{ row.0 }}', 'detalhes_fornecedor')" data-bs-toggle="tooltip"
+                  title="Detalhes">
                   <i class="fa fa-eye"></i>
                 </button>
-
+                {% endif %}
+                {% if table_name == "venda"%}
+                <button type="button" class="btn btn-sm btn-alt-secondary"
+                  onclick="abrirModalDetalhesVenda('{{ row.0 }}', 'detalhes_venda')" data-bs-toggle="tooltip"
+                  title="Detalhes">
+                  <i class="fa fa-eye"></i>
+                </button>
+                {% endif %}
+                {% if table_name == "producao"%}
+                <button type="button" class="btn btn-sm btn-alt-secondary"
+                  onclick="abrirModalDetalhesProducao('{{ row.0 }}', 'detalhes_producao')" data-bs-toggle="tooltip"
+                  title="Detalhes">
+                  <i class="fa fa-eye"></i>
+                </button>
+                {% endif %}
+                {% if table_name != "venda" and table_name != "equipamento" and  table_name != "producao"%}
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Editar">
                   <i class="fa fa-pencil-alt"></i>
                 </button>
+                {% endif %}
               </form>
               {% endif %}
               <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Eliminar"
@@ -225,15 +254,11 @@ Listar
 
   function abrirModalDetalhes(tipo, id, tableName, response) {
     const corEstado = response.estado === 'Ativo' ? 'green' : 'red';
-    console.log(response.pcusto_medio);
 
-    // Verificar se o campo de preço existe e não está vazio (para componentes)
     const precoNumerico = response.preco ? parseFloat(response.preco.replace(/[^\d.]/g, '')) : 0;
     const precoMNumerico = response.pcusto_medio ? parseFloat(response.pcusto_medio.replace(/[^\d.]/g, '')) : 0;
 
-    // Verificar se o preço é um número válido
     if (!isNaN(precoNumerico) || !isNaN(precoMNumerico)) {
-      // Formatar o preço como string de moeda Euro
       const precoFormatado = new Intl.NumberFormat('pt-PT', {
         style: 'currency',
         currency: 'EUR'
@@ -245,7 +270,7 @@ Listar
       }).format(precoMNumerico);
 
       Swal.fire({
-        title: `Detalhes ${tipo === 'fornecedor' ? 'do Fornecedor' : 'do Componente'}`,
+        title: `Detalhes ${tipo === 'fornecedor' ? 'do Fornecedor' : tipo === 'componente' ? 'do Componente' : tipo === 'compra' ? 'da Compra' : tipo === 'equipamento' ? 'do Equipamento' : tipo === 'producao' ? 'da Produção' : 'da Venda'}`,
         html: `
             <table class="table">
                 <tbody>
@@ -278,7 +303,6 @@ Listar
                                 <th class="text-end" style="color: ${corEstado}">Estado:</th>
                                 <td class="text-start" style="color: ${corEstado}">${response.estado}</td>
                             </tr>
-     
                     ` : ''}   
                     ${tipo === 'componente' ? `
                     <table class="table" style="width: 100%;">
@@ -306,9 +330,6 @@ Listar
                                 </div>
                             </td>
                           </tr>
-                          
-
-
                       </tbody>
                     </table>
                     <tr>
@@ -317,17 +338,164 @@ Listar
                             <span style="color: ${corEstado};">${response.estado}</span>
                         </td>
                     </tr>
-
-
                     ` : ''}   
-                    
+                    ${tipo === 'venda' ? `
+                    <tr>
+                                <th class="text-end">Data:</th>
+                                <td class="text-start">${response.venda_details.data}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Valor total:</th>
+                                <td class="text-start">${response.venda_details.valortotal}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Comprador:</th>
+                                <td class="text-start">${response.venda_details.utilizador}</td>
+                            </tr>
+                            <tr>
+                              <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
+                                <div class="table-title m-2"><strong>Equipamentos</strong></div>
+                                <thead>
+                                  <tr>
+                                    <th class="d-none d-sm-table-cell">Imagem</th>
+                                    <th class="d-none d-sm-table-cell">Quantidade</th>
+                                    <th class="d-none d-sm-table-cell">Preço Unitário</th>
+                                    <th class="d-none d-sm-table-cell">Nome do Equipamento</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  ${response.equipamentos_details.map(equipamento => `
+                                  <tr>
+                                    <td><img src="${equipamento.imagem}" alt="Imagem" style="max-width: 100%; max-height: 100px; vertical-align: middle;"></td>
+                                    <td>${equipamento.quantidade}</td>
+                                    <td>${equipamento.preco_unitario}</td>
+                                    <td>${equipamento.nome_equipamento}</td>
+                                  </tr>
+                                  `).join('')}
+                                </tbody>
+                              </table>
+                            </tr>
+                    ` : ''}
+                    ${tipo === 'compra' ? `
+                    <tr>
+                                <th class="text-end">Data:</th>
+                                <td class="text-start">${response.compra_details.data}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Valor total:</th>
+                                <td class="text-start">${response.compra_details.valortotal}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Fornecedor:</th>
+                                <td class="text-start">${response.compra_details.fornecedor}</td>
+                            </tr>
+                            <tr>
+                              <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
+                                <div class="table-title m-2"><strong>Componentes</strong></div>
+                                <thead>
+                                  <tr>
+                                    <th class="d-none d-sm-table-cell">Nome do Equipamento</th>
+                                    <th class="d-none d-sm-table-cell">Quantidade</th>
+                                    <th class="d-none d-sm-table-cell">Preço Unitário</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  ${response.componentes_details.map(componente => `
+                                  <tr>
+                                    <td>${componente.nome_componente}</td>
+                                    <td>${componente.quantidade}</td>
+                                    <td>${componente.preco_unitario}</td>
+                                  </tr>
+                                  `).join('')}
+                                </tbody>
+                              </table>
+                            </tr>
+                    ` : ''} 
+                    ${tipo === 'equipamento' ? `
+                            <tr>
+                                <th class="text-end">Nome:</th>
+                                <td class="text-start">${response.equipamento_details.nome}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Tipo:</th>
+                                <td class="text-start">${response.equipamento_details.tipo_equipamento}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Preço:</th>
+                                <td class="text-start">${response.equipamento_details.preco}</td>
+                            </tr>
+                            <tr>
+                              <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
+                                <div class="table-title m-2"><strong>Componentes</strong></div>
+                                <thead>
+                                  <tr>
+                                    <th class="d-none d-sm-table-cell">Imagem</th>
+                                    <th class="d-none d-sm-table-cell">Nome do Equipamento</th>
+                                    <th class="d-none d-sm-table-cell">Quantidade</th>
+                                    <th class="d-none d-sm-table-cell">Preço Unitário</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  ${response.componentes_details.map(componente => `
+                                  <tr>
+                                    <td><img src="${componente.imagem}" alt="Imagem" style="max-width: 50%; max-height: 50px; vertical-align: middle;"></td>
+                                    <td>${componente.nome_componente}</td>
+                                    <td>${componente.quantidade}</td>
+                                    <td>${componente.preco}</td>
+                                  </tr>
+                                  `).join('')}
+                                </tbody>
+                              </table>
+                            </tr>
+                    ` : ''}
+                    ${tipo === 'producao' ? `
+                            <tr>
+                                <th class="text-end">Data:</th>
+                                <td class="text-start">${response.producao_details.data}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Nome:</th>
+                                <td class="text-start">${response.producao_details.nome}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Tipo:</th>
+                                <td class="text-start">${response.producao_details.tipo_equipamento}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Preço:</th>
+                                <td class="text-start">${response.producao_details.valortotal}</td>
+                            </tr>
+                            <tr>
+                              <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
+                                <div class="table-title m-2"><strong>Componentes</strong></div>
+                                <thead>
+                                  <tr>
+                                    <th class="d-none d-sm-table-cell">Imagem</th>
+                                    <th class="d-none d-sm-table-cell">Nome do Equipamento</th>
+                                    <th class="d-none d-sm-table-cell">Quantidade</th>
+                                    <th class="d-none d-sm-table-cell">Preço Unitário</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  ${response.componentes_details.map(componente => `
+                                  <tr>
+                                    <td><img src="${componente.imagem}" alt="Imagem" style="max-width: 50%; max-height: 50px; vertical-align: middle;"></td>
+                                    <td>${componente.nome_componente}</td>
+                                    <td>${componente.quantidade}</td>
+                                    <td>${componente.preco_unitario}</td>
+                                  </tr>
+                                  `).join('')}
+                                </tbody>
+                              </table>
+                            </tr>
+                    ` : ''}
                 </tbody>
             </table>
         `,
         showCloseButton: true,
         showCancelButton: false,
         focusConfirm: false,
-        width: '40%',
+        width: '60%',
       });
     } else {
       console.error('O valor do preço não é um número válido.');
@@ -336,14 +504,12 @@ Listar
 
 
   function abrirModalDetalhesFornecedor(id, tableName) {
-    console.log(id, tableName);
     $.ajax({
       url: `/${tableName}/${id}/`,
       method: 'POST', // ou 'GET' dependendo da sua configuração
       headers: { 'X-CSRFToken': getCookie('csrftoken') },
       dataType: 'json',
       success: function (response) {
-        console.log(response);
         abrirModalDetalhes('fornecedor', id, tableName, response);
       },
       error: function (error) {
@@ -367,8 +533,66 @@ Listar
       }
     });
   }
-  // Adicione um listener de evento ao botão de detalhes
 
+  function abrirModalDetalhesVenda(id, tableName) {
+    $.ajax({
+      url: `/${tableName}/${id}/`,
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      dataType: 'json',
+      success: function (response) {
+        abrirModalDetalhes('venda', id, tableName, response);
+      },
+      error: function (error) {
+        console.error(`Erro ao obter detalhes da venda (${tableName}):`, error);
+      }
+    });
+  }
+
+  function abrirModalDetalhesCompra(id, tableName) {
+    $.ajax({
+      url: `/${tableName}/${id}/`,
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      dataType: 'json',
+      success: function (response) {
+        abrirModalDetalhes('compra', id, tableName, response);
+      },
+      error: function (error) {
+        console.error(`Erro ao obter detalhes da compra (${tableName}):`, error);
+      }
+    });
+  }
+
+  function abrirModalDetalhesEquipamento(id, tableName) {
+    $.ajax({
+      url: `/${tableName}/${id}/`,
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      dataType: 'json',
+      success: function (response) {
+        abrirModalDetalhes('equipamento', id, tableName, response);
+      },
+      error: function (error) {
+        console.error(`Erro ao obter detalhes da compra (${tableName}):`, error);
+      }
+    });
+  }
+
+  function abrirModalDetalhesProducao(id, tableName) {
+    $.ajax({
+      url: `/${tableName}/${id}/`,
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      dataType: 'json',
+      success: function (response) {
+        abrirModalDetalhes('producao', id, tableName, response);
+      },
+      error: function (error) {
+        console.error(`Erro ao obter detalhes da compra (${tableName}):`, error);
+      }
+    });
+  }
 </script>
 
 <!-- jQuery (required for DataTables plugin) -->
@@ -448,7 +672,6 @@ Listar
 
   function exportEncomendaEspecifica(idEncomenda) {
     var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
-    console.log(idEncomenda)
     requestData = {
       'tipo': 2,
       'id_encomenda': idEncomenda,

@@ -110,23 +110,17 @@ Editar Componente
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     $(document).ready(function () {
-        // Ao carregar a página, verifica o estado atual e aplica a cor correspondente
         toggleTextColor();
 
-        // Adiciona um ouvinte de evento para alterações no dropdown
         $('#id_estado').change(function () {
             toggleTextColor();
         });
 
-        // Função para alterar a cor do texto com base no estado
         function toggleTextColor() {
             var selectedValue = $('#id_estado').val();
-            console.log('Selected Value:', selectedValue); // Adiciona esta linha para debugar
             if (selectedValue == 1) {
-                // Estado Ativo
                 $('#id_estado').removeClass('text-danger').removeClass('border-danger').addClass('text-success').addClass('border-success');
             } else {
-                // Estado Inativo
                 $('#id_estado').removeClass('text-success').removeClass('border-success').addClass('text-danger').addClass('border-danger');
             }
         }

@@ -171,7 +171,7 @@ def equipamento_type(request, tipo):
     )
 
 
-def detalhes_equipamento(request, equipamento_id):
+def detalhes_equipamento_list(request, equipamento_id):
     equipamento = get_detalhes_equipamento(equipamento_id)
     return render(request, "detalhes_equipamento.html", {"equipamento": equipamento[0]})
 
@@ -222,7 +222,7 @@ def usercompras(request):
     return render(request, "usercompras.html", {"vendas": resultado})
 
 
-def detalhes_venda(request, venda_id):
+def detalhes_venda_utilizador(request, venda_id):
     utilizador = request.session.get("id_utilizador")
 
     if utilizador is not None:
