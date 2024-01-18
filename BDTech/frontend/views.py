@@ -31,7 +31,7 @@ def masterPageFront(request):
 
 
 def index(request):
-    ultimos_equipamentos = get_top_x_equipamento(6)
+    ultimos_equipamentos = get_top_x_equipamento(4)
     marcas = [
         {
             "nome": "Apple",
@@ -219,6 +219,7 @@ def detalhes_venda_utilizador(request, venda_id):
 
     if utilizador is not None:
         detalhes = detalhes_equipamentos_venda(venda_id)
+        print(detalhes)
         resultado = [
             {
                 "id_venda": row[0],
@@ -240,6 +241,7 @@ def detalhes_venda_utilizador(request, venda_id):
                     "id_venda": id_venda,
                     "data_venda": row["data_venda"],
                     "valortotal": row["valortotal"],
+                    "ndoc": venda_id,
                     "itens": [],
                 }
             detalhes_agrupados[id_venda]["itens"].append(

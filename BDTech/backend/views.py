@@ -39,6 +39,8 @@ from core.utils import (
     get_compra_details,
     get_equipamento_details,
     get_producao_details,
+    get_utilizador_details,
+    update_equipamento,
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -293,6 +295,8 @@ def edit_record(request, table_name, record_id):
             return redirect("edit_componente", record_id=record_id)
         elif table_name == "fornecedor":
             return redirect("edit_fornecedor", record_id=record_id)
+        elif table_name == "equipamento":
+            return redirect("edit_equipamento", record_id=record_id)
         else:
             return redirect("generic_list", table_name=table_name)
 
@@ -317,12 +321,12 @@ def edit_fornecedor(request,record_id):
         update_fornecedor(record_id, nome, endereco, codpostal, localidade, contacto, email,id_estado)
 
         return redirect("/fornecedor/list")
-
+    
     return render(request, "edit_fornecedor.html", {"fornecedor": fornecedor_details})
 
 def edit_componente(request, record_id):
     componente_details = get_componente_details(record_id)
-   
+       
     if request.method == "POST":
         descricao = request.POST.get("descricao")
         preco = request.POST.get("preco")
@@ -335,6 +339,22 @@ def edit_componente(request, record_id):
         return redirect("/componente/list")
 
     return render(request, "edit_componente.html", {"componente": componente_details})
+
+def edit_equipamento(request, record_id):
+    equipamento_details = get_equipamento_details(request.session['id_utilizador'], record_id)
+    componente_details = equipamento_details.pop('componentes', [])
+    
+    if request.method == "POST":
+        nome = request.POST.get("nome")
+        preco = request.POST.get("preco")
+        imagem = request.POST.get("imagem")
+        id_estado = request.POST.get("id_estado")
+        
+        update_equipamento(record_id, nome, preco, imagem, id_estado)
+
+        return redirect("/equipamento/list")
+
+    return render(request, "edit_equipamento.html", {"equipamento": equipamento_details})
 
 
 @require_POST
@@ -396,6 +416,12 @@ def detalhes_producao(request, producao_id):
         'producao_details': producao_details,
         'componentes_details': componentes_details
     })
+
+@require_POST
+@csrf_protect
+def detalhes_utilizador(request, utilizador_id):
+    utilizador_details = get_utilizador_details(request.session["id_utilizador"], utilizador_id)
+    return JsonResponse(utilizador_details)
 
 
 def save_encomenda(request):

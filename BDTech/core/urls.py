@@ -7,6 +7,7 @@ from backend.views import(
     delete_record, 
     edit_record, 
     edit_componente, 
+    edit_equipamento,
     new_order, 
     save_encomenda, 
     new_prod,
@@ -33,6 +34,7 @@ from backend.views import(
     detalhes_compra,
     detalhes_equipamento,
     detalhes_producao,
+    detalhes_utilizador,
 )
 from frontend.views import(
     index, 
@@ -75,6 +77,7 @@ urlpatterns = [
     path('login/', login_utilizador, name='login'),
     path('logout/', logout_utilizador, name='logout'),
     path('componente/edit/<int:record_id>/', edit_componente, name='edit_componente'),
+    path('equipamento/edit/<int:record_id>/', edit_equipamento, name='edit_equipamento'),
     path('fornecedor/edit/<int:record_id>/', edit_fornecedor, name='edit_fornecedor'),
     path('save_encomenda/', save_encomenda, name='save_encomenda'),
     path('criar_mao_obra/', criar_mao_obra, name='criar_mao_obra'),
@@ -106,6 +109,7 @@ urlpatterns = [
     path('detalhes_compra/<int:compra_id>/', detalhes_compra, name='detalhes_compra'),
     path('detalhes_equipamento/<int:equipamento_id>/', detalhes_equipamento, name='detalhes_equipamento'),
     path('detalhes_producao/<int:producao_id>/', detalhes_producao, name='detalhes_producao'),
+    path('detalhes_utilizador/<int:utilizador_id>/', detalhes_utilizador, name='detalhes_utilizador'),
     path('export_encomendas/', export_encomendas, name='export_encomendas'),   
     path('imprimir_export_encomendas/', imprimir_export_encomendas, name='imprimir_export_encomendas'),
 ]
