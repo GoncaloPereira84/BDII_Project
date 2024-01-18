@@ -3,44 +3,60 @@
 {% block title %}
 Página Inicial
 {% endblock %}
+{% load static %}
+{% block links %}
 
+{% endblock %}
 
 {% block content %}
-{% load static %}
-
-<!-- minhas_compras.html -->
-<div class="container mt-5">
-  <h1 class="mb-4">Minhas Compras</h1>
-  {% if vendas %}
-  <ul>
-    {% for venda in vendas %}
-    <div class="card mb-4">
-      <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h2>Compra Nº{{ venda.ndoc }}</h2>
-          </div>
-          <div>
-            <h3>Data: {{ venda.data_venda|date:"d/m/Y" }}</h3>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="d-flex justify-content-between">
-          <div>
-            <p><strong>Total da Compra:</strong> {{ venda.valortotal }}</p>
-            <p><strong>Documento:</strong> {{ venda.tpdoc }}</p>
-          </div>
-          <div>
-            <a href="{% url 'detalhes_venda_utilizador' venda.id_venda %}" class="btn btn-primary">Ver Detalhes</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </ul>
-  {% else %}
-  <p>Não há compras disponíveis.</p>
-  {% endif %}
+<div class="block block-rounded">
+  <div class="block-header block-header-default">
+    <h2 class="block-title ms-2 mt-2" style="font-size: 24px;">Minhas Compras</h2>
 </div>
+  <div class="block-content block-content-full">
+      <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
+          <thead>
+              <tr>
+                  <th class="d-none d-sm-table-cell"> Número de Compra</th>
+                  <th class="d-none d-sm-table-cell">Data de Compra</th>
+                  <th class="d-none d-sm-table-cell">Documento</th>
+                  <th class="d-none d-sm-table-cell">Total de Compra</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for venda in vendas %}
+              <tr>
+                <td>{{ venda.ndoc }}</td>
+                <td>{{ venda.data_venda|date:"d/m/Y" }}</td>
+                <td>{{ venda.tpdoc }}</td>
+                <td>{{ venda.valortotal }}</td>
+                <td>
+                  <a href="{% url 'detalhes_venda_utilizador' venda.id_venda %}" class="btn btn-primary">Ver Detalhes</a>
+                </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+  </div>
+</div>
+            
+<!-- jQuery (required for DataTables plugin) -->
+<script src="{% static 'assets/js/lib/jquery.min.js'%}"></script>
+
+<!-- Page JS Plugins -->
+
+<script src="{% static 'assets/js/plugins/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/dataTables.buttons.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-jszip/jszip.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/pdfmake.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/vfs_fonts.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.print.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.html5.min.js'%}"></script>
+
+<script src="{% static 'assets/js/pages/be_tables_datatables.min.js'%}"></script>
+
+
 {% endblock %}
+

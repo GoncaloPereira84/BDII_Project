@@ -595,3 +595,14 @@ def get_producao_details(utilizador, producao_id):
         json_result = result[0]
         details_dict = json.loads(json_result)
     return details_dict
+
+def ordenar_compras(p_coluna,p_direcao):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM ordenar_compras(%s,%s) 
+            """,
+            [p_coluna,p_direcao]
+        )
+        result = cursor.fetchall()
+    return result

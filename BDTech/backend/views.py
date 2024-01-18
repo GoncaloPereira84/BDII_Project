@@ -39,6 +39,7 @@ from core.utils import (
     get_compra_details,
     get_equipamento_details,
     get_producao_details,
+    ordenar_compras
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -697,6 +698,7 @@ def export_encomendas(request):
     )
 
 def imprimir_export_encomendas(request):
+
     if request.method == "POST":
         tipo = json.loads(request.POST.get("tipo"))
         if tipo == 0:#all encomendas
@@ -712,3 +714,4 @@ def imprimir_export_encomendas(request):
         return JsonResponse({'result': "success", 'json_data': json_data})
     else:
         return HttpResponse("Método não permitido.")
+    
