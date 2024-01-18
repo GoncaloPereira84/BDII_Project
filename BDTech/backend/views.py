@@ -59,6 +59,11 @@ def import_componente_html(request):
 require_GET
 @csrf_protect
 def new_order(request):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 1 or request.session["nivel_acesso"] > 2) :
+        pass
+    else:
+        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
+        return redirect('/')
     fornecedores = get_all_fornecedores(request.session["id_utilizador"], 0)
     componentes = get_all_componente(request.session["id_utilizador"], 0)
     return render(
@@ -181,9 +186,8 @@ def new_utilizador(request):
         pass
     else:
         # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
-        return redirect('/fulllogin/')
-        exit
-    # --------------------------
+        return redirect('/')
+        
            
     resultado_marca = get_marca_atributo(request)
 
