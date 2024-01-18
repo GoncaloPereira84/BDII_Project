@@ -91,6 +91,11 @@ Listar
                 </button>
               </form>
               {% elif table_name == "compra"%}
+              <a id="downloadLink" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip"
+                title="Exportar Encomenda" download="export_encomendas.json"
+                onclick="exportEncomendaEspecifica('{{ row.0 }}')">
+                <i class="text-warning fa fa-download"></i>
+              </a>
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip"
@@ -367,6 +372,49 @@ Listar
       applyFilter('tipo', tipo);
     });
   });
+
+  function exportEncomendaEspecifica(idEncomenda) {
+    var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+    console.log(idEncomenda)
+    requestData = {
+      'tipo': 2,
+      'id_encomenda': idEncomenda,
+      'csrfmiddlewaretoken': csrfToken
+    };
+    $.ajax({
+      type: 'POST',
+      url: '{% url "imprimir_export_encomendas" %}',
+      data: requestData,
+      success: function (response) {
+
+        $('#downloadLink').attr('data-json', JSON.stringify(response.json_data));
+        var jsonValue = $('#downloadLink').data('json');
+        var blob = new Blob([jsonValue], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'export_encomendas.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Sucesso',
+          text: 'Encomendas exportadas com sucesso!',
+        });
+      },
+      error: function (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'Erro a exportar!',
+        });
+      }
+    });
+
+  }
 </script>
 
 {% endblock %}
