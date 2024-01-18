@@ -206,6 +206,8 @@ def function_exists(table_name):
 
 def generic_list(request, table_name):
 
+    print(table_name)
+
     # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
         pass
