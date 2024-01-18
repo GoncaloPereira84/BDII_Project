@@ -34,6 +34,7 @@ from core.utils import (
     get_fornecedor_details,
     get_componente_details,
     update_componente,
+    get_export_encomendas,
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
