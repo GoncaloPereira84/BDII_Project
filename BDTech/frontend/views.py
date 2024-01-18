@@ -173,7 +173,8 @@ def equipamento_type(request, tipo):
 
 def detalhes_equipamento(request, equipamento_id):
     equipamento = get_detalhes_equipamento(equipamento_id)
-    return render(request, "detalhes_equipamento.html", {"equipamento": equipamento[0]})
+    lista = get_top_x_equipamento(6)
+    return render(request, "detalhes_equipamento.html", {"equipamento": equipamento[0], "lista": lista})
 
 
 def pesquisa_equipamento(request):

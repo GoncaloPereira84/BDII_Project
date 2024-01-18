@@ -9,28 +9,80 @@ Página Inicial
 {% load static %}
 <div class="container mt-5">
     <div class="row">
-        <h1>{{ equipamento.nome }}</h1>
-        <div class="col-md-6">
+        <div class="col-md-12 text-center">
+            <h1>{{ equipamento.nome }}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 text-center">
             <img src="{{ equipamento.imagem }}" class="img-fluid" alt="{{ equipamento.nome }}">
         </div>
-        <div class="col-md-6">
-            <br></br><br></br>
-            <p class="lead">Preço: {{ equipamento.preco }}</p>
-            <p>{{ equipamento.descricao }}</p>
-            <form method="post" action="" id="form-adicionar-carrinho">
-                {% csrf_token %}
-                <input type="hidden" name="equipamento_nome" value="{{ equipamento.nome }}">
-                <input type="hidden" name="equipamento_imagem" value="{{ equipamento.imagem }}">
-                <input type="hidden" name="equipamento_preco" value="{{ equipamento.preco }}">
-                {% if request.session.id_utilizador %}
-                <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
-                {% else %}
-                <h5 class="text-warning">Efetue o login para puder efetuar uma compra</h5>
-                {% endif %}
-            </form>
+        <div class="col-md-6 mt-6">
+            <div class="card">
+                <div class="card-body">
+                    <p class="lead">Preço: {{ equipamento.preco }}</p>
+                    {% if equipamento.quantidade_stock >= 10 %}
+                        <p class="small text-success">Em Stock: {{ equipamento.quantidade_stock }}</p>
+                    {% elif equipamento.quantidade_stock > 2 %}
+                        <p class="small text-warning">Em Stock: {{ equipamento.quantidade_stock }}</p>
+                    {% else %}
+                        <p class="small text-danger">Em Stock: {{ equipamento.quantidade_stock }}</p>
+                    {% endif %}
+                    
+                    
+                    <hr>
+                    <p class="lead">Descrição:</p>
+                    <p>{{ equipamento.descricao }}</p>
+                    <form method="post" action="" id="form-adicionar-carrinho">
+                        {% csrf_token %}
+                        <input type="hidden" name="equipamento_nome" value="{{ equipamento.nome }}">
+                        <input type="hidden" name="equipamento_imagem" value="{{ equipamento.imagem }}">
+                        <input type="hidden" name="equipamento_preco" value="{{ equipamento.preco }}">
+                        {% if request.session.id_utilizador %}
+                            <button type="submit" class="btn btn-primary btn-block mt-3">Adicionar ao Carrinho</button>
+                        {% else %}
+                            <p class="text-warning mt-3">Efetue o login para poder efetuar uma compra.</p>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
+<br></br><br></br><br></br>
+
+<div class="bg-body-extra-light">
+    <div class="container">
+        <h1 class="mt-4 mb-4">Poderás Gostar Também De:</h1>
+        <div class="row">
+            {% for data in lista %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-4">
+                    <div class="card" style=" height: 100%;">
+                        <img src="{{ data.imagem }}" class="card-img-top" alt="{{ data.nome }}" style="max-height: 150px; object-fit: cover;">
+                        <div class="card-body" style="background-color: grey; color: white; text-align: center; height: 100%;">
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <h6 class="fw-bold text-white mb-2" style="font-family: 'Arial', sans-serif;">
+                                {{ data.nome }}<br>
+                                {{ data.preco }}
+                                <a href="{% url 'detalhes_equipamento' data.id_equipamento %}" class="btn btn-primary btn-sm mt-2">Ver Detalhes</a>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
