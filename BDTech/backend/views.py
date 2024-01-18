@@ -33,7 +33,7 @@ from core.utils import (
     update_fornecedor,
     get_fornecedor_details,
     get_componente_details,
-    update_componente
+    update_componente,
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -208,8 +208,7 @@ def generic_list(request, table_name):
         return redirect('/fulllogin/')
         exit
     # ----------------------------------    
-
-    function_table_name = f"{table_name}_get_list(1,0)"
+    function_table_name = f"{table_name}_get_list({request.session['id_utilizador']}, 0)"
     if not function_exists(function_table_name):
         return redirect("/404")
     
@@ -272,6 +271,11 @@ def delete_record(request, table_name, record_id):
 
 
 def edit_record(request, table_name, record_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] >= 4:
+        pass
+    else:
+        return redirect('/sem_acesso/')
+        exit
     if request.method == "POST":
         if table_name == "componente":
             print("entrei aqui")
@@ -282,6 +286,12 @@ def edit_record(request, table_name, record_id):
             return redirect("generic_list", table_name=table_name)
 
 def edit_fornecedor(request,record_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] >= 4:
+        pass
+    else:
+        return redirect('/sem_acesso/')
+        exit
+        
     fornecedor_details = get_fornecedor_details(record_id)
 
     if request.method == "POST":
@@ -627,13 +637,8 @@ def list_compra_FR_doc(request):
 
 def receber_encomenda(request,record_id):    
     result = atualizar_encomenda_tpdoc(request.session["id_utilizador"], record_id)
-    
-    print("result:",result)
-    if result == 1:
-        return redirect("/compra/list/fr")
-    
-    
-    return redirect("/compra/list/fr")
+    return JsonResponse({'result': result})
+
 
 def import_componente_json(request):
     if request.method == 'POST':
@@ -645,3 +650,29 @@ def import_componente_json(request):
             return HttpResponse("Json contém erros!")
         
         return HttpResponse(resultado) 
+    
+def export_encomendas(request):
+    fornecedores = get_all_fornecedores(request.session["id_utilizador"], 0)
+    return render(
+        request,
+        "export_encomendas.html",
+        {"fornecedores": fornecedores},
+    )
+
+def imprimir_export_encomendas(request):
+    if request.method == "POST":
+        tipo = json.loads(request.POST.get("tipo"))
+        print(tipo,"==", json.loads(request.POST.get("id_encomenda")))
+        if tipo == 0:#all encomendas
+            resultado = get_export_encomendas(request.session["id_utilizador"], tipo, 0)
+        elif tipo == 1:# all encomendas from fornecedor
+            resultado = get_export_encomendas(request.session["id_utilizador"], tipo, json.loads(request.POST.get("id_fornecedor")))
+        elif tipo == 2:# get specific encomenda
+            resultado = get_export_encomendas(request.session["id_utilizador"], tipo, json.loads(request.POST.get("id_encomenda")))
+        else:
+           return HttpResponse("Método não permitido.")
+        
+        json_data = json.dumps(resultado, indent=2)
+        return JsonResponse({'result': "success", 'json_data': json_data})
+    else:
+        return HttpResponse("Método não permitido.")

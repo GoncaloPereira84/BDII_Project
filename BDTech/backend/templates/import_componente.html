@@ -96,7 +96,11 @@ Nova encomenda
         var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 
         if (!json.trim()) {
-            alert("Por favor, insira um JSON válido.");
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Por favor, insira um JSON válido.',
+            });
             return;
         }
 
@@ -110,7 +114,11 @@ Nova encomenda
             url: '{% url "import_componente_json" %}',
             data: requestData,
             success: function (response) {
-                alert(response);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atenção!',
+                    text: response,
+                });
             },
             error: function (error) {
                 console.error(error);

@@ -25,30 +25,38 @@ Listar
       <h3 class="block-title">{{ table_name }}</small></h3>
       <div class="block-options">
         <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle"
-          data-action-mode="demo">
+          data-action-mode="demo"> 
           <i class="si si-refresh"></i>
         </button>
+        {% if table_name == "equipamento" or table_name == "fornecedor" or table_name == "venda"%}
         <div class="dropdown">
           <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
+            aria-expanded="false"> 
             <i class="si si-chemistry"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-end">
-            <a class="dropdown-item" href="javascript:void(0)">
-              <i class="far fa-fw fa-dot-circle opacity-50 me-1"></i> Pending
+            {% if table_name == "fornecedor" or table_name == "venda"%}
+            <a class="dropdown-item filter-option-state" href="javascript:void(0)" data-state="ativo">
+              <i class="far fa-fw fa-dot-circle opacity-50 me-1"></i> Ativo
             </a>
-            <a class="dropdown-item" href="javascript:void(0)">
-              <i class="far fa-fw fa-times-circle opacity-50 me-1"></i> Canceled
+            <a class="dropdown-item filter-option-state" href="javascript:void(0)" data-state="inativo">
+              <i class="far fa-fw fa-times-circle opacity-50 me-1"></i> Inativo
             </a>
-            <a class="dropdown-item" href="javascript:void(0)">
-              <i class="far fa-fw fa-check-circle opacity-50 me-1"></i> Completed
+            <a class="dropdown-item filter-option-state" href="javascript:void(0)" data-state="todos">
+              <i class="fa fa-fw fa-eye opacity-50 me-1"></i> Todos
             </a>
-            <div role="separator" class="dropdown-divider"></div>
-            <a class="dropdown-item" href="javascript:void(0)">
-              <i class="fa fa-fw fa-eye opacity-50 me-1"></i> View All
+            {% endif %}
+            {% if table_name == "equipamento" %}
+            <a class="dropdown-item filter-option-tipo" href="javascript:void(0)" data-tipo="portatil">
+              <i class="far fa-fw fa-laptop opacity-50 me-1"></i> Portátil
             </a>
+            <a class="dropdown-item filter-option-tipo" href="javascript:void(0)" data-tipo="desktop">
+              <i class="far fa-fw fa-desktop opacity-50 me-1"></i> Desktop
+            </a>
+            {% endif %}
           </div>
         </div>
+        {% endif %}
       </div>
     </div>
     <div class="block-content block-content-full">
@@ -87,6 +95,11 @@ Listar
                 </button>
               </form>
               {% elif table_name == "compra"%}
+              <a id="downloadLink" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip"
+                title="Exportar Encomenda" download="export_encomendas.json"
+                onclick="exportEncomendaEspecifica('{{ row.0 }}')">
+                <i class="text-warning fa fa-download"></i>
+              </a>
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip"
@@ -99,6 +112,10 @@ Listar
                 <i class="text-success fa fa-cart-arrow-down"></i>
               </button>
               {% else%}
+              <button type="button" class="btn btn-sm btn-alt-secondary"
+                onclick="abrirModalDetalhes('{{ row.0 }}', '{{ row.1 }}', '{{ row.2 }}', '{{ row.3 }}', '{{ row.4 }}', '{{ row.5 }}', '{{ row.6 }}')">
+                <i class="fa fa-eye"></i>
+              </button>
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
                 <button type="button" class="btn btn-sm btn-alt-secondary"
@@ -134,9 +151,61 @@ Listar
   }
 
   function receberEncomenda(recordId) {
-    if (confirm('Tem certeza de que deseja receber a encomenda?')) {
-      window.location.href = `/receive_order/${recordId}/`;
-    }
+    Swal.fire({
+      title: 'Quer receber esta encomenda?',
+      showDenyButton: true,
+      confirmButtonText: 'Sim',
+      denyButtonText: 'Não',
+      customClass: {
+        actions: 'my-actions',
+        confirmButton: 'order-2',
+        denyButton: 'order-3',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `/receive_order/${recordId}/`,
+          method: 'GET',
+          success: function (response) {
+            if (response.result === 2) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Essa encomenda já foi recebida',
+              });
+            }
+            else if (response.result === 1) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Sucesso',
+                text: 'Essa encomenda já foi recebida',
+              });
+              window.location.href = `/receive_order/${recordId}/`;
+            }
+            else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Não foi possivel receber a encomenda',
+              });
+            }
+          },
+          error: function (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro',
+              text: 'Não foi possivel receber a encomenda',
+            });
+          }
+        });
+      } else if (result.isDenied) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'Não foi possivel receber a encomenda',
+        });
+      }
+    })
   }
 
   function getCookie(name) {
@@ -321,5 +390,105 @@ Listar
 <script src="{% static 'assets/js/plugins/sweetalert2/sweetalert2.all.js'%}"></script>
 
 <script src="{% static 'assets/js/pages/be_tables_datatables.min.js'%}"></script>
+
+<script>
+  // Função para aplicar o filtro com base no campo especificado (estado ou tipo)
+  function applyFilter(fieldName, fieldValue) {
+    // Encontre a posição da coluna específica
+    var columnIndex = -1;
+    document.querySelectorAll('.js-dataTable-full thead th').forEach(function (th, index) {
+      if (th.textContent.trim().toLowerCase() === fieldName) {
+        columnIndex = index;
+      }
+    });
+
+    if (columnIndex === -1) {
+      console.error('Coluna "' + fieldName + '" não encontrada na tabela.');
+      return;
+    }
+
+    // Array para armazenar os índices das linhas que correspondem ao valor filtrado
+    var filteredRows = [];
+
+    // Itera sobre todas as linhas da tabela para aplicar o filtro
+    document.querySelectorAll('.js-dataTable-full tbody tr').forEach(function (row, rowIndex) {
+      // Obtém o valor da célula na posição da coluna específica
+      var cellValue = row.querySelectorAll('td')[columnIndex].textContent.trim().toLowerCase();
+      var showRow = fieldValue === 'todos' || cellValue === fieldValue;
+
+      // Armazena o índice da linha se corresponder ao filtro
+      if (showRow) {
+        filteredRows.push(rowIndex);
+      }
+
+      // Mostra ou oculta a linha com base no valor filtrado
+      row.style.display = showRow ? '' : 'none';
+    });
+
+    // Atualiza a DataTable para garantir consistência
+    var dataTable = $('.js-dataTable-full').DataTable();
+    dataTable.rows().deselect();
+    dataTable.rows(filteredRows).select();
+  }
+
+  // Adicione um listener de evento para os links no dropdown (estado)
+  document.querySelectorAll('.filter-option-state').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var state = link.getAttribute('data-state');
+      applyFilter('estado', state);
+    });
+  });
+
+  // Adicione um listener de evento para os links no dropdown (tipo)
+  document.querySelectorAll('.filter-option-tipo').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var tipo = link.getAttribute('data-tipo');
+      applyFilter('tipo', tipo);
+    });
+  });
+
+  function exportEncomendaEspecifica(idEncomenda) {
+    var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+    console.log(idEncomenda)
+    requestData = {
+      'tipo': 2,
+      'id_encomenda': idEncomenda,
+      'csrfmiddlewaretoken': csrfToken
+    };
+    $.ajax({
+      type: 'POST',
+      url: '{% url "imprimir_export_encomendas" %}',
+      data: requestData,
+      success: function (response) {
+
+        $('#downloadLink').attr('data-json', JSON.stringify(response.json_data));
+        var jsonValue = $('#downloadLink').data('json');
+        var blob = new Blob([jsonValue], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'export_encomendas.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Sucesso',
+          text: 'Encomendas exportadas com sucesso!',
+        });
+      },
+      error: function (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'Erro a exportar!',
+        });
+      }
+    });
+
+  }
+</script>
 
 {% endblock %}

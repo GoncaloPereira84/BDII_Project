@@ -414,6 +414,17 @@ def check_stock_carrinho(json_data):
         result = cursor.fetchall()
     return result
 
+def get_export_encomendas(id_utilizador, tipo, id_funcionalidade):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM get_export_encomendas(%s,%s,%s);
+            """,
+            [id_utilizador, tipo, id_funcionalidade],
+        )
+        result = cursor.fetchone()
+    return result
+
 
 def obter_maximo_preco_por_tipo(tipo_id):
     with connection.cursor() as cursor:

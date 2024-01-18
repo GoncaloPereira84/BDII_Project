@@ -247,7 +247,6 @@ Nova encomenda
 {% endblock %}
 {% block scripts %}
 <script>
-    // Função para validar o formulário antes de enviar
     function validateForm() {
         var nomeEquip = $('#nomeEquip').val();
         var descrEquip = $('#descrEquip').val();
@@ -258,13 +257,14 @@ Nova encomenda
         var horas_maoobra = $('#horas_maoobra').val();
         var imagem = $('#imagem').val();
 
-        // Verifique se os campos obrigatórios estão preenchidos
         if (nomeEquip && descrEquip && tpequipamento && quantdEquip && precoVenda && inputmaoobra && horas_maoobra && imagem) {
-            // Se todos os campos estão preenchidos, chame a função saveEquipamento
             saveEquipamento();
         } else {
-            // Se algum campo estiver vazio, exiba uma mensagem de erro ou tome a ação necessária
-            alert('Por favor, preencha todos os campos obrigatórios.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Por favor, preencha todos os campos obrigatórios.',
+            });
         }
     }
 </script>
@@ -423,9 +423,12 @@ Nova encomenda
                 url: '{% url "create_equipamento" %}',
                 data: requestData,
                 success: function (response) {
-                    console.log("respponseeeeeeeeeeeee:  ", response);
                     if(response == 0){
-                        alert("Existe um componente que não tem stock!!")
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atenção',
+                            text: 'Existe um componente que não tem stock!!',
+                        });
                     }
                     else{
                         window.location.href = "/equipamento/list";
@@ -436,7 +439,11 @@ Nova encomenda
                 }
             });
         } else {
-            alert('Não contêm componentes no cesto ou total encomenda é zero!');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Não contêm componentes no cesto ou total encomenda é zero!',
+            });
         }
     }
 </script>
@@ -478,7 +485,11 @@ Nova encomenda
             });
 
         } else {
-            alert('Preencha os dois campos!');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Preencha os dois campos!',
+            });
         }
     }
 </script>

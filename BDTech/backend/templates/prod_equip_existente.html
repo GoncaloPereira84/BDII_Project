@@ -207,7 +207,11 @@ Nova encomenda
 
     function saveProducao() {
         if ($('#cestoTable tbody tr').length <= 0) {
-            alert("A tabela está vazia. Adicione equipamentos antes de guardar a produção.");
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'A tabela está vazia. Adicione equipamentos antes de guardar a produção.',
+            });
             return;
         }
         var tipo_maoobra = $('#inputmaoobra').val();
@@ -240,7 +244,11 @@ Nova encomenda
             success: function (response) {
                 console.log("respponseeeeeeeeeeeee:  ", response);
                 if (response == 0) {
-                    alert("A produção não foi iniciada, pois existem equipamentos onde faltam componentes em stock!!")
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção',
+                        text: 'A produção não foi iniciada, pois existem equipamentos onde faltam componentes em stock!!',
+                    });
                 }
                 else {
                     window.location.href = "/equipamento/list";
@@ -292,7 +300,11 @@ Nova encomenda
             });
 
         } else {
-            alert('Preencha os dois campos!');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Preencha os dois campos!',
+            });
         }
     }
 </script>

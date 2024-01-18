@@ -274,12 +274,19 @@ Página Inicial
                             $('#equipamentos-container').append(equipamentoHtml);
                         });
                     } else {
-                        // Se não houver resultados, exibir uma mensagem ou realizar outra ação apropriada
-                        alert("Nenhum equipamento encontrado com os filtros selecionados.");
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atenção',
+                            text: 'Nenhum equipamento encontrado com os filtros selecionados.',
+                        });
                     }
                 },
                 error: function (error) {
-                    alert("Erro ao aplicar filtros:\n" + error.responseText);
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção',
+                        text: 'Erro ao aplicar filtros:\n' + error.responseText,
+                    });
                 }
             });
 
@@ -373,7 +380,11 @@ Página Inicial
                     }
                 },
                 error: function (error) {
-                    alert("Erro ao aplicar filtros:\n" + error.responseText);
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção',
+                        text: 'Erro ao aplicar filtros:\n' + error.responseText,
+                    });
                 }
             });
         });
