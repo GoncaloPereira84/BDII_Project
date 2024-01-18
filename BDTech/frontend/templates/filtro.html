@@ -181,7 +181,7 @@ Página Inicial
                                 <div class="card-body">
                                     <h5 class="card-title">{{ equipamento.nome }}</h5>
                                     <p class="card-text">Preço: € {{ equipamento.preco|slice:"1:" }}</p>
-                                    <a href="{% url 'detalhes_equipamento' equipamento.id_equipamento %}" class="btn btn-primary">Ver Detalhes</a>
+                                    <a href="{% url 'detalhes_equipamento_list' equipamento.id_equipamento %}" class="btn btn-primary">Ver Detalhes</a>
                                 </div>
                             </div>
                         </div>
@@ -258,7 +258,7 @@ Página Inicial
 
                         // Adicionar os novos equipamentos à exibição
                         response.resultados.forEach(function (equipamento) {
-                            var detalhesUrl = '{% url "detalhes_equipamento" 1 %}'.replace('1', equipamento.id_equipamento);
+                            var detalhesUrl = '{% url "detalhes_equipamento_list" 1 %}'.replace('1', equipamento.id_equipamento);
                             var equipamentoHtml = `
                         <div class="col-md-3 mb-4">
                             <div class="card">
@@ -355,7 +355,7 @@ Página Inicial
 
                         // Adicionar os novos equipamentos à exibição
                         response.resultados.forEach(function (equipamento) {
-                            var detalhesUrl = '{% url "detalhes_equipamento" 1 %}'.replace('1', equipamento.id_equipamento);
+                            var detalhesUrl = '{% url "detalhes_equipamento_list" 1 %}'.replace('1', equipamento.id_equipamento);
                             var equipamentoHtml = `
                             <div class="col-md-3 mb-4">
                                 <div class="card">

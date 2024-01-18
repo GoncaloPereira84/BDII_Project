@@ -149,7 +149,14 @@ Listar
                   <i class="fa fa-eye"></i>
                 </button>
                 {% endif %}
-                {% if table_name != "venda" and table_name != "equipamento" and  table_name != "producao"%}
+                {% if table_name == "utilizador"%}
+                <button type="button" class="btn btn-sm btn-alt-secondary"
+                  onclick="abrirModalDetalhesUtilizador('{{ row.0 }}', 'detalhes_utilizador')" data-bs-toggle="tooltip"
+                  title="Detalhes">
+                  <i class="fa fa-eye"></i>
+                </button>
+                {% endif %}
+                {% if table_name != "venda" and table_name != "equipamento" and table_name != "producao"%}
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Editar">
                   <i class="fa fa-pencil-alt"></i>
                 </button>
@@ -270,7 +277,7 @@ Listar
       }).format(precoMNumerico);
 
       Swal.fire({
-        title: `Detalhes ${tipo === 'fornecedor' ? 'do Fornecedor' : tipo === 'componente' ? 'do Componente' : tipo === 'compra' ? 'da Compra' : tipo === 'equipamento' ? 'do Equipamento' : tipo === 'producao' ? 'da Produção' : 'da Venda'}`,
+        title: `Detalhes ${tipo === 'fornecedor' ? 'do Fornecedor' : tipo === 'componente' ? 'do Componente' : tipo === 'compra' ? 'da Compra' : tipo === 'equipamento' ? 'do Equipamento' : tipo === 'producao' ? 'da Produção' : tipo === 'utilizador' ? 'do Utilizador' : 'da Venda'}`,
         html: `
             <table class="table">
                 <tbody>
@@ -489,6 +496,32 @@ Listar
                               </table>
                             </tr>
                     ` : ''}
+                    ${tipo === 'utilizador' ? `
+                            <tr>
+                                <th class="text-end">Nome:</th>
+                                <td class="text-start">${response.nome}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Email:</th>
+                                <td class="text-start">${response.email}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Contacto:</th>
+                                <td class="text-start">${response.contacto}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Perfil:</th>
+                                <td class="text-start">${response.perfil}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Estado:</th>
+                                <td class="text-start">${response.estado}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Cliente?</th>
+                                <td class="text-start">${response.e_cliente}</td>
+                            </tr>
+                    ` : ''}
                 </tbody>
             </table>
         `,
@@ -574,7 +607,7 @@ Listar
         abrirModalDetalhes('equipamento', id, tableName, response);
       },
       error: function (error) {
-        console.error(`Erro ao obter detalhes da compra (${tableName}):`, error);
+        console.error(`Erro ao obter detalhes do equipamento (${tableName}):`, error);
       }
     });
   }
@@ -589,7 +622,22 @@ Listar
         abrirModalDetalhes('producao', id, tableName, response);
       },
       error: function (error) {
-        console.error(`Erro ao obter detalhes da compra (${tableName}):`, error);
+        console.error(`Erro ao obter detalhes da produção (${tableName}):`, error);
+      }
+    });
+  }
+
+  function abrirModalDetalhesUtilizador(id, tableName) {
+    $.ajax({
+      url: `/${tableName}/${id}/`,
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      dataType: 'json',
+      success: function (response) {
+        abrirModalDetalhes('utilizador', id, tableName, response);
+      },
+      error: function (error) {
+        console.error(`Erro ao obter detalhes do Utilizador (${tableName}):`, error);
       }
     });
   }

@@ -1,0 +1,113 @@
+{% extends "masterPage.html" %}
+
+{% block title %}
+Editar Componente
+{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+    <!-- Elements -->
+    <form action="{% url 'edit_equipamento' record_id=equipamento.id_equipamento %}" method="POST"
+        enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="block block-rounded">
+            <div class="block-content">
+
+                <div class="card mb-4 ">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="card-title mb-2 mt-2">Editar Fornecedor</h4>
+                        </div>
+
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Descrição -->
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control" id="id_nome" name="nome"
+                                        value="{{ equipamento.nome }}" placeholder="Nome Equipamento">
+                                    <label class="form-label" for="id_nome">Nome</label>
+                                </div>
+
+                                <!-- Preço -->
+                                <div class="form-floating mb-4">
+                                    <input type="text" min="1" class="form-control" id="id_preco" name="preco"
+                                        value="{{ equipamento.preco }}" placeholder="Preço equipamento">
+                                    <label class="form-label" for="id_preco">Preço</label>
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <select class="form-select custom-select" id="id_estado" name="id_estado">
+                                        <option value="1" {% if equipamento.id_estado == 1 %}selected{% endif %}>Ativo
+                                        </option>
+                                        <option value="2" {% if equipamento.id_estado == 2 %}selected{% endif %}>Inativo
+                                        </option>
+                                    </select>
+                                    <label class="form-label" for="id_estado">Estado</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="imagem-preview" class="mb-4">
+                                    {% if equipamento.imagem %}
+                                    <img id="preview" src="{{ equipamento.imagem }}" alt="Insira uma imagem"
+                                        style="max-width: 100%; max-height: 200px;">
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="id_imagem" class="form-label">Imagem</label>
+                                    <textarea class="form-control" id="id_imagem" name="imagem"
+                                        placeholder="Insira o URL da imagem" rows="4">{{ equipamento.imagem }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <button type="submit" class="btn btn-primary">Guardar Alterações</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+
+
+    <script>
+        function previewImagem(input) {
+            const preview = document.getElementById('preview');
+            const file = input.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        toggleTextColor();
+
+        $('#id_estado').change(function () {
+            toggleTextColor();
+        });
+
+        function toggleTextColor() {
+            var selectedValue = $('#id_estado').val();
+            if (selectedValue == 1) {
+                $('#id_estado').removeClass('text-danger').removeClass('border-danger').addClass('text-success').addClass('border-success');
+            } else {
+                $('#id_estado').removeClass('text-success').removeClass('border-success').addClass('text-danger').addClass('border-danger');
+            }
+        }
+    });
+</script>
+{% endblock %}
