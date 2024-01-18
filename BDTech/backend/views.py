@@ -4,8 +4,7 @@ from django.http import JsonResponse
 from psycopg2.extras import Json
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import (
-    Componente,
-    Fornecedor
+    Componente
 )
 from django.utils import timezone
 import json
@@ -32,7 +31,9 @@ from core.utils import (
     get_user_and_sales_counts,
     venda_get_list,
     update_fornecedor,
-    get_fornecedor_details 
+    get_fornecedor_details,
+    get_componente_details,
+    update_componente
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -40,6 +41,8 @@ from core.utilsMongo import (
     get_marca_atributo,
     insert_batch_into_equipamento_comp_atrib,
 )
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_protect
 
 
 def masterPage(request):
@@ -271,24 +274,24 @@ def delete_record(request, table_name, record_id):
 def edit_record(request, table_name, record_id):
     if request.method == "POST":
         if table_name == "componente":
+            print("entrei aqui")
             return redirect("edit_componente", record_id=record_id)
         elif table_name == "fornecedor":
-             print("entrei aqui")
-             return redirect("edit_fornecedor", record_id=record_id)
+            return redirect("edit_fornecedor", record_id=record_id)
         else:
             return redirect("generic_list", table_name=table_name)
 
 def edit_fornecedor(request,record_id):
-    fornecedor = get_object_or_404(Fornecedor, id_fornecedor=record_id)
+    fornecedor_details = get_fornecedor_details(record_id)
 
     if request.method == "POST":
-        nome = request.POST.get("nome", fornecedor.nome)
-        endereco = request.POST.get("endereco", fornecedor.endereco)
-        codpostal = request.POST.get("codpostal", fornecedor.codpostal)
-        localidade = request.POST.get("localidade", fornecedor.localidade)
-        contacto = request.POST.get("contacto", fornecedor.contacto)
-        email = request.POST.get("email", fornecedor.email)
-        id_estado = request.POST.get("id_estado", fornecedor.id_estado)
+        nome = request.POST.get("nome", fornecedor_details["nome"])
+        endereco = request.POST.get("endereco", fornecedor_details["endereco"])
+        codpostal = request.POST.get("codpostal", fornecedor_details["codigopostal"])
+        localidade = request.POST.get("localidade", fornecedor_details["localidade"])
+        contacto = request.POST.get("contacto", fornecedor_details["contacto"])
+        email = request.POST.get("email", fornecedor_details["email"])
+        id_estado = request.POST.get("id_estado", fornecedor_details["id_estado"])
 
         # Salve as alterações no banco de dados
         update_fornecedor(record_id, nome, endereco, codpostal, localidade, contacto, email,id_estado)
@@ -297,26 +300,40 @@ def edit_fornecedor(request,record_id):
         return redirect("/fornecedor/list")
 
     # Se o método for GET, renderize o formulário com os dados existentes
-    return render(request, "edit_fornecedor.html", {"fornecedor": fornecedor})
+    return render(request, "edit_fornecedor.html", {"fornecedor": fornecedor_details})
 
+def edit_componente(request, record_id):
+    componente_details = get_componente_details(record_id)
+   
+    if request.method == "POST":
+        descricao = request.POST.get("descricao")
+        preco = request.POST.get("preco")
+        pcusto_medio = request.POST.get("pcusto_medio")
+        imagem = request.POST.get("imagem")
+        id_estado = request.POST.get("id_estado")
+        
+        print(id_estado)
+        # Salve as alterações no banco de dados
+        update_componente(record_id, descricao, preco, pcusto_medio, imagem, id_estado)
+
+        # Redirecione para a página de detalhes ou qualquer outra página desejada
+        return redirect("/componente/list")
+
+    # Se o método for GET, renderize o formulário com os dados existentes
+    return render(request, "edit_componente.html", {"componente": componente_details})
+
+
+@require_POST
+@csrf_protect
 def detalhes_fornecedor(request, fornecedor_id):
-    fornecedor = get_object_or_404(Fornecedor, id_fornecedor=fornecedor_id)
     fornecedor_details = get_fornecedor_details(fornecedor_id)
     return JsonResponse(fornecedor_details)
 
-def edit_componente(request, record_id):
-    componente = get_object_or_404(Componente, id_componente=record_id)
-
-    if request.method == "POST":
-        nova_descricao = request.POST.get("descricao")
-
-        componente.descricao = nova_descricao
-        componente.save()
-
-       
-
-    return render(request, "edit_componente.html", {"componente": componente})
-
+@require_POST
+@csrf_protect
+def detalhes_componente(request, componente_id):
+    componente_details = get_componente_details(componente_id)
+    return JsonResponse(componente_details)
 
 def save_encomenda(request):
     if request.method == "POST":

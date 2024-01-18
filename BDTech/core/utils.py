@@ -493,7 +493,17 @@ def update_fornecedor(id,nome,endereco,codpostal,localidade,contacto,email,idest
             [id,nome,endereco,codpostal,localidade,contacto,email,idestado]
         )
         result = cursor.fetchall()
-    print(result)
+    return result
+
+def update_componente(id,descricao,preco,precomedio,imagem,estado):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM update_componente(%s,%s,%s,%s,%s,%s)
+            """, 
+            [id, descricao, preco, precomedio, imagem, estado]
+        )
+        result = cursor.fetchall()
     return result
 
 def get_fornecedor_details(fornecedor_id):
@@ -503,6 +513,20 @@ def get_fornecedor_details(fornecedor_id):
             SELECT get_fornecedor_details(%s) AS fornecedor_details
             """, 
             [fornecedor_id]
+        )
+        result = cursor.fetchone()
+        
+        json_result = result[0]
+        details_dict = json.loads(json_result)
+    return details_dict
+
+def get_componente_details(componente_id):
+    with connection.cursor() as cursor:
+        cursor.execute(
+             """
+            SELECT get_componente_details(%s) AS componente_details
+            """, 
+            [componente_id]
         )
         result = cursor.fetchone()
         

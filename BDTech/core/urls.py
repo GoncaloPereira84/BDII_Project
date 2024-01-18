@@ -25,7 +25,8 @@ from backend.views import(
     import_componente_json,
     import_componente_html,
     edit_fornecedor,
-    detalhes_fornecedor
+    detalhes_fornecedor,
+    detalhes_componente
 )
 from frontend.views import(
     index, 
@@ -92,7 +93,9 @@ urlpatterns = [
     path('mudar_quantidade_carrinho/', mudar_quantidade_carrinho, name='mudar_quantidade_carrinho'),
     path('finalizarCarrinho/', finalizarCarrinho, name='finalizarCarrinho'),
     path('completeCarrinho/', completeCarrinho, name='completeCarrinho'),
+    path('usercompras/', usercompras, name='usercompras'),  
     path('detalhes_fornecedor/<int:fornecedor_id>/', detalhes_fornecedor, name='detalhes_fornecedor'),
-    path('usercompras/', usercompras, name='usercompras'),   
+    path('detalhes_componente/<int:componente_id>/', detalhes_componente, name='detalhes_componente'),
+     
     
 ]

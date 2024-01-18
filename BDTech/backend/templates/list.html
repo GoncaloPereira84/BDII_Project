@@ -24,11 +24,13 @@ Listar
     <div class="block-header block-header-default">
       <h3 class="block-title">{{ table_name }}</small></h3>
       <div class="block-options">
-        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
+        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle"
+          data-action-mode="demo">
           <i class="si si-refresh"></i>
         </button>
         <div class="dropdown">
-          <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
             <i class="si si-chemistry"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-end">
@@ -76,6 +78,10 @@ Listar
               {% if imagem_column_present %}
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.1 %}">
                 {% csrf_token %}
+                <button type="button" class="btn btn-sm btn-alt-secondary"
+                  onclick="abrirModalDetalhesComponente('{{ row.1 }}', 'detalhes_componente')">
+                  <i class="fa fa-eye"></i>
+                </button>
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
                   <i class="fa fa-pencil-alt"></i>
                 </button>
@@ -93,16 +99,17 @@ Listar
                 <i class="text-success fa fa-cart-arrow-down"></i>
               </button>
               {% else%}
-              <button type="button" class="btn btn-sm btn-alt-secondary" onclick="abrirModalDetalhes('{{ row.0 }}', '{{ row.1 }}', '{{ row.2 }}', '{{ row.3 }}', '{{ row.4 }}', '{{ row.5 }}', '{{ row.6 }}')">
-                <i class="fa fa-eye"></i>
-              </button>
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
+                <button type="button" class="btn btn-sm btn-alt-secondary"
+                  onclick="abrirModalDetalhesFornecedor('{{ row.0 }}', 'detalhes_fornecedor')">
+                  <i class="fa fa-eye"></i>
+                </button>
+
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Editar">
                   <i class="fa fa-pencil-alt"></i>
                 </button>
               </form>
-              
               {% endif %}
               <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Eliminar"
                 onclick="confirmDelete('{{ table_name }}', '{{ row.0 }}')">
@@ -116,49 +123,12 @@ Listar
     </div>
   </div>
 </div>
-
-
-<!-- Modal para detalhes -->
-<div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="detalhesModalLabel">Detalhes do Fornecedor</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-6">
-            <p><strong>Nome:</strong> ${response.nome}</p>
-            <p><strong>Endereço:</strong> ${response.endereco}</p>
-            <p><strong>Código Postal:</strong> ${response.codigopostal}</p>
-          </div>
-          <div class="col-md-6">
-            <p><strong>Localidade:</strong> ${response.localidade}</p>
-            <p><strong>Contacto:</strong> ${response.contacto}</p>
-            <p><strong>Email:</strong> ${response.email}</p>
-          </div>
-        </div>
-        <div class="row mt-3">
-          <div class="col-md-12">
-            <p><strong>Estado:</strong> ${response.estado}</p>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 {% endblock %}
 
 {% block scripts %}
 <script>
   function confirmDelete(tableName, recordId) {
-    if (confirm('Tem certeza de que deseja excluir este registro?')) {
+    if (confirm('Tem certeza de que deseja excluir este registo?')) {
       window.location.href = `/delete_record/${tableName}/${recordId}/`;
     }
   }
@@ -169,20 +139,50 @@ Listar
     }
   }
 
-  function abrirModalDetalhes(id) {
-    $.ajax({
-      url: `/detalhes_fornecedor/${id}/`,  // Substitua pelo URL correto da sua view
-      method: 'GET',
-      success: function(response) {
-        console.log(response);
-        const corEstado = response.estado === 'Ativo' ? 'green' : 'red';
-   
-        Swal.fire({
-          title: `Detalhes do Fornecedor`,
-          html: `
-          <table class="table">
-                        <tbody>
-                            <tr>
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Procura por ocorrências de 'name=' no início do cookie
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  function abrirModalDetalhes(tipo, id, tableName, response) {
+    const corEstado = response.estado === 'Ativo' ? 'green' : 'red';
+    console.log(response.pcusto_medio);
+
+    // Verificar se o campo de preço existe e não está vazio (para componentes)
+    const precoNumerico = response.preco ? parseFloat(response.preco.replace(/[^\d.]/g, '')) : 0;
+    const precoMNumerico = response.pcusto_medio ? parseFloat(response.pcusto_medio.replace(/[^\d.]/g, '')) : 0;
+
+    // Verificar se o preço é um número válido
+    if (!isNaN(precoNumerico) || !isNaN(precoMNumerico)) {
+      // Formatar o preço como string de moeda Euro
+      const precoFormatado = new Intl.NumberFormat('pt-PT', {
+        style: 'currency',
+        currency: 'EUR'
+      }).format(precoNumerico);
+
+      const precoMFormatado = new Intl.NumberFormat('pt-PT', {
+        style: 'currency',
+        currency: 'EUR'
+      }).format(precoMNumerico);
+
+      Swal.fire({
+        title: `Detalhes ${tipo === 'fornecedor' ? 'do Fornecedor' : 'do Componente'}`,
+        html: `
+            <table class="table">
+                <tbody>
+                    ${tipo === 'fornecedor' ? `
+                    <tr>
                                 <th class="text-end">Nome:</th>
                                 <td class="text-start">${response.nome}</td>
                             </tr>
@@ -205,29 +205,102 @@ Listar
                             <tr>
                                 <th class="text-end">Localidade:</th>
                                 <td class="text-start">${response.localidade}</td>
-                            </tr>                  
+                            </tr>   
                             <tr>
-                                <th class="text-end">Estado:</th>
-                                <td class="text-start"> <div style="color: ${corEstado};">${response.estado}</div></td>
+                                <th class="text-end" style="color: ${corEstado}">Estado:</th>
+                                <td class="text-start" style="color: ${corEstado}">${response.estado}</td>
                             </tr>
-                        </tbody>
+     
+                    ` : ''}   
+                    ${tipo === 'componente' ? `
+                    <table class="table" style="width: 100%;">
+                      <tbody>
+                          <tr>
+                            <td class="text-center" style="vertical-align: middle;">
+                                <img src="${response.imagem}" alt="Imagem" style="max-width: 100%; max-height: 100px; vertical-align: middle;">
+                            </td>
+
+                            <td class="text-start" style="padding-top: 5px; padding-left: 20px; vertical-align: middle;">
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Nome:</strong> ${response.descricao}
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Preço:</strong> ${precoFormatado}
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Custo médio:</strong> ${precoMFormatado}
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Stock:</strong> 
+                                    <span style="color: ${response.quantidade_stock > 20 ? 'green' : (response.quantidade_stock > 10 ? 'orange' : 'red')}">
+                                        ${response.quantidade_stock}
+                                    </span>
+                                </div>
+                            </td>
+                          </tr>
+                          
+
+
+                      </tbody>
                     </table>
-                `,
-          showCloseButton: true,
-          showCancelButton: false,
-          focusConfirm: false,
-          width: '40%',
-          
-        });
+                    <tr>
+                        <td class="text-start" style="padding-top: 20px; align-items: center;">
+                            <strong>Estado:</strong>
+                            <span style="color: ${corEstado};">${response.estado}</span>
+                        </td>
+                    </tr>
+
+
+                    ` : ''}   
+                    
+                </tbody>
+            </table>
+        `,
+        showCloseButton: true,
+        showCancelButton: false,
+        focusConfirm: false,
+        width: '40%',
+      });
+    } else {
+      console.error('O valor do preço não é um número válido.');
+    }
+  }
+
+
+  function abrirModalDetalhesFornecedor(id, tableName) {
+    console.log(id, tableName);
+    $.ajax({
+      url: `/${tableName}/${id}/`,
+      method: 'POST', // ou 'GET' dependendo da sua configuração
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      dataType: 'json',
+      success: function (response) {
+        console.log(response);
+        abrirModalDetalhes('fornecedor', id, tableName, response);
       },
-      error: function(error) {
-        console.error('Erro ao obter detalhes do fornecedor:', error);
+      error: function (error) {
+        console.error(`Erro ao obter detalhes do fornecedor (${tableName}):`, error);
       }
     });
   }
 
+  // Exemplo de uso para componente
+  function abrirModalDetalhesComponente(id, tableName) {
+    $.ajax({
+      url: `/${tableName}/${id}/`,
+      method: 'POST', // ou 'GET' dependendo da sua configuração
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      dataType: 'json',
+      success: function (response) {
+        abrirModalDetalhes('componente', id, tableName, response);
+      },
+      error: function (error) {
+        console.error(`Erro ao obter detalhes do componente (${tableName}):`, error);
+      }
+    });
+  }
   // Adicione um listener de evento ao botão de detalhes
-  
+
 </script>
 
 <!-- jQuery (required for DataTables plugin) -->
