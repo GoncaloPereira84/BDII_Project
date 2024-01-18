@@ -239,7 +239,6 @@ Nova encomenda
                 url: '{% url "save_encomenda" %}',
                 data: requestData,
                 success: function (response) {
-                    console.log(response);
                     window.location.href = "/compra/list";
                 },
                 error: function (error) {

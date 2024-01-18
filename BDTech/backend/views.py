@@ -35,6 +35,10 @@ from core.utils import (
     get_componente_details,
     update_componente,
     get_export_encomendas,
+    get_venda_details,
+    get_compra_details,
+    get_equipamento_details,
+    get_producao_details,
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -42,7 +46,7 @@ from core.utilsMongo import (
     get_marca_atributo,
     insert_batch_into_equipamento_comp_atrib,
 )
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_protect
 
 
@@ -52,7 +56,8 @@ def masterPage(request):
 def import_componente_html(request):
     return render(request, "import_componente.html")
 
-
+require_GET
+@csrf_protect
 def new_order(request):
     fornecedores = get_all_fornecedores(request.session["id_utilizador"], 0)
     componentes = get_all_componente(request.session["id_utilizador"], 0)
@@ -279,7 +284,6 @@ def edit_record(request, table_name, record_id):
         exit
     if request.method == "POST":
         if table_name == "componente":
-            print("entrei aqui")
             return redirect("edit_componente", record_id=record_id)
         elif table_name == "fornecedor":
             return redirect("edit_fornecedor", record_id=record_id)
@@ -304,13 +308,10 @@ def edit_fornecedor(request,record_id):
         email = request.POST.get("email", fornecedor_details["email"])
         id_estado = request.POST.get("id_estado", fornecedor_details["id_estado"])
 
-        # Salve as alterações no banco de dados
         update_fornecedor(record_id, nome, endereco, codpostal, localidade, contacto, email,id_estado)
 
-        # Redirecione para a página de detalhes ou qualquer outra página desejada
         return redirect("/fornecedor/list")
 
-    # Se o método for GET, renderize o formulário com os dados existentes
     return render(request, "edit_fornecedor.html", {"fornecedor": fornecedor_details})
 
 def edit_componente(request, record_id):
@@ -323,14 +324,10 @@ def edit_componente(request, record_id):
         imagem = request.POST.get("imagem")
         id_estado = request.POST.get("id_estado")
         
-        print(id_estado)
-        # Salve as alterações no banco de dados
         update_componente(record_id, descricao, preco, pcusto_medio, imagem, id_estado)
 
-        # Redirecione para a página de detalhes ou qualquer outra página desejada
         return redirect("/componente/list")
 
-    # Se o método for GET, renderize o formulário com os dados existentes
     return render(request, "edit_componente.html", {"componente": componente_details})
 
 
@@ -345,6 +342,55 @@ def detalhes_fornecedor(request, fornecedor_id):
 def detalhes_componente(request, componente_id):
     componente_details = get_componente_details(componente_id)
     return JsonResponse(componente_details)
+
+@require_POST
+@csrf_protect
+def detalhes_venda(request, venda_id):
+    venda_details = get_venda_details(request.session["id_utilizador"], venda_id)
+
+    equipamentos_details = venda_details.pop('equipamentos', [])
+
+    return JsonResponse({
+        'venda_details': venda_details,
+        'equipamentos_details': equipamentos_details
+    })
+
+@require_POST
+@csrf_protect
+def detalhes_compra(request, compra_id):
+    compra_details = get_compra_details(request.session["id_utilizador"], compra_id)
+
+    componentes_details = compra_details.pop('componentes', [])
+
+    return JsonResponse({
+        'compra_details': compra_details,
+        'componentes_details': componentes_details
+    })
+
+@require_POST
+@csrf_protect
+def detalhes_equipamento(request, equipamento_id):
+    equipamento_details = get_equipamento_details(request.session["id_utilizador"], equipamento_id)
+
+    componentes_details = equipamento_details.pop('componentes', [])
+
+    return JsonResponse({
+        'equipamento_details': equipamento_details,
+        'componentes_details': componentes_details
+    })
+
+@require_POST
+@csrf_protect
+def detalhes_producao(request, producao_id):
+    producao_details = get_producao_details(request.session["id_utilizador"], producao_id)
+
+    componentes_details = producao_details.pop('componentes', [])
+
+    return JsonResponse({
+        'producao_details': producao_details,
+        'componentes_details': componentes_details
+    })
+
 
 def save_encomenda(request):
     if request.method == "POST":
@@ -424,14 +470,6 @@ def mango(request):
     valores_encontrados = resultados.get("resultados")
     id_atributo = resultados.get("id_atributo")
 
-    # Imprime os valores encontrados
-    print("Valores encontrados:")
-    print(valores_encontrados)
-
-    # Imprime os id_atributo
-    print("ID Atributo Array:")
-    print(id_atributo)
-
     return HttpResponse(resultados)
         
 def form_create_componente(request):
@@ -465,11 +503,6 @@ def get_atributo_options(request):
         
         id_atributo_tamanho = resultado_tamanho.get("id_atributo")
         tamanho_valorlista_options = resultado_tamanho.get("resultados")
-        
-        print(id_atributo_tipo)
-        print(tipo_valorlista_options)
-        print(id_atributo_tamanho)
-        print(tamanho_valorlista_options)
         
         return JsonResponse({
             'id_atributo_tipo': id_atributo_tipo,
@@ -563,7 +596,6 @@ def create_producao(request, id_equipamento):
         "id_moeda": 1,
         "data": timezone.now(),
         "quantidade": request.POST.get("quantdEquip"),
-        "custounitario": request.POST.get("custounitario"),
         "nhoras": request.POST.get("nhoras")
     }
 
@@ -603,11 +635,9 @@ def create_producao_equip_existente(request):
         return HttpResponse("Método não permitido.")
 
 
-def fn_populate_equipamento_comp_atrib(request):    
-    result = get_for_equipamento_comp_atrib(request.session["id_utilizador"], 62)
-    
-    print("result:",result)
-    
+def fn_populate_equipamento_comp_atrib(request, id_equipamento):    
+    result = get_for_equipamento_comp_atrib(request.session["id_utilizador"], id_equipamento)
+        
     resultado = insert_batch_into_equipamento_comp_atrib(request, result)
     
     
@@ -663,7 +693,6 @@ def export_encomendas(request):
 def imprimir_export_encomendas(request):
     if request.method == "POST":
         tipo = json.loads(request.POST.get("tipo"))
-        print(tipo,"==", json.loads(request.POST.get("id_encomenda")))
         if tipo == 0:#all encomendas
             resultado = get_export_encomendas(request.session["id_utilizador"], tipo, 0)
         elif tipo == 1:# all encomendas from fornecedor

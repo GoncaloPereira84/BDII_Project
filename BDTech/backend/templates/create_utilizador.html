@@ -209,7 +209,6 @@ Novo utilizador
             type: "POST",
             data: data,
             success: function (response) {
-                console.log("Resposta do servidor:", response);
                 window.location.href = "/utilizador/list";
             },
             error: function (error) {
@@ -217,8 +216,6 @@ Novo utilizador
                 showAlert("ERRO a Gravar os Dados !")
             }
         });
-
-        console.log("Resposta do Pedido:", data);
     }
 
 </script>

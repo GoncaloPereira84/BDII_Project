@@ -165,12 +165,6 @@ Nova encomenda
         var nome = row.find('td:nth-child(4)').text();
         var stock = row.find('td:nth-child(5)').text();
 
-        // console.log(row.find('td:nth-child(2)').text());
-        // console.log(row.find('td:nth-child(3)').text());
-        // console.log(row.find('td:nth-child(4)').text());
-        // console.log(row.find('td:nth-child(5)').text());
-        // console.log(row.find('td:nth-child(6)').text());
-
         var existingRow = $('#cestoTable tbody').find('tr[data-id="' + id_equipamento + '"]');
 
         if (existingRow.length > 0) {
@@ -242,7 +236,6 @@ Nova encomenda
             url: '{% url "create_producao_equip_existente" %}',
             data: requestData,
             success: function (response) {
-                console.log("respponseeeeeeeeeeeee:  ", response);
                 if (response == 0) {
                     Swal.fire({
                         icon: 'warning',
@@ -282,7 +275,6 @@ Nova encomenda
                 url: '{% url "criar_mao_obra" %}',
                 data: requestData,
                 success: function (response) {
-                    console.log(response);
                     if (response.hasOwnProperty('id_tipomaoobra')) {
                         var id_tipomaoobra = response.id_tipomaoobra;
                         var nome = response.nome;

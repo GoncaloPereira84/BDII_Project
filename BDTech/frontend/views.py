@@ -64,29 +64,20 @@ def login_utilizador(request):
     if request.method == "POST":
         email = request.POST.get("login-username")
         password = request.POST.get("login-password")
-
-        # print(f"Email: {email}, Password: {password}")
-
         with connection.cursor() as cursor:
             cursor.execute("SELECT * FROM login_utilizador(%s, %s);", [email, password])
             result = cursor.fetchone()
 
         if result:
             id_utilizador, nome, email = result
-            # print(
-            #     f"User {email} logged in successfully. User ID: {id_utilizador}, Name: {nome}"
-            # )
-
+           
             request.session["id_utilizador"] = id_utilizador
             request.session["nome"] = nome
             request.session["email"] = email
 
-            # print(f"Session Data: {request.session.items()}")
-
             return JsonResponse({"success": True, "redirect": "/"})
 
         else:
-            # print("Invalid credentials. Please try again.")
             return JsonResponse({"success": False, "message": "Credenciais Inválidas"})
 
     return JsonResponse({"success": False, "message": "Invalid request method."})
@@ -171,7 +162,7 @@ def equipamento_type(request, tipo):
     )
 
 
-def detalhes_equipamento(request, equipamento_id):
+def detalhes_equipamento_list(request, equipamento_id):
     equipamento = get_detalhes_equipamento(equipamento_id)
     lista = get_top_x_equipamento(6)
     return render(request, "detalhes_equipamento.html", {"equipamento": equipamento[0], "lista": lista})
@@ -223,7 +214,7 @@ def usercompras(request):
     return render(request, "usercompras.html", {"vendas": resultado})
 
 
-def detalhes_venda(request, venda_id):
+def detalhes_venda_utilizador(request, venda_id):
     utilizador = request.session.get("id_utilizador")
 
     if utilizador is not None:
@@ -286,9 +277,7 @@ def aplicarpreco(request):
 
         if len(str(max_price)) <= 6:
             max_price_str = max_price_str.replace(",", ".")
-        print("ids_equipamento", min_price_str, max_price_str, tipo)
         ids_equipamento = get_equipamentos_by_preco(min_price_str, max_price_str, tipo)
-        print("ids_equipamento", ids_equipamento)
         if ids_equipamento is not None:
             # Obter os ids como uma lista
             ids_equipamento = [item[0] for item in ids_equipamento]
@@ -340,11 +329,9 @@ def aplicarfiltros(request):
         ram = data.get("ram", [])
         rom = data.get("rom", [])
         tipo = data.get("tipo")
-        print("wxem", marcas, precos, ram, rom, tipo)
         resultados = aplicar_filtros(
             request, marcas=marcas, precos=precos, ram=ram, rom=rom
         )
-        print("wxem", resultados)
         if resultados:
             ids_equipamento = resultados
 
@@ -354,7 +341,6 @@ def aplicarfiltros(request):
                 equipamento[1] for equipamento in equipamentos_filtrados
             ]
 
-            print("equipamentos_ids", equipamentos_ids)
             min_price = precos.get("min", 0)
             max_price = precos.get("max", 1)
 
@@ -374,7 +360,6 @@ def aplicarfiltros(request):
             if max_price_decimal >= 1000000:
                 max_price_str = "${:,.0f}".format(max_price_decimal).replace(",", "")
 
-                print("max_price_str", max_price_str)
             if len(str(max_price_decimal)) > 6:
                 min_price_str = (
                     "${:,.0f}".format(min_price_decimal)
@@ -406,7 +391,6 @@ def aplicarfiltros(request):
                 }
                 for equipamento in equipamentos_dict_list
             ]
-            print("wxem", equipamentos_serializados)
             return JsonResponse(
                 {
                     "resultados": equipamentos_serializados,
