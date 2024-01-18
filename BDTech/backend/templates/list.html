@@ -53,6 +53,9 @@ Listar
             <a class="dropdown-item filter-option-tipo" href="javascript:void(0)" data-tipo="desktop">
               <i class="far fa-fw fa-desktop opacity-50 me-1"></i> Desktop
             </a>
+            <a class="dropdown-item filter-option-tipo" href="javascript:void(0)" data-tipo="todos">
+              <i class="fa fa-fw fa-eye opacity-50 me-1"></i> Todos
+            </a>
             {% endif %}
           </div>
         </div>
@@ -112,10 +115,6 @@ Listar
                 <i class="text-success fa fa-cart-arrow-down"></i>
               </button>
               {% else%}
-              <button type="button" class="btn btn-sm btn-alt-secondary"
-                onclick="abrirModalDetalhes('{{ row.0 }}', '{{ row.1 }}', '{{ row.2 }}', '{{ row.3 }}', '{{ row.4 }}', '{{ row.5 }}', '{{ row.6 }}')">
-                <i class="fa fa-eye"></i>
-              </button>
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
                 <button type="button" class="btn btn-sm btn-alt-secondary"
