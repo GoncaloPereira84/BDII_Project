@@ -186,11 +186,13 @@
                     <span class="nav-main-link-name">Listar</span>
                   </a>
                 </li>
+                {% if request.session.nivel_acesso == 5 or request.session.nivel_acesso == 3 %}
                 <li class="nav-main-item"> 
                   <a class="nav-main-link" href="/equipamento/create">
                     <span class="nav-main-link-name">Criar Equipamento</span>
                   </a>
                 </li>
+                {% endif %}
               </ul>
             </li>
             {% if request.session.nivel_acesso == 5 or request.session.nivel_acesso == 3 %}
