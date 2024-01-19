@@ -72,7 +72,7 @@ def new_order(request):
         {"fornecedores": fornecedores, "componentes": componentes},
     )
  
-
+@csrf_exempt
 def new_prod(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
@@ -91,6 +91,7 @@ def new_prod(request):
         },
     )
 
+@csrf_exempt
 def new_prod_existente(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
@@ -109,7 +110,7 @@ def new_prod_existente(request):
         },
     )
 
-
+@csrf_exempt
 def dashboard(request):
     # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] >= 1:
@@ -189,6 +190,7 @@ def save_utilizador(request):
     else:
         return render(request, 'create_utilizador.html')
 
+@csrf_exempt
 def new_utilizador(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
         pass
@@ -211,6 +213,7 @@ def function_exists(table_name):
         return False
     return True
 
+@csrf_exempt
 def generic_list(request, table_name):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 1) :
         pass
@@ -250,6 +253,7 @@ def generic_list(request, table_name):
 
     return render(request, "list.html", context)
 
+@csrf_exempt
 def delete_record(request, table_name, record_id):
     # Validar acessos listagens
     num = verificar_acesso(request, table_name)
@@ -582,6 +586,7 @@ def form_create_componente(request):
     }
     return render(request, "create_componente.html", context)
 
+@csrf_exempt
 def get_atributo_options(request):
     tpcomponente_value = request.GET.get('tpcomponente', None)
     resultado_tipo = get_tipo_atributo(request, tpcomponente_value)
@@ -689,6 +694,7 @@ def create_equipamento(request):
     else:
         return HttpResponse("Método não permitido.")
     
+@csrf_exempt   
 def create_producao(request, id_equipamento):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
@@ -746,13 +752,13 @@ def create_producao_equip_existente(request):
     else:
         return HttpResponse("Método não permitido.")
 
-
+@csrf_exempt
 def fn_populate_equipamento_comp_atrib(request, id_equipamento):    
     result = get_for_equipamento_comp_atrib(request.session["id_utilizador"], id_equipamento)
         
     resultado = insert_batch_into_equipamento_comp_atrib(request, result)
     
-    
+@csrf_exempt
 def list_compra_FR_doc(request):   
     verificar_acesso(request, "Encomendas recebidas")
     # ---------------------------------- 
@@ -780,6 +786,7 @@ def list_compra_FR_doc(request):
 
     return render(request, "list.html", context)
 
+@csrf_exempt
 def receber_encomenda(request,record_id):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 1) :
         pass
@@ -805,7 +812,8 @@ def import_componente_json(request):
             return HttpResponse("Json contém erros!")
         
         return HttpResponse(resultado) 
-    
+   
+@csrf_exempt 
 def export_encomendas(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3 or request.session["nivel_acesso"] == 1) :
         pass

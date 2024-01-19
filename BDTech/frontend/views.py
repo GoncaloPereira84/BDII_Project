@@ -28,7 +28,7 @@ import json
 def masterPageFront(request):
     return render(request, "masterPageFront.html")
 
-
+@csrf_exempt
 def index(request):
     ultimos_equipamentos = get_top_x_equipamento(4)
     marcas = [
@@ -168,7 +168,7 @@ def detalhes_equipamento_list(request, equipamento_id):
     lista = get_top_x_equipamento(6)
     return render(request, "detalhes_equipamento.html", {"equipamento": equipamento[0], "lista": lista})
 
-
+@csrf_exempt
 def pesquisa_equipamento(request):
     termo_pesquisa = request.GET.get("dm-booking-destination", "")
     categoria = request.GET.get("categoria", "")
@@ -197,6 +197,7 @@ def pesquisa_equipamento(request):
         },
     )
 
+@csrf_exempt
 def usercompras(request):
     utilizador = request.session["id_utilizador"]
     vendas = obter_compras_usuario(utilizador)
@@ -213,7 +214,7 @@ def usercompras(request):
     ]
     return render(request, "usercompras.html", {"vendas": resultado})
 
-
+@csrf_exempt
 def aplicarpreco(request):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
@@ -275,7 +276,7 @@ def aplicarpreco(request):
             status=405,
         )
 
-
+@csrf_exempt
 def aplicarfiltros(request):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
@@ -402,7 +403,7 @@ def adicionar_ao_carrinho(request):
     else:
         return HttpResponse("Método não permitido.")
 
-
+@csrf_exempt
 def get_carrinho_data(request):
     carrinho_data = request.session.get("carrinho", [])
     total_preco = 0.0
@@ -414,7 +415,7 @@ def get_carrinho_data(request):
     carrinho_data.append({"total_preco": "{:.2f}".format(total_preco)})
     return JsonResponse(carrinho_data, safe=False)
 
-
+@csrf_exempt
 def remover_do_carrinho(request):
     try:
         id_equipamento = request.POST.get("id_equipamento")
@@ -429,7 +430,7 @@ def remover_do_carrinho(request):
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)})
 
-
+@csrf_exempt
 def mudar_quantidade_carrinho(request):
     try:
         id_equipamento = request.POST.get("id_equipamento")
@@ -455,7 +456,7 @@ def mudar_quantidade_carrinho(request):
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)})
 
-
+@csrf_exempt
 def finalizarCarrinho(request):
     carrinho = request.session["carrinho"]
     utilizador_data_table = carrinho_get_info(request.session["id_utilizador"])
@@ -473,6 +474,7 @@ def finalizarCarrinho(request):
     ]
     return render(request, "finalizarCompra.html", {"carrinhodata": carrinho, "utilizador_data": utilizador_data})
 
+@csrf_exempt
 def completeCarrinho(request):
     carrinho = request.session["carrinho"]
     
