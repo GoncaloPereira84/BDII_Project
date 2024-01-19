@@ -70,6 +70,7 @@
               </a>
             </li>
             {% endif %}
+            {% if request.session.nivel_acesso >= 4 %}
             <li class="nav-main-item">
               <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
                 <i class="nav-main-link-icon fa fa-user"></i>
@@ -101,18 +102,17 @@
                   <a class="nav-main-link" href="/perfil_funcionalidade/list">
                     <span class="nav-main-link-name">Func/Perfil</span>
                   </a>
-                </li>                     
-                
-                
+                </li>   
               </ul>
             </li>
-
             <li class="nav-main-item">
               <a class="nav-main-link" href="/fornecedor/list">
                 <i class="nav-main-link-icon fa fa-suitcase"></i>
                 <span class="nav-main-link-name">Fornecedores</span>
               </a>
             </li>
+            {% endif %}
+            {% if request.session.nivel_acesso == 5 or request.session.nivel_acesso == 3 or request.session.nivel_acesso == 1 %}
             <li class="nav-main-item">
               <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
                 <i class="nav-main-link-icon fa fa-boxes"></i>
@@ -141,12 +141,16 @@
                 </li>
               </ul>
             </li>
+            {% endif %}
+            {% if request.session.nivel_acesso == 5 or request.session.nivel_acesso == 4 or request.session.nivel_acesso == 2 %}
             <li class="nav-main-item">
               <a class="nav-main-link" href="/venda/list">
                 <i class="nav-main-link-icon fa fa-euro-sign"></i>
                 <span class="nav-main-link-name">Vendas</span>
               </a>
             </li>
+            {% endif %}
+            {% if request.session.nivel_acesso == 5 or request.session.nivel_acesso == 1 %}
             <li class="nav-main-item">
               <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
                 <i class="nav-main-link-icon fa fa-truck"></i>
@@ -170,6 +174,7 @@
                 </li>
               </ul>
             </li>
+            {% endif %}
             <li class="nav-main-item">
               <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
                 <i class="nav-main-link-icon fa fa-laptop"></i>
@@ -188,7 +193,7 @@
                 </li>
               </ul>
             </li>
-
+            {% if request.session.nivel_acesso == 5 or request.session.nivel_acesso == 3 %}
             <li class="nav-main-item">
               <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
                 <i class="nav-main-link-icon fa fa-hammer"></i>
@@ -207,7 +212,7 @@
                 </li>
               </ul>
             </li>
-
+            {% endif %}
             <li class="nav-main-item">
               <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
                 <i class="nav-main-link-icon fa fa-laptop"></i>
@@ -219,20 +224,22 @@
                     <span class="nav-main-link-name">Stock Equipamentos</span>
                   </a>
                 </li>
+                {% if request.session.nivel_acesso == 5 or request.session.nivel_acesso == 3 or request.session.nivel_acesso == 1 %}
                 <li class="nav-main-item"> 
                   <a class="nav-main-link" href="/componente/list/">
                     <span class="nav-main-link-name">Stock Componentes</span>
                   </a>
                 </li>
+                {% endif %}
+                {% if request.session.nivel_acesso == 5 or request.session.nivel_acesso == 3 %}
                 <li class="nav-main-item"> 
                   <a class="nav-main-link" href="/producao/list/">
                     <span class="nav-main-link-name">Produção</span>
                   </a>
                 </li>                
-
+                {% endif %}
               </ul>
             </li>
-
           </ul>
         </div>
       </div>
