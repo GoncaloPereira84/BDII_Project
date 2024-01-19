@@ -374,7 +374,9 @@ def edit_utilizador(request, record_id):
         email      = request.POST.get("email-input", utilizador_details["email"])
         password   = request.POST.get("password-input", utilizador_details["password"])
         id_perfil  = request.POST.get("perfil-input", utilizador_details["id_perfil"])
-        e_cliente  = request.POST.get("cliente-input", utilizador_details["e_cliente"])
+        #e_cliente = request.POST.get("cliente-input", utilizador_details["e_cliente"])
+        e_cliente_str = request.POST.get("cliente-input", "off")  # Se o campo não estiver presente, assumimos "off"
+        e_cliente  = e_cliente_str.lower() == "on"       
         id_estado  = utilizador_details["id_estado"]
 
         resultado = update_utilizador(record_id, nome, endereco, codpostal, localidade, contacto, email,password,id_perfil,id_estado,e_cliente)
@@ -383,7 +385,7 @@ def edit_utilizador(request, record_id):
             request.session["email"] = email
             request.session["id_perfil"] = id_perfil
             request.session["nivel_acesso"] = resultado[0]
-        return redirect("/dashboard")
+        return redirect("/utilizador/list")
 
     return render(request, "edit_utilizador.html", {"utilizador": utilizador_details})
 
