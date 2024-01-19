@@ -356,9 +356,9 @@ def edit_equipamento(request, record_id):
 
     return render(request, "edit_equipamento.html", {"equipamento": equipamento_details})
 
+
 def edit_utilizador(request, record_id):
-    equipamento_details = get_equipamento_details(request.session['id_utilizador'], record_id)
-    componente_details = equipamento_details.pop('componentes', [])
+    utilizador_details = get_utilizador_details(request.session['id_utilizador'], record_id)
     
     if request.method == "POST":
         nome = request.POST.get("nome")
@@ -366,11 +366,10 @@ def edit_utilizador(request, record_id):
         imagem = request.POST.get("imagem")
         id_estado = request.POST.get("id_estado")
         
-        update_equipamento(record_id, nome, preco, imagem, id_estado)
-
+        #update_equipamento(record_id, nome, preco, imagem, id_estado)
         return redirect("/utilizador/list")
 
-    return render(request, "edit_utilizador.html", {"utilizador": equipamento_details})
+    return render(request, "edit_utilizador.html", {"utilizador": utilizador_details})
 
 @require_POST
 @csrf_protect
