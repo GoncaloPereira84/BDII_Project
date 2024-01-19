@@ -98,8 +98,6 @@ def logout_utilizador(request):
 # view login
 @csrf_exempt
 def fulllogin(request):
-    origin_header = request.META.get('HTTP_ORIGIN')
-    print('Origin Header:', origin_header)
 
     if request.method == "POST":
         username = request.POST["username"]
