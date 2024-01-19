@@ -330,7 +330,7 @@ def criar_venda(id_utilizador, json_data):
                 [id_utilizador, json_data],
             )
             result = cursor.fetchone()
-
+            
             return result
     except Exception as e:
         return None

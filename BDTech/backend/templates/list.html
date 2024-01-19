@@ -87,6 +87,10 @@ Listar
             {% endfor %}
             <td class="text-center d-flex align-items-center justify-content-center">
               {% if imagem_column_present %}
+              <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Eliminar"
+                onclick="confirmDelete('{{ table_name }}', '{{ row.1 }}')">
+                <i class="fa fa-times"></i>
+              </button>
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.1 %}">
                 {% csrf_token %}
                 {% if table_name != "perfil" and table_name != "funcionalidade" and table_name != "perfil_funcionalidade"%}
@@ -128,11 +132,6 @@ Listar
                 <i class="text-success fa fa-cart-arrow-down"></i>
               </button>
               {% endif %}
-              
-              <button type="button" class="btn btn-sm btn-alt-secondary ms-1" data-bs-toggle="tooltip" title="Eliminar"
-                onclick="confirmDelete('{{ table_name }}', '{{ row.1 }}')">
-                <i class="fa fa-times"></i>
-              </button>
               {% if not imagem_column_present %}
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.0 %}">
                 {% csrf_token %}
