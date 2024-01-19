@@ -66,7 +66,7 @@ urlpatterns = [
     path("utilizador/create/", new_utilizador),
     path("utilizador/save/", save_utilizador), 
     path('save_utilizador/', save_utilizador, name='save_utilizador'),       
-    path('utilizador/edit/<int:record_id>/', edit_utilizador, name='edit_utilizador'),    
+    path('utilizador/edit/<int:record_id>/', edit_utilizador, name='edit_utilizador'),     
     path("404/", error404),
     path("sem_acesso/", Sem_Acesso),    
     path("<str:table_name>/list/", generic_list, name='generic_list'),

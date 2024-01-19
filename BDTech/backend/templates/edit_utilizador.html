@@ -13,15 +13,15 @@ Editar utilizador
 
 {% block content %}
 <div class="content">
-    <form id="utilizadorForm" class="js-validation" method="POST" action="{% url 'save_utilizador' %}">
+    <form id="utilizadorForm" class="js-validation" method="POST" action="{% url 'edit_utilizador' record_id=utilizador.id_utilizador %}">
         {% csrf_token %}
         <div class="block block-rounded">
             <div class="block-header block-header-default">
                 <h3 class="block-title">Editar utilizador</h3>
                 <div class="block-options">
-                    <input type="hidden" id="id_fornecedor" name="id_fornecedor" value="">
-                    <button type="button" class="btn btn-sm btn-success" onclick="createUtilizador()">
-                        <i class="fa fa-fw fa-check"></i> Guardar
+                    <input type="hidden" id="id_utilizador" name="id_utilizador" value="">
+                    <button type="submit" class="btn btn-sm btn-success">
+                        <i class="fa fa-fw fa-check"></i> Atualizar
                     </button>
                 </div>
             </div>
@@ -44,7 +44,7 @@ Editar utilizador
                         <input type="email" class="form-control" id="email-input" name="email-input" value="{{ utilizador.email }}" placeholder="(Email)">
                       </div>
                       <div class="mb-4">
-                        <label class="form-label" for="password-input">Password</label>
+                        <label class="form-label" for="password-input">Password (não escrever para manter)</label>
                         <input type="password" class="form-control" id="password-input" name="password-input" placeholder="(Password)">
                       </div>
 
@@ -81,7 +81,7 @@ Editar utilizador
 
                       <div class="mb-4">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" value="" id="cliente-input" name="cliente-input" checked="">
+                            <input class="form-check-input" type="checkbox" value="{{ utilizador.e_cliente }}" id="cliente-input" name="cliente-input" {% if utilizador.e_cliente %}checked{% endif %}>
                             <label class="form-check-label" for="cliente-input">É Cliente ?</label>
                           </div>
                       </div>                      
@@ -95,7 +95,7 @@ Editar utilizador
                       </div>
                       <div class="mb-4">
                         <label class="form-label" for="cpostal-input">CodPostal</label>
-                        <input type="email" class="form-control" id="cpostal-input" name="cpostal-input" value="{{ utilizador.codpostal }}" placeholder="(CodPostal)">
+                        <input type="text" class="form-control" id="cpostal-input" name="cpostal-input" value="{{ utilizador.codpostal }}" placeholder="(CodPostal)">
                       </div>
 
                     </div>
@@ -121,25 +121,7 @@ Editar utilizador
 
 <script>
     $(document).ready(function () {
-        $("#alterarDescricaoBtn").click(function () {
-            var tpcomponenteValue = $("#tpcomponente").val();
-            var marcaValue = $("#marca").val();
-            var atributo1Value = $("#atributo1").val();
-            var atributo2Value = $("#atributo2").val();
-            var descricaoInput = $("#descricao");
 
-            if (tpcomponenteValue && marcaValue && atributo1Value && atributo2Value) {
-                var descricaoValue = tpcomponenteValue + " " + marcaValue + " " + atributo1Value + " " + atributo2Value;
-
-                descricaoInput.val(descricaoValue);
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Atenção',
-                    text: 'Por favor, selecione todos os valores necessários antes de alterar a descrição.',
-                });
-            }
-        });
     });
 </script>
 
