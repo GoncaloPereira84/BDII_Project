@@ -53,7 +53,7 @@
               <!-- Sign In Form -->
               <div class="row g-0 justify-content-center">
                 <div class="col-sm-8 col-xl-6">
-                  <form class="js-validation-signin" action="#" method="POST">
+                  <form class="js-validation-signin" action="{% url 'login' %}" method="POST">
                     {% csrf_token %}
                     <div class="py-3">
                       <div class="mb-4">

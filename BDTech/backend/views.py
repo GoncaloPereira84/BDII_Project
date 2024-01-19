@@ -374,7 +374,7 @@ def edit_utilizador(request, record_id):
         email      = request.POST.get("email-input", utilizador_details["email"])
         password   = request.POST.get("password-input", utilizador_details["password"])
         id_perfil  = request.POST.get("perfil-input", utilizador_details["id_perfil"])
-        e_cliente  = request.POST.get("cliente-input", utilizador_details["e_cliente"])
+        e_cliente = request.POST.get("cliente-input", False) 
         id_estado  = utilizador_details["id_estado"]
 
         resultado = update_utilizador(record_id, nome, endereco, codpostal, localidade, contacto, email,password,id_perfil,id_estado,e_cliente)
@@ -839,8 +839,6 @@ def verificar_acesso(request, table_name):
         pass
     else:
         return 1
-    
-    print(table_name)
     
     if table_name == 'utilizador' or table_name == 'perfil' or table_name == 'funcionalidade' or table_name == 'perfil_funcionalidade' or table_name == 'fornecedor':
         if request.session["nivel_acesso"] >= 4:
