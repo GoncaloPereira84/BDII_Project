@@ -295,6 +295,8 @@ def edit_record(request, table_name, record_id):
             return redirect("edit_fornecedor", record_id=record_id)
         elif table_name == "equipamento":
             return redirect("edit_equipamento", record_id=record_id)
+        elif table_name == "utilizador":
+            return redirect("edit_utilizador", record_id=record_id)        
         else:
             return redirect("generic_list", table_name=table_name)
 
@@ -354,6 +356,21 @@ def edit_equipamento(request, record_id):
 
     return render(request, "edit_equipamento.html", {"equipamento": equipamento_details})
 
+def edit_utilizador(request, record_id):
+    equipamento_details = get_equipamento_details(request.session['id_utilizador'], record_id)
+    componente_details = equipamento_details.pop('componentes', [])
+    
+    if request.method == "POST":
+        nome = request.POST.get("nome")
+        preco = request.POST.get("preco")
+        imagem = request.POST.get("imagem")
+        id_estado = request.POST.get("id_estado")
+        
+        update_equipamento(record_id, nome, preco, imagem, id_estado)
+
+        return redirect("/utilizador/list")
+
+    return render(request, "edit_utilizador.html", {"utilizador": equipamento_details})
 
 @require_POST
 @csrf_protect
