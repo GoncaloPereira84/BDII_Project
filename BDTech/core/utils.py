@@ -523,6 +523,17 @@ def update_equipamento(id,nome,preco,imagem,estado):
         result = cursor.fetchall()
     return result
 
+def update_utilizador(id,nome,endereco,codpostal,localidade,contacto,email,password,idperfil,idestado,ecliente):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM update_utilizador(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """, 
+            [id,nome,endereco,codpostal,localidade,contacto,email,password,idperfil,idestado,ecliente]
+        )
+        result = cursor.fetchall()
+    return result
+
 def get_fornecedor_details(fornecedor_id):
     with connection.cursor() as cursor:
         cursor.execute(

@@ -38,6 +38,7 @@ from core.utils import (
     get_producao_details,
     get_utilizador_details,
     update_equipamento,
+    update_utilizador,
     ordenar_compras
 )
 from core.utilsMongo import (
@@ -361,12 +362,18 @@ def edit_utilizador(request, record_id):
     utilizador_details = get_utilizador_details(request.session['id_utilizador'], record_id)
     
     if request.method == "POST":
-        nome = request.POST.get("nome")
-        preco = request.POST.get("preco")
-        imagem = request.POST.get("imagem")
-        id_estado = request.POST.get("id_estado")
-        
-        #update_equipamento(record_id, nome, preco, imagem, id_estado)
+        nome       = request.POST.get("nome-input", utilizador_details["nome"])
+        endereco   = request.POST.get("morada-input", utilizador_details["endereco"])
+        codpostal  = request.POST.get("cpostal-input", utilizador_details["codpostal"])
+        localidade = request.POST.get("localidade-input", utilizador_details["localidade"])
+        contacto   = request.POST.get("contato-input", utilizador_details["contacto"])
+        email      = request.POST.get("email-input", utilizador_details["email"])
+        password   = request.POST.get("password-input", utilizador_details["password"])
+        id_perfil  = request.POST.get("perfil-input", utilizador_details["id_perfil"])
+        e_cliente  = request.POST.get("cliente-input", utilizador_details["e_cliente"])
+        id_estado  = utilizador_details["id_estado"]
+
+        update_utilizador(record_id, nome, endereco, codpostal, localidade, contacto, email,password,id_perfil,id_estado,e_cliente)
         return redirect("/utilizador/list")
 
     return render(request, "edit_utilizador.html", {"utilizador": utilizador_details})
