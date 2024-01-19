@@ -40,6 +40,7 @@ from core.utils import (
     get_utilizador_details,
     update_equipamento,
     update_utilizador,
+    criarfornecedor
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -887,3 +888,22 @@ def verificar_acesso(request, table_name):
         pass
     else:
         return 1
+
+
+def criar_fornecedor_view(request):
+    print(request.POST.get('nome-input'))
+    if request.method == 'POST':
+        nome = request.POST.get('nome-input')
+        endereco = request.POST.get('morada-input')
+        codpostal = request.POST.get('cpostal-input')
+        localidade = request.POST.get('localidade-input')
+        contato = request.POST.get('contacto-input')
+        email = request.POST.get('email-input')
+
+        result = criarfornecedor(nome, endereco, codpostal, localidade, contato, email)
+        if result:  
+                return redirect("/fornecedor/list")
+        else:
+                return render(request, 'create_fornecedor.html', {'erro': True})
+    else:
+        return render(request, 'create_fornecedor.html')

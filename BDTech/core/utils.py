@@ -642,3 +642,14 @@ def ordenar_compras(p_coluna,p_direcao):
         )
         result = cursor.fetchall()
     return result
+
+def criarfornecedor(pnome,pendereco,pcodpostal,plocalidade,pcontato,pemail):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM criar_fornecedor(%s,%s,%s,%s,%s,%s) 
+            """,
+            [pnome,pendereco,pcodpostal,plocalidade,pcontato,pemail]
+        )
+        result = cursor.fetchall()
+    return result

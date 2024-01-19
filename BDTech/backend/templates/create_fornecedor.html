@@ -1,0 +1,194 @@
+{% extends "masterPage.html" %}
+
+{% block title %}
+Novo fornecedor
+{% endblock %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.3/sweetalert2.css" integrity="sha512-n1PBkhxQLVIma0hnm731gu/40gByOeBjlm5Z/PgwNxhJnyW1wYG8v7gPJDT6jpk0cMHfL8vUGUVjz3t4gXyZYQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <form id="fornecedorForm" class="js-validation" method="POST" action="{% url 'criar_fornecedor_view' %}">
+        {% csrf_token %}
+        <div class="content">
+            <div class="block block-rounded">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">Novo Fornecedor</h3>
+                    <div class="block-options">
+                        <input type="hidden" id="id_fornecedor" name="id_fornecedor" value="">
+                        <button type="button" class="btn btn-sm btn-success" onclick="createFornecedor()">
+                            <i class="fa fa-fw fa-check"></i> Guardar
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="block-content block-content-full">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-4">
+                                <label class="form-label" for="nome-input">Nome</label>
+                                <input type="text" class="form-control" id="nome-input" name="nome-input" placeholder="Nome" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label" for="email-input">Email</label>
+                                <input type="email" class="form-control" id="email-input" name="email-input" placeholder="Email" required>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-6">
+                            <div class="mb-4">
+                                <label class="form-label" for="morada-input">Endereço</label>
+                                <input type="text" class="form-control" id="morada-input" name="morada-input" placeholder="Endereço" required>
+                            </div> 
+    
+                            <div class="mb-4">
+                                <label class="form-label" for="localidade-input">Localidade</label>
+                                <input type="text" class="form-control" id="localidade-input" name="localidade-input" placeholder="Localidade" required>
+                            </div> 
+                        </div>
+    
+                        <div class="col-lg-6">
+                            <div class="mb-4">
+                                <label class="form-label" for="contacto-input">Contacto</label>
+                                <input type="text" class="form-control" id="contacto-input" name="contacto-input" placeholder="Contacto" required>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-6">
+                            <div class="mb-4">
+                                <label class="form-label" for="cpostal-input">Código Postal</label>
+                                <input type="text" class="form-control" id="cpostal-input" name="cpostal-input" placeholder="Código Postal">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(document).ready(function () {
+    // Adicionar validação para o formato do e-mail enquanto o usuário digita
+    $("#email-input").on("input", function () {
+        var email_input = $(this).val();
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email_input)) {
+            showAlert("Por favor, insira um endereço de e-mail válido.");
+        }
+    });
+
+    // Adicionar validação para o número máximo de dígitos no contato enquanto o usuário digita
+    $("#contacto-input").on("input", function () {
+        var contacto_input = $(this).val();
+        var contactoRegex = /^\d{1,9}$/;
+        if (!contactoRegex.test(contacto_input)) {
+            showAlert("Por favor, insira um número de contato válido (máximo de 9 dígitos).");
+        }
+    });
+
+    // Adicionar validação para o formato do código postal enquanto o usuário digita
+    $("#cpostal-input").on("input", function () {
+        var cpostal_input = $(this).val();
+        var cpostalRegex = /^\d{4}-\d{3}$/;
+        if (!cpostalRegex.test(cpostal_input)) {
+            showAlert("Por favor, insira um código postal válido no formato 1234-567.");
+        }
+    });
+});
+
+    function showAlert(message) {
+        // Usar SweetAlert alertas
+        Swal.fire({
+            icon: 'error',
+            title: 'Atenção...',
+            text: message,
+        });
+    } 
+
+    var utilizadorResponse;
+
+    function createFornecedor() {
+        var nome_input = $("#nome-input").val();
+        var email_input = $("#email-input").val();
+        var morada_input = $("#morada-input").val();
+        var localidade_input = $("#localidade-input").val();
+        var contacto_input = $("#contacto-input").val();
+        var cpostal_input = $("#cpostal-input").val();
+        // Validar campos obrigatórios
+        if (!nome_input || !email_input || !morada_input || !localidade_input || !contacto_input || !cpostal_input) {
+            showAlert("Por favor, preencha todos os campos obrigatórios.");
+            return;
+        }
+        // Validar formato de e-mail        
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email_input)) {
+            showAlert("Por favor, insira um endereço de e-mail válido.");
+            return;
+        }
+        // Validar número de contato
+        var contactoRegex = /^\d{1,9}$/;
+        if (!contactoRegex.test(contacto_input)) {
+            showAlert("Por favor, insira um número de contato válido (máximo de 9 dígitos).");
+            return;
+        }
+        // Validar formato do código postal
+        var cpostalRegex = /^\d{4}-\d{3}$/;
+        if (!cpostalRegex.test(cpostal_input)) {
+            showAlert("Por favor, insira um código postal válido no formato 1234-567.");
+            return;
+        }
+
+
+        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+
+        var data = {
+            "nome-input": nome_input,
+            "email-input": email_input,
+            "morada-input": morada_input,
+            "localidade-input": localidade_input,
+            "contacto-input": contacto_input,
+            "cpostal-input": cpostal_input,
+            'csrfmiddlewaretoken': csrfToken
+        };
+        console.log(data)
+        $.ajax({
+            url: '{% url "criar_fornecedor_view" %}',
+            type: "POST",
+            data: data,
+            success: function (response) {
+                window.location.href = "/fornecedor/list"; // Redirecionar para a página de sucesso
+            },
+            error: function (error) {
+                console.error("Erro na solicitação AJAX:", error);
+                showAlert("Erro ao criar fornecedor.");
+            }
+        });
+    }
+
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.3/sweetalert2.min.js" integrity="sha512-m+CXm5ZXGsw8CNy+DHQf8n3qpbIh/0d55dCh4xlLl7lLXsU1w0b4RL4gaxqlsOkJKqYMyHaAfUyHf2gRqf7AWA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'assets/js/lib/jquery.min.js'%}"></script>
+
+<!-- Page JS Plugins -->
+<script src="{% static 'assets/js/plugins/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/dataTables.buttons.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-jszip/jszip.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/pdfmake.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons-pdfmake/vfs_fonts.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.print.min.js'%}"></script>
+<script src="{% static 'assets/js/plugins/datatables-buttons/buttons.html5.min.js'%}"></script>
+
+<script src="{% static 'assets/js/pages/be_tables_datatables.min.js'%}"></script>
+
+
+{% endblock %}

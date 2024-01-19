@@ -36,6 +36,7 @@ from backend.views import(
     detalhes_equipamento,
     detalhes_producao,
     detalhes_utilizador,
+    criar_fornecedor_view
 )
 from frontend.views import(
     index, 
@@ -112,4 +113,6 @@ urlpatterns = [
     path('detalhes_utilizador/<int:utilizador_id>/', detalhes_utilizador, name='detalhes_utilizador'),
     path('export_encomendas/', export_encomendas, name='export_encomendas'),   
     path('imprimir_export_encomendas/', imprimir_export_encomendas, name='imprimir_export_encomendas'),
+    path("fornecedor/create/", criar_fornecedor_view),
+    path('criar_fornecedor_view/', criar_fornecedor_view, name='criar_fornecedor_view'),       
 ]
