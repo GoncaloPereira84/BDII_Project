@@ -182,7 +182,7 @@ def pesquisa_equipamento(request):
     # Se houver um único resultado, redirecione para a página de detalhes
     if len(equipamentos) == 1:
         equipamento_id = equipamentos[0]["id_equipamento"]
-        return redirect("detalhes_equipamento", equipamento_id)
+        return redirect("detalhes_equipamento_list", equipamento_id)
 
     # Se houver mais de um resultado ou nenhum, exiba uma página de resultados de pesquisa
     return render(

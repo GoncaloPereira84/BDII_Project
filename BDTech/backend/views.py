@@ -378,10 +378,11 @@ def edit_utilizador(request, record_id):
         id_estado  = utilizador_details["id_estado"]
 
         resultado = update_utilizador(record_id, nome, endereco, codpostal, localidade, contacto, email,password,id_perfil,id_estado,e_cliente)
-        request.session["nome"] = nome
-        request.session["email"] = email
-        request.session["id_perfil"] = id_perfil
-        request.session["nivel_acesso"] = resultado[0]
+        if record_id == request.session["id_utilizador"]:
+            request.session["nome"] = nome
+            request.session["email"] = email
+            request.session["id_perfil"] = id_perfil
+            request.session["nivel_acesso"] = resultado[0]
         return redirect("/dashboard")
 
     return render(request, "edit_utilizador.html", {"utilizador": utilizador_details})
@@ -411,11 +412,6 @@ def detalhes_componente(request, componente_id):
 @require_POST
 @csrf_protect
 def detalhes_venda(request, venda_id):
-    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 2) :
-        pass
-    else:
-        return redirect('/sem_acesso')
-    # ---------------------------------- 
     venda_details = get_venda_details(request.session["id_utilizador"], venda_id)
 
     equipamentos_details = venda_details.pop('equipamentos', [])
