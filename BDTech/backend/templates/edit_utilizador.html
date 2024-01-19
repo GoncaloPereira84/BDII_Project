@@ -1,7 +1,7 @@
 {% extends "masterPage.html" %}
 
 {% block title %}
-Novo utilizador
+Editar utilizador
 {% endblock %}
 {% load static %}
 {% block links %}
@@ -41,7 +41,7 @@ Novo utilizador
                       </div>
                       <div class="mb-4">
                         <label class="form-label" for="email-input">Email</label>
-                        <input type="email" class="form-control" id="email-input" name="email-input" placeholder="(Email)">
+                        <input type="email" class="form-control" id="email-input" name="email-input" value="{{ utilizador.email }}" placeholder="(Email)">
                       </div>
                       <div class="mb-4">
                         <label class="form-label" for="password-input">Password</label>
@@ -57,25 +57,24 @@ Novo utilizador
 
                         <div class="mb-4">
                         <label class="form-label" for="morada-input">Morada</label>
-                        <input type="text" class="form-control" id="morada-input" name="morada-input" placeholder="(Morada)">
+                        <input type="text" class="form-control" id="morada-input" name="morada-input" value="{{ utilizador.endereco }}" placeholder="(Morada)">
                       </div> 
                       
                       <div class="mb-4">
                         <label class="form-label" for="localidade-input">Localidade</label>
-                        <input type="text" class="form-control" id="localidade-input" name="localidade-input" placeholder="(Localidade)">
+                        <input type="text" class="form-control" id="localidade-input" name="localidade-input" value="{{ utilizador.localidade }}" placeholder="(Localidade)">
                       </div> 
 
                       <div class="mb-4">
                         <label class="form-label" for="perfil-input">Perfil</label>
-                        <select class="js-select2 form-select" id="perfil-input" name="perfil-input"
-                            style="width: 100%;">
+                        <select class="js-select2 form-select" id="perfil-input" name="perfil-input" style="width: 100%;">
                             <option value=""></option>
-                            <option value="1">Visitante</option>
-                            <option value="2">Administrador</option>
-                            <option value="3">RH</option>
-                            <option value="4">sales</option>
-                            <option value="5">Produção</option>
-                            <option value="6">Compras</option>
+                            <option value="1" {% if utilizador.id_perfil == 1 %}selected{% endif %}>Visitante</option>
+                            <option value="2" {% if utilizador.id_perfil == 2 %}selected{% endif %}>Administrador</option>
+                            <option value="3" {% if utilizador.id_perfil == 3 %}selected{% endif %}>RH</option>
+                            <option value="4" {% if utilizador.id_perfil == 4 %}selected{% endif %}>Sales</option>
+                            <option value="5" {% if utilizador.id_perfil == 5 %}selected{% endif %}>Produção</option>
+                            <option value="6" {% if utilizador.id_perfil == 6 %}selected{% endif %}>Compras</option>
                         </select>                        
                         
                       </div> 
@@ -92,11 +91,11 @@ Novo utilizador
                     <div class="col-lg-6 col-xl-5">
                       <div class="mb-4">
                         <label class="form-label" for="contato-input">Contato</label>
-                        <input type="text" class="form-control" id="contato-input" name="contato-input" placeholder="(Contato)">
+                        <input type="text" class="form-control" id="contato-input" name="contato-input" value="{{ utilizador.contacto }}" placeholder="(Contato)">
                       </div>
                       <div class="mb-4">
                         <label class="form-label" for="cpostal-input">CodPostal</label>
-                        <input type="email" class="form-control" id="cpostal-input" name="cpostal-input" placeholder="(CodPostal)">
+                        <input type="email" class="form-control" id="cpostal-input" name="cpostal-input" value="{{ utilizador.codpostal }}" placeholder="(CodPostal)">
                       </div>
 
                     </div>
