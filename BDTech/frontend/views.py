@@ -28,7 +28,7 @@ import json
 def masterPageFront(request):
     return render(request, "masterPageFront.html")
 
-@csrf_exempt
+
 def index(request):
     ultimos_equipamentos = get_top_x_equipamento(4)
     marcas = [
