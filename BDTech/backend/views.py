@@ -58,7 +58,7 @@ def import_componente_html(request):
     return render(request, "import_componente.html")
 
 require_GET
-@csrf_protect
+@csrf_exempt
 def new_order(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 1) :
         pass
@@ -394,7 +394,7 @@ def edit_utilizador(request, record_id):
     return render(request, "edit_utilizador.html", {"utilizador": utilizador_details})
 
 @require_POST
-@csrf_protect
+@csrf_exempt
 def detalhes_fornecedor(request, fornecedor_id):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
         pass
@@ -405,7 +405,7 @@ def detalhes_fornecedor(request, fornecedor_id):
     return JsonResponse(fornecedor_details)
 
 @require_POST
-@csrf_protect
+@csrf_exempt
 def detalhes_componente(request, componente_id):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
@@ -416,7 +416,7 @@ def detalhes_componente(request, componente_id):
     return JsonResponse(componente_details)
 
 @require_POST
-@csrf_protect
+@csrf_exempt
 def detalhes_venda(request, venda_id):
     venda_details = get_venda_details(request.session["id_utilizador"], venda_id)
 
@@ -428,7 +428,7 @@ def detalhes_venda(request, venda_id):
     })
 
 @require_POST
-@csrf_protect
+@csrf_exempt
 def detalhes_compra(request, compra_id):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 1) :
         pass
@@ -445,7 +445,7 @@ def detalhes_compra(request, compra_id):
     })
 
 @require_POST
-@csrf_protect
+@csrf_exempt
 def detalhes_equipamento(request, equipamento_id):
     equipamento_details = get_equipamento_details(request.session["id_utilizador"], equipamento_id)
 
@@ -457,7 +457,7 @@ def detalhes_equipamento(request, equipamento_id):
     })
 
 @require_POST
-@csrf_protect
+@csrf_exempt
 def detalhes_producao(request, producao_id):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
@@ -474,7 +474,7 @@ def detalhes_producao(request, producao_id):
     })
 
 @require_POST
-@csrf_protect
+@csrf_exempt
 def detalhes_utilizador(request, utilizador_id):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
         pass
