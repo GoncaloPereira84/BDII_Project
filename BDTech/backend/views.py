@@ -383,7 +383,7 @@ def edit_utilizador(request, record_id):
             request.session["email"] = email
             request.session["id_perfil"] = id_perfil
             request.session["nivel_acesso"] = resultado[0]
-        return redirect("/dashboard")
+        return redirect("/utilizador/list")
 
     return render(request, "edit_utilizador.html", {"utilizador": utilizador_details})
 
