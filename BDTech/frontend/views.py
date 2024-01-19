@@ -195,7 +195,6 @@ def pesquisa_equipamento(request):
         },
     )
 
-
 def usercompras(request):
     utilizador = request.session["id_utilizador"]
     vendas = obter_compras_usuario(utilizador)

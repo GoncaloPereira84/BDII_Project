@@ -38,7 +38,6 @@ from core.utils import (
     get_producao_details,
     get_utilizador_details,
     update_equipamento,
-    ordenar_compras
 )
 from core.utilsMongo import (
     get_tamanho_atributo,
@@ -59,11 +58,10 @@ def import_componente_html(request):
 require_GET
 @csrf_protect
 def new_order(request):
-    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 1 or request.session["nivel_acesso"] > 2) :
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 1) :
         pass
     else:
-        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
-        return redirect('/')
+        return redirect('/dashboard')
     fornecedores = get_all_fornecedores(request.session["id_utilizador"], 0)
     componentes = get_all_componente(request.session["id_utilizador"], 0)
     return render(
@@ -74,6 +72,10 @@ def new_order(request):
  
 
 def new_prod(request):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
+        pass
+    else:
+        return redirect('/dashboard')
     componentes = get_all_componente(request.session["id_utilizador"], 0)
     tiposmaoobra = get_all_tipomaoobra(request.session["id_utilizador"], 0)
     tiposequipamentos = get_all_tipoequipamento(request.session["id_utilizador"], 0)
@@ -88,6 +90,10 @@ def new_prod(request):
     )
 
 def new_prod_existente(request):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
+        pass
+    else:
+        return redirect('/dashboard')
     equipamentos = get_all_equipamentos(request.session["id_utilizador"], 0)
     tiposmaoobra = get_all_tipomaoobra(request.session["id_utilizador"], 0)
     tiposequipamentos = get_all_tipoequipamento(request.session["id_utilizador"], 0)
@@ -104,11 +110,11 @@ def new_prod_existente(request):
 
 def dashboard(request):
     # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
-    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] >= 1:
         pass
     else:
         # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
-        return redirect('/fulllogin/')
+        return redirect('/dashboard')
         exit
         
     result = get_user_and_sales_counts(request.session["id_utilizador"])
@@ -137,6 +143,10 @@ def Sem_Acesso(request):
 #####################################
 
 def save_utilizador(request):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
+        pass
+    else:
+        return redirect('/dashboard')
     if request.method == 'POST':
 
         # Obter os dados do formulário
@@ -176,19 +186,12 @@ def save_utilizador(request):
     else:
         return render(request, 'create_utilizador.html')
 
-#####################################
 def new_utilizador(request):
-    #html = "<html><body><h1>Criação de Novo Utilizador</h1></html>"
-    #return HttpResponse(html)
-
-     # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
-    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
         pass
     else:
-        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
-        return redirect('/')
-        
-           
+        return redirect('/dashboard')
+                   
     resultado_marca = get_marca_atributo(request)
 
     context = {
@@ -196,8 +199,6 @@ def new_utilizador(request):
         'marca_valorlista': resultado_marca.get("resultados")
     }
     return render(request, "create_utilizador.html", context)    
-
-#####################################
 
 def function_exists(table_name):
     try:
@@ -207,31 +208,21 @@ def function_exists(table_name):
         return False
     return True
 
-
 def generic_list(request, table_name):
-
-    print(table_name)
-
-    # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
-    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 1) :
         pass
     else:
-        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
-        return redirect('/fulllogin/')
-        exit
-    # ----------------------------------    
+        return redirect('/dashboard')
+    
+    # Validar acessos listagens
+    num = verificar_acesso(request, table_name)
+    if num:
+        return redirect("/dashboard")
+ 
     function_table_name = f"{table_name}_get_list({request.session['id_utilizador']}, 0)"
     if not function_exists(function_table_name):
         return redirect("/404")
-    
-    # se tabela producao
-    if table_name == 'producao' :
-        if request.session["nivel_acesso"] >= 3:
-            pass
-        else:
-            return redirect('/sem_acesso/')
-            exit
-
+       
     with connection.cursor() as c:
         query = f"SELECT * FROM {function_table_name}"
         c.execute(query)
@@ -256,15 +247,11 @@ def generic_list(request, table_name):
 
     return render(request, "list.html", context)
 
-
 def delete_record(request, table_name, record_id):
-    # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
-    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
-        pass
-    else:
-        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
-        return redirect('/fulllogin/')
-        exit
+    # Validar acessos listagens
+    num = verificar_acesso(request, table_name)
+    if num:
+        return redirect("/dashboard")
     # ----------------------------------    
 
     try:
@@ -281,13 +268,13 @@ def delete_record(request, table_name, record_id):
     except Exception as e:
         raise Http404(str(e))
 
-
 def edit_record(request, table_name, record_id):
-    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] >= 4:
-        pass
-    else:
-        return redirect('/sem_acesso/')
-        exit
+     # Validar acessos listagens
+    num = verificar_acesso(request, table_name)
+    if num:
+        return redirect("/dashboard")
+    # ---------------------------------- 
+
     if request.method == "POST":
         if table_name == "componente":
             return redirect("edit_componente", record_id=record_id)
@@ -299,12 +286,12 @@ def edit_record(request, table_name, record_id):
             return redirect("generic_list", table_name=table_name)
 
 def edit_fornecedor(request,record_id):
-    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] >= 4:
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
         pass
     else:
-        return redirect('/sem_acesso/')
-        exit
-        
+        return redirect('/dashboard')
+    # ---------------------------------- 
+
     fornecedor_details = get_fornecedor_details(record_id)
 
     if request.method == "POST":
@@ -323,6 +310,12 @@ def edit_fornecedor(request,record_id):
     return render(request, "edit_fornecedor.html", {"fornecedor": fornecedor_details})
 
 def edit_componente(request, record_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3 or request.session["nivel_acesso"] == 1) :
+        pass
+    else:
+        return redirect('/dashboard')
+    # ---------------------------------- 
+
     componente_details = get_componente_details(record_id)
        
     if request.method == "POST":
@@ -339,6 +332,12 @@ def edit_componente(request, record_id):
     return render(request, "edit_componente.html", {"componente": componente_details})
 
 def edit_equipamento(request, record_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
+
     equipamento_details = get_equipamento_details(request.session['id_utilizador'], record_id)
     componente_details = equipamento_details.pop('componentes', [])
     
@@ -358,18 +357,33 @@ def edit_equipamento(request, record_id):
 @require_POST
 @csrf_protect
 def detalhes_fornecedor(request, fornecedor_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     fornecedor_details = get_fornecedor_details(fornecedor_id)
     return JsonResponse(fornecedor_details)
 
 @require_POST
 @csrf_protect
 def detalhes_componente(request, componente_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     componente_details = get_componente_details(componente_id)
     return JsonResponse(componente_details)
 
 @require_POST
 @csrf_protect
 def detalhes_venda(request, venda_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 2) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     venda_details = get_venda_details(request.session["id_utilizador"], venda_id)
 
     equipamentos_details = venda_details.pop('equipamentos', [])
@@ -382,6 +396,11 @@ def detalhes_venda(request, venda_id):
 @require_POST
 @csrf_protect
 def detalhes_compra(request, compra_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 1) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     compra_details = get_compra_details(request.session["id_utilizador"], compra_id)
 
     componentes_details = compra_details.pop('componentes', [])
@@ -406,6 +425,11 @@ def detalhes_equipamento(request, equipamento_id):
 @require_POST
 @csrf_protect
 def detalhes_producao(request, producao_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     producao_details = get_producao_details(request.session["id_utilizador"], producao_id)
 
     componentes_details = producao_details.pop('componentes', [])
@@ -418,6 +442,11 @@ def detalhes_producao(request, producao_id):
 @require_POST
 @csrf_protect
 def detalhes_utilizador(request, utilizador_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     utilizador_details = get_utilizador_details(request.session["id_utilizador"], utilizador_id)
     return JsonResponse(utilizador_details)
 
@@ -503,15 +532,11 @@ def mango(request):
     return HttpResponse(resultados)
         
 def form_create_componente(request):
-
-    # Verifica se a variável de sessão 'id_utilizador' existe e está preenchida e nivel de acesso >1
-    if 'id_utilizador' in request.session and request.session['id_utilizador'] and request.session["nivel_acesso"] > 1:
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
     else:
-        # A variável de sessão 'id_utilizador' não existe ou não está preenchida - redireciona para login
-        return redirect('/fulllogin/')
-        exit
-    # --------------------------
+        return redirect('/sem_acesso')
+    # ----------------------------------    
             
     resultado_marca = get_marca_atributo(request)
 
@@ -550,6 +575,11 @@ def get_atributo_options(request):
 
 
 def create_componente(request):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     if request.method == "POST":
         id_atributo_tipo= request.POST.get("id_atributo_tipo")
         tipo_valorlista_options= request.POST.get("tipo_valorlista_options")
@@ -592,6 +622,11 @@ def create_componente(request):
     
 
 def create_equipamento(request):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     if request.method == "POST":
         componentes_json = json.loads(request.POST.get("componentes", "[]"))
 
@@ -619,6 +654,11 @@ def create_equipamento(request):
         return HttpResponse("Método não permitido.")
     
 def create_producao(request, id_equipamento):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     producao_json = {
         "id_equipamento": id_equipamento,
         "id_tipomaoobra": request.POST.get("id_tipomaoobra"),
@@ -639,6 +679,11 @@ def create_producao(request, id_equipamento):
         print("Erro a obter o id_producao")
 
 def create_producao_equip_existente(request):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     if request.method == "POST":
         equipamentos_json = json.loads(request.POST.get("equipamentos", "[]"))
         producao_json = {
@@ -671,7 +716,9 @@ def fn_populate_equipamento_comp_atrib(request, id_equipamento):
     resultado = insert_batch_into_equipamento_comp_atrib(request, result)
     
     
-def list_compra_FR_doc(request):    
+def list_compra_FR_doc(request):   
+    verificar_acesso(request, "Encomendas recebidas")
+    # ---------------------------------- 
     with connection.cursor() as c:
         query = "SELECT * FROM compra_fr_get_list(1)"
         c.execute(query)
@@ -696,12 +743,22 @@ def list_compra_FR_doc(request):
 
     return render(request, "list.html", context)
 
-def receber_encomenda(request,record_id):    
+def receber_encomenda(request,record_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 1) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ----------------------------------
     result = atualizar_encomenda_tpdoc(request.session["id_utilizador"], record_id)
     return JsonResponse({'result': result})
 
 
 def import_componente_json(request):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3 or request.session["nivel_acesso"] == 1) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     if request.method == 'POST':
         json_data = request.POST.get('json', '')
         
@@ -713,6 +770,11 @@ def import_componente_json(request):
         return HttpResponse(resultado) 
     
 def export_encomendas(request):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3 or request.session["nivel_acesso"] == 1) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     fornecedores = get_all_fornecedores(request.session["id_utilizador"], 0)
     return render(
         request,
@@ -721,6 +783,11 @@ def export_encomendas(request):
     )
 
 def imprimir_export_encomendas(request):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3 or request.session["nivel_acesso"] == 1) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
 
     if request.method == "POST":
         tipo = json.loads(request.POST.get("tipo"))
@@ -738,3 +805,41 @@ def imprimir_export_encomendas(request):
     else:
         return HttpResponse("Método não permitido.")
     
+# Validar acessos listagens
+def verificar_acesso(request, table_name):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 1) :
+        pass
+    else:
+        return 1
+    
+    print(table_name)
+    
+    if table_name == 'utilizador' or table_name == 'perfil' or table_name == 'funcionalidade' or table_name == 'perfil_funcionalidade' or table_name == 'fornecedor':
+        if request.session["nivel_acesso"] >= 4:
+            pass
+        else:
+            return 1
+    elif table_name == 'componente':
+        if request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3 or request.session["nivel_acesso"] == 1:
+            pass
+        else:
+            return 1
+    elif table_name == 'vendas':
+        if request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 4 or request.session["nivel_acesso"] == 2:
+            pass
+        else:
+            return 1
+    elif table_name == 'compra' or table_name == 'Encomendas recebidas':
+        if request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 1:
+            pass
+        else:
+            return 1
+    elif table_name == 'producao':
+        if request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3:
+            pass
+        else:
+            return 1
+    elif table_name == 'equipamento':
+        pass
+    else:
+        return 1
