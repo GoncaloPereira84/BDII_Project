@@ -531,7 +531,7 @@ def update_utilizador(id,nome,endereco,codpostal,localidade,contacto,email,passw
             """, 
             [id,nome,endereco,codpostal,localidade,contacto,email,password,idperfil,idestado,ecliente]
         )
-        result = cursor.fetchall()
+        result = cursor.fetchone()
     return result
 
 def get_fornecedor_details(fornecedor_id):

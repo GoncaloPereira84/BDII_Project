@@ -358,6 +358,11 @@ def edit_equipamento(request, record_id):
 
 
 def edit_utilizador(request, record_id):
+    if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
+        pass
+    else:
+        return redirect('/sem_acesso')
+    # ---------------------------------- 
     utilizador_details = get_utilizador_details(request.session['id_utilizador'], record_id)
     
     if request.method == "POST":
@@ -372,8 +377,12 @@ def edit_utilizador(request, record_id):
         e_cliente  = request.POST.get("cliente-input", utilizador_details["e_cliente"])
         id_estado  = utilizador_details["id_estado"]
 
-        update_utilizador(record_id, nome, endereco, codpostal, localidade, contacto, email,password,id_perfil,id_estado,e_cliente)
-        return redirect("/utilizador/list")
+        resultado = update_utilizador(record_id, nome, endereco, codpostal, localidade, contacto, email,password,id_perfil,id_estado,e_cliente)
+        request.session["nome"] = nome
+        request.session["email"] = email
+        request.session["id_perfil"] = id_perfil
+        request.session["nivel_acesso"] = resultado[0]
+        return redirect("/dashboard")
 
     return render(request, "edit_utilizador.html", {"utilizador": utilizador_details})
 
