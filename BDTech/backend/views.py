@@ -868,7 +868,7 @@ def verificar_acesso(request, table_name):
             pass
         else:
             return 1
-    elif table_name == 'vendas':
+    elif table_name == 'venda':
         if request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 4 or request.session["nivel_acesso"] == 2:
             pass
         else:

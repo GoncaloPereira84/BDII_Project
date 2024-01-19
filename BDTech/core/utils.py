@@ -102,7 +102,7 @@ def get_equipamento_by_name(nome, tipo_equipamento):
         )
         result = cursor.fetchall()
 
-    if result:
+    if result[0][0] is not None:
         json_result = json.loads(result[0][0])
         return json_result
     else:

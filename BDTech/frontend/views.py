@@ -178,8 +178,11 @@ def pesquisa_equipamento(request):
     else:
         id_categoria = 0
 
+    
     # Obter equipamentos com base no termo de pesquisa e categoria
     equipamentos = get_equipamento_by_name(termo_pesquisa, id_categoria)
+    if equipamentos == None:
+        return redirect("/")
 
     # Se houver um único resultado, redirecione para a página de detalhes
     if len(equipamentos) == 1:
@@ -481,6 +484,12 @@ def completeCarrinho(request):
     carrinho_json = json.dumps([{'id_equipamento': item['id_equipamento'], 'quantidade': item['quantidade']} for item in carrinho])
     
     resultado = check_stock_carrinho(carrinho_json)
+    
+    if carrinho:
+        pass
+    else:
+        response_data = {"error": True, "resultado": "Carrinho Vazio"}
+        return JsonResponse(response_data)
     
     if resultado:
         response_data = {"error": True, "resultado": resultado}
