@@ -89,9 +89,11 @@ Listar
               {% if imagem_column_present %}
               <form method="post" action="{% url 'edit_record' table_name=table_name record_id=row.1 %}">
                 {% csrf_token %}
+                {% if table_name != "perfil" and table_name != "funcionalidade" and table_name != "perfil_funcionalidade"%}
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
                   <i class="fa fa-pencil-alt"></i>
                 </button>
+                {% endif %}
               </form>
               {% if table_name == "equipamento"%}
               <button type="button" class="btn btn-sm btn-alt-secondary"
@@ -156,7 +158,7 @@ Listar
                   <i class="fa fa-eye"></i>
                 </button>
                 {% endif %}
-                {% if table_name != "venda" and table_name != "equipamento" and table_name != "producao"%}
+                {% if table_name != "venda" and table_name != "equipamento" and table_name != "producao" and table_name != "perfil" and table_name != "funcionalidade" and table_name != "perfil_funcionalidade" and table_name != "Encomendas recebidas" %}
                 <button type="submit" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Editar">
                   <i class="fa fa-pencil-alt"></i>
                 </button>

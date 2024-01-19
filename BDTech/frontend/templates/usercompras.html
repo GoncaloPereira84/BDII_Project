@@ -5,6 +5,8 @@ Página Inicial
 {% endblock %}
 {% load static %}
 {% block links %}
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="{% static 'assets/js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css'%}">
 
 {% endblock %}
 
@@ -12,39 +14,45 @@ Página Inicial
 <div class="block block-rounded">
   <div class="block-header block-header-default">
     <h2 class="block-title ms-2 mt-2" style="font-size: 24px;">Minhas Compras</h2>
-</div>
+  </div>
   <div class="block-content block-content-full">
-      <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
-          <thead>
-              <tr>
-                  <th class="d-none d-sm-table-cell"> Número de Compra</th>
-                  <th class="d-none d-sm-table-cell">Data de Compra</th>
-                  <th class="d-none d-sm-table-cell">Documento</th>
-                  <th class="d-none d-sm-table-cell">Total de Compra</th>
-              </tr>
-          </thead>
-          <tbody>
-              {% for venda in vendas %}
-              <tr>
-                <td>{{ venda.ndoc }}</td>
-                <td>{{ venda.data_venda|date:"d/m/Y" }}</td>
-                <td>{{ venda.tpdoc }}</td>
-                <td>{{ venda.valortotal }}</td>
-                <td>
-                  <a href="{% url 'detalhes_venda_utilizador' venda.id_venda %}" class="btn btn-primary">Ver Detalhes</a>
-                </td>
-              </tr>
-              {% endfor %}
-          </tbody>
-        </table>
+    <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
+      <thead>
+        <tr>
+          <th class="d-none d-sm-table-cell"> Número de Compra</th>
+          <th class="d-none d-sm-table-cell">Data de Compra</th>
+          <th class="d-none d-sm-table-cell">Documento</th>
+          <th class="d-none d-sm-table-cell">Total de Compra</th>
+          <th class="d-none d-sm-table-cell">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for venda in vendas %}
+        <tr class="text-center">
+          <td>{{ venda.ndoc }}</td>
+          <td>{{ venda.data_venda|date:"d/m/Y" }}</td>
+          <td>{{ venda.tpdoc }}</td>
+          <td>{{ venda.valortotal }}</td>
+          <td class="text-center">
+            <button type="button" class="btn btn-sm btn-alt-secondary bg-primary text-light"
+              onclick="abrirModalDetalhesVenda('{{ venda.id_venda }}', 'detalhes_venda')" data-bs-toggle="tooltip"
+              title="Detalhes">
+              Ver Detalhes
+            </button>
+          </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
-            
-<!-- jQuery (required for DataTables plugin) -->
+
+{% endblock %}
+{% block scripts %}
 <script src="{% static 'assets/js/lib/jquery.min.js'%}"></script>
 
 <!-- Page JS Plugins -->
-
 <script src="{% static 'assets/js/plugins/datatables/jquery.dataTables.min.js'%}"></script>
 <script src="{% static 'assets/js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js'%}"></script>
 <script src="{% static 'assets/js/plugins/datatables-buttons/dataTables.buttons.min.js'%}"></script>
@@ -57,6 +65,88 @@ Página Inicial
 
 <script src="{% static 'assets/js/pages/be_tables_datatables.min.js'%}"></script>
 
+<script>
+  function abrirModalDetalhes(tipo, id, tableName, response) {
+    Swal.fire({
+      title: `Detalhes da Compra`,
+      html: `
+            <table class="table">
+                <tbody>
+                  <tr>
+                                <th class="text-end">Data:</th>
+                                <td class="text-start">${response.venda_details.data}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Valor total:</th>
+                                <td class="text-start">${response.venda_details.valortotal}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-end">Comprador:</th>
+                                <td class="text-start">${response.venda_details.utilizador}</td>
+                            </tr>
+                            <tr>
+                              <table class="table table-bordered table-striped table-vcenter js-dataTable-full">
+                                <div class="table-title m-2"><strong>Equipamentos</strong></div>
+                                <thead>
+                                  <tr>
+                                    <th class="d-none d-sm-table-cell">Imagem</th>
+                                    <th class="d-none d-sm-table-cell">Quantidade</th>
+                                    <th class="d-none d-sm-table-cell">Preço Unitário</th>
+                                    <th class="d-none d-sm-table-cell">Nome do Equipamento</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  ${response.equipamentos_details.map(equipamento => `
+                                  <tr>
+                                    <td><img src="${equipamento.imagem}" alt="Imagem" style="max-width: 100%; max-height: 100px; vertical-align: middle;"></td>
+                                    <td>${equipamento.quantidade}</td>
+                                    <td>${equipamento.preco_unitario}</td>
+                                    <td>${equipamento.nome_equipamento}</td>
+                                  </tr>
+                                  `).join('')}
+                                </tbody>
+                              </table>
+                            </tr>
+                </tbody>
+            </table>
+        `,
+      showCloseButton: true,
+      showCancelButton: false,
+      focusConfirm: false,
+      width: '60%',
+    });
+  }
+
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Procura por ocorrências de 'name=' no início do cookie
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  function abrirModalDetalhesVenda(id, tableName) {
+    $.ajax({
+      url: `/${tableName}/${id}/`,
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      dataType: 'json',
+      success: function (response) {
+        abrirModalDetalhes('venda', id, tableName, response);
+      },
+      error: function (error) {
+        console.error(`Erro ao obter detalhes da Compra (${tableName}):`, error);
+      }
+    });
+  }
+</script>
 
 {% endblock %}
-

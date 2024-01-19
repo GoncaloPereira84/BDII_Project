@@ -2,10 +2,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.db import connection, ProgrammingError
 from django.http import JsonResponse
 from psycopg2.extras import Json
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import (
-    Componente
-)
+from django.shortcuts import render, redirect
 from django.utils import timezone
 import json
 

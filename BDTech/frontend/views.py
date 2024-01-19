@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.db import connection
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -9,7 +9,6 @@ from core.utils import (
     get_top_x_equipamento,
     get_equipamento_by_name,
     obter_compras_usuario,
-    detalhes_equipamentos_venda,
     obter_maximo_preco_por_tipo,
     get_equipamentos_by_id,
     filtrar_equipamentos_por_preco,
@@ -212,51 +211,6 @@ def usercompras(request):
         for row in vendas
     ]
     return render(request, "usercompras.html", {"vendas": resultado})
-
-
-def detalhes_venda_utilizador(request, venda_id):
-    utilizador = request.session.get("id_utilizador")
-
-    if utilizador is not None:
-        detalhes = detalhes_equipamentos_venda(venda_id)
-        resultado = [
-            {
-                "id_venda": row[0],
-                "nome": row[1],
-                "quantidade": row[2],
-                "valortotal": row[3],
-                "data_venda": row[4],
-                "precounitario": row[5],
-            }
-            for row in detalhes
-        ]
-
-        # Agrupar resultados pelo id_venda
-        detalhes_agrupados = {}
-        for row in resultado:
-            id_venda = row["id_venda"]
-            if id_venda not in detalhes_agrupados:
-                detalhes_agrupados[id_venda] = {
-                    "id_venda": id_venda,
-                    "data_venda": row["data_venda"],
-                    "valortotal": row["valortotal"],
-                    "ndoc": venda_id,
-                    "itens": [],
-                }
-            detalhes_agrupados[id_venda]["itens"].append(
-                {
-                    "nome": row["nome"],
-                    "quantidade": row["quantidade"],
-                    "precounitario": row["precounitario"],
-                }
-            )
-
-        return render(
-            request, "detalhes_venda.html", {"detalhes": detalhes_agrupados.values()}
-        )
-
-    else:
-        return HttpResponseBadRequest("ID do utilizador não encontrado na sessão.")
 
 
 def aplicarpreco(request):
@@ -521,7 +475,6 @@ def finalizarCarrinho(request):
 def completeCarrinho(request):
     carrinho = request.session["carrinho"]
     
-    # Convert carrinho to the desired JSON format
     carrinho_json = json.dumps([{'id_equipamento': item['id_equipamento'], 'quantidade': item['quantidade']} for item in carrinho])
     
     resultado = check_stock_carrinho(carrinho_json)
