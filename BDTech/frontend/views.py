@@ -133,7 +133,7 @@ def fulllogin(request):
     else:
         return render(request, "login.html")
 
-
+@csrf_exempt
 def equipamento_type(request, tipo):
     if tipo:
         equipamentos = get_equipamento_by_type(tipo)
@@ -162,7 +162,7 @@ def equipamento_type(request, tipo):
         },
     )
 
-
+@csrf_exempt
 def detalhes_equipamento_list(request, equipamento_id):
     equipamento = get_detalhes_equipamento(equipamento_id)
     lista = get_top_x_equipamento(6)
@@ -366,7 +366,7 @@ def aplicarfiltros(request):
             status=405,
         )
 
-
+@csrf_exempt
 def adicionar_ao_carrinho(request):
     if request.method == "POST":
         carrinho = request.session.get("carrinho", [])

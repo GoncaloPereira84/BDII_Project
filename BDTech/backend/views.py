@@ -3,6 +3,7 @@ from django.db import connection, ProgrammingError
 from django.http import JsonResponse
 from psycopg2.extras import Json
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 import json
 
@@ -143,6 +144,7 @@ def Sem_Acesso(request):
 
 #####################################
 
+@csrf_exempt
 def save_utilizador(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
         pass
@@ -269,6 +271,7 @@ def delete_record(request, table_name, record_id):
     except Exception as e:
         raise Http404(str(e))
 
+@csrf_exempt
 def edit_record(request, table_name, record_id):
      # Validar acessos listagens
     num = verificar_acesso(request, table_name)
@@ -288,6 +291,7 @@ def edit_record(request, table_name, record_id):
         else:
             return redirect("generic_list", table_name=table_name)
 
+@csrf_exempt
 def edit_fornecedor(request,record_id):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
         pass
@@ -312,6 +316,7 @@ def edit_fornecedor(request,record_id):
     
     return render(request, "edit_fornecedor.html", {"fornecedor": fornecedor_details})
 
+@csrf_exempt
 def edit_componente(request, record_id):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3 or request.session["nivel_acesso"] == 1) :
         pass
@@ -334,6 +339,7 @@ def edit_componente(request, record_id):
 
     return render(request, "edit_componente.html", {"componente": componente_details})
 
+@csrf_exempt
 def edit_equipamento(request, record_id):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
@@ -356,7 +362,7 @@ def edit_equipamento(request, record_id):
 
     return render(request, "edit_equipamento.html", {"equipamento": equipamento_details})
 
-
+@csrf_exempt
 def edit_utilizador(request, record_id):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] >= 4) :
         pass
@@ -478,7 +484,7 @@ def detalhes_utilizador(request, utilizador_id):
     utilizador_details = get_utilizador_details(request.session["id_utilizador"], utilizador_id)
     return JsonResponse(utilizador_details)
 
-
+@csrf_exempt
 def save_encomenda(request):
     if request.method == "POST":
         id_fornecedor = request.POST.get("id_fornecedor")
@@ -527,7 +533,7 @@ def save_encomenda(request):
     else:
         return HttpResponse("Método não permitido.")
     
-
+@csrf_exempt
 def criar_mao_obra(request):
     if request.method == "POST":
         nome = request.POST.get("nome")
@@ -549,7 +555,8 @@ def criar_mao_obra(request):
 
     else:
         return JsonResponse({"error": "Método não permitido."})
-    
+
+@csrf_exempt    
 def mango(request):
     texto_procurado = "Disco"
     resultados = get_tamanho_atributo(request, texto_procurado)
@@ -558,7 +565,8 @@ def mango(request):
     id_atributo = resultados.get("id_atributo")
 
     return HttpResponse(resultados)
-        
+
+@csrf_exempt        
 def form_create_componente(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
@@ -601,7 +609,7 @@ def get_atributo_options(request):
             'tamanho_valorlista_options': [],
         })
 
-
+@csrf_exempt
 def create_componente(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
@@ -648,7 +656,7 @@ def create_componente(request):
     else:
         return HttpResponse("Método não permitido.")
     
-
+@csrf_exempt
 def create_equipamento(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
@@ -706,6 +714,7 @@ def create_producao(request, id_equipamento):
     else:
         print("Erro a obter o id_producao")
 
+@csrf_exempt
 def create_producao_equip_existente(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3) :
         pass
@@ -780,7 +789,7 @@ def receber_encomenda(request,record_id):
     result = atualizar_encomenda_tpdoc(request.session["id_utilizador"], record_id)
     return JsonResponse({'result': result})
 
-
+@csrf_exempt
 def import_componente_json(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3 or request.session["nivel_acesso"] == 1) :
         pass
@@ -810,6 +819,7 @@ def export_encomendas(request):
         {"fornecedores": fornecedores},
     )
 
+@csrf_exempt
 def imprimir_export_encomendas(request):
     if 'id_utilizador' in request.session and request.session['id_utilizador'] and (request.session["nivel_acesso"] == 5 or request.session["nivel_acesso"] == 3 or request.session["nivel_acesso"] == 1) :
         pass
